@@ -1,4 +1,4 @@
-import {getStorage} from 'helpers/utilities'
+import {getStorage} from 'apphelpers/utilities'
 
 export const hasAccess = function (access) {
     const data = getStorage('access', true);

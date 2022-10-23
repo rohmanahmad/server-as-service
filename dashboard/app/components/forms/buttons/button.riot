@@ -12,7 +12,7 @@
     <button disabled="{ props.disabled }" class="{ props.elClass || 'btn' }" style="{ props.elStyles }" onclick="{ callback }" id="{ buttonId }">{ props.elTitle || 'Sample Button' }</button>
     <style></style>
     <script>
-        import { randomString, showAlertError, debugLog } from 'helpers/utilities'
+        import { randomString, showAlertError, debugLog } from 'apphelpers/utilities'
         export default {
             buttonId: randomString(5, {onlyChars: true}),
             onMounted(props) {

@@ -1,4 +1,4 @@
-import { logInfo } from 'helpers/utilities'
+import { logInfo } from 'apphelpers/utilities'
 
 export const changeStorage = (data, prefix) => {
     if (prefix) prefix = `${prefix}_`

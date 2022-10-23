@@ -19,7 +19,7 @@
             { this.value }
         </textarea>
     <script>
-        import { randomString, showAlertError, debugLog } from 'helpers/utilities'
+        import { randomString, showAlertError, debugLog } from 'apphelpers/utilities'
         export default {
             onBeforeMount(props) {
                 if (typeof props.callback !== 'function') return showAlertError(new Error('[Form TinyMCE] Required Callback'))

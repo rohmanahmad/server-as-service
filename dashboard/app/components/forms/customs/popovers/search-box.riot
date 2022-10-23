@@ -22,7 +22,7 @@
         }
     </style>
     <script>
-        import { randomString, showAlertError, debugLog } from 'helpers/utilities'
+        import { randomString, showAlertError, debugLog } from 'apphelpers/utilities'
         export default {
             onBeforeMount(props) {
                 if (!props.name) return showAlertError(new Error('[Popover Search] Name Required'))

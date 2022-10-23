@@ -1,4 +1,4 @@
-import { Request } from 'services/SDK/main'
+import { Request } from 'appsdk'
 
 const R = new Request()
 

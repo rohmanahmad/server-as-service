@@ -1,6 +1,6 @@
-import mainComponents from 'components/layout/layout.index'
+import mainComponents from 'appcomponents/layout/layout.index'
 
-export default function layoutModule(name) {
+export default function layout(name) {
 	return mainComponents[name]
 }
 

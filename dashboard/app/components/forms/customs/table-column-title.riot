@@ -64,7 +64,7 @@
         }
     </style>
     <script>
-        import { randomString, showAlertError, debugLog } from 'helpers/utilities'
+        import { randomString, showAlertError, debugLog } from 'apphelpers/utilities'
         export default {
             onBeforeMount(props) {
                 if (!props.columnName) return showAlertError(new Error('[Form Table Column Title] Required Column Name'))

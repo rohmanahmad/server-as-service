@@ -19,7 +19,7 @@
         <i if="{ props.elIconRight }" class="icon { props.elIconRight }"></i>
     </button>
     <script>
-        import { showAlertError, randomString, debugLog } from 'helpers/utilities'
+        import { showAlertError, randomString, debugLog } from 'apphelpers/utilities'
         export default {
             onBeforeMount() {
                 this.buttonId = randomString(10, {onlyChars: true})

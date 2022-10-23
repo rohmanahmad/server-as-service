@@ -1,5 +1,5 @@
 /* utilities used for util function like localstorage, date, or many others */
-import { name, app_version } from 'packagejson'
+import { name, app_version } from 'package'
 const isDevelopment = process.env.MIX_NODE_ENV !== 'production'
 const ls = localStorage
 

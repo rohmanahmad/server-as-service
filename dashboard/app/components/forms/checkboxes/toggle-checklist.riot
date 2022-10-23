@@ -8,7 +8,7 @@
 <toggle-checklist>
     <input type="checkbox" name="{ 'checkbox-' + key }" checked="{ props.isChecked }" class="{ props.elClass }" id="{ inputId }" onclick="{ (e) => toggleCheck(key, e.target) }">
     <script>
-        import { randomString, showAlertError, debugLog } from 'helpers/utilities'
+        import { randomString, showAlertError, debugLog } from 'apphelpers/utilities'
         export default {
             onBeforeMount(props) {
                 this.inputId = randomString(10, {onlyChars: true})

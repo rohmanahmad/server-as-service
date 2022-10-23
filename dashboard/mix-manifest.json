@@ -15,5 +15,6 @@
     "/public/css/select2.css": "/public/css/select2.css",
     "/public/lib/select2.min.js": "/public/lib/select2.min.js",
     "/public/css/custom.css": "/public/css/custom.css",
-    "/public/css/font.css": "/public/css/font.css"
+    "/public/css/font.css": "/public/css/font.css",
+    "/public/index.html": "/public/index.html"
 }

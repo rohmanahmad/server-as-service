@@ -1,0 +1,29 @@
+<auth-login>
+    <div class="d-flex align-items-center justify-content-center bg-br-primary ht-100v">
+        <div class="login-wrapper wd-300 wd-xs-350 pd-r-40 pd-l-40 bg-white rounded shadow-base">
+            <div class="signin-logo tx-center tx-28 tx-bold tx-inverse mg-b-20 pd-t-40">
+                <img src="./images/app-logo.png" width="50" class="img-responsive">
+            </div>
+            <form name="login-form" id="login-form" onsubmit="{ doLogin }">
+                <div class="form-group">
+                    <input type="text"  name="username" class="form-control tx-12" placeholder="Enter your username" data-rule="required">
+                </div><!-- form-group -->
+                <div class="form-group">
+                    <input type="password" name="password" class="form-control tx-12" placeholder="Enter your password" data-rule="required">
+                </div><!-- form-group -->
+                <button type="submit" class="btn btn-primary tx-12 float-right">Sign In</button>
+                <br>
+                <span class="pd-t-40 tx-center d-block tx-8 pd-b-10">Patch version {version_app}</span>
+            </form>
+        </div><!-- login-wrapper -->
+    </div>
+    <style>
+        .pull-right{
+            float: right;
+        }
+    </style>
+    <script>
+        import controller from './login'
+        export default controller
+    </script>
+</auth-login>

@@ -1,1 +1,0 @@
-Tidak Bisa menggunakan "Class" Entah lah. Gunakan Class pada Helper bisa. Disini Gak Bisa

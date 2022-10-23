@@ -1,6 +1,7 @@
 const mix = require('laravel-mix')
 const fs = require('fs')
 require('laravel-mix-purgecss')
+const theme = 'default'
 
 mix.riot = (entry, output, options) => {
     mix.webpackConfig({
@@ -26,33 +27,33 @@ const assetUrl = (paths, path) => {
 }
 
 mix
-    .sass('app/theme/scss/bracket.scss', 'public/css/all.css')
+    .sass(`app/themes/${theme}/scss/bracket.scss`, 'public/css/all.css')
     .riot('app/main.js', 'public/js')
-    .copyDirectory('app/theme/vendor/ionicons/fonts', 'public/fonts')
+    .copyDirectory(`app/themes/${theme}/vendor/ionicons/fonts`, 'public/fonts')
     .styles([
-        'app/theme/vendor/ionicons/css/ionicons.min.css',
-        'app/theme/vendor/flatpickr/flatpickr.min.css',
+        `app/themes/${theme}/vendor/ionicons/css/ionicons.min.css`,
+        `app/themes/${theme}/vendor/flatpickr/flatpickr.min.css`,
         'node_modules/sweetalert2/dist/sweetalert2.min.css',
-        'app/theme/vendor/spiner/spiner.css',
-        'app/theme/css/custom.css'
+        `app/themes/${theme}/vendor/spiner/spiner.css`,
+        `app/themes/${theme}/css/custom.css`
     ], 'public/css/vendor.css')
-    .copyDirectory('app/theme/images', 'public/images')
-    .copyDirectory('app/theme/notification-assets', 'public/notification-assets')
-    .copyDirectory('app/theme/vendor/tinymce', 'public/lib/tinymce')
-    .copyDirectory('app/theme/vendor/font-awesome-4.7.0/css', 'public/lib/fa4/css')
-    .copyDirectory('app/theme/vendor/font-awesome-4.7.0/fonts', 'public/lib/fa4/fonts')
-    .copy('app/theme/vendor/popper.js', 'public/lib')
-    .copy('app/theme/vendor/bootstrap.js', 'public/lib')
-    .copy('app/theme/vendor/daterangepicker/daterangepicker.min.js', 'public/lib')
-    .copy('app/theme/vendor/daterangepicker/daterangepicker.css', 'public/css')
-    .copy('app/theme/vendor/moment.min.js', 'public/lib')
-    .copy('app/theme/vendor/jquery-3.6.0.min.js', 'public/lib')
-    .copy('app/theme/vendor/sweetalert2.js', 'public/lib')
-    .copy('app/theme/vendor/xlsx.full.min.js', 'public/lib')
-    .copy('app/theme/vendor/select2/select2.css', 'public/css')
-    .copy('app/theme/vendor/select2/select2.min.js', 'public/lib')
-    .copy('app/theme/css/custom.css', 'public/css')
-    .copy('app/theme/css/font.css', 'public/css')
+    .copyDirectory(`app/themes/${theme}/images`, 'public/images')
+    .copyDirectory(`app/themes/${theme}/vendor/tinymce`, 'public/lib/tinymce')
+    .copyDirectory(`app/themes/${theme}/vendor/font-awesome-4.7.0/css`, 'public/lib/fa4/css')
+    .copyDirectory(`app/themes/${theme}/vendor/font-awesome-4.7.0/fonts`, 'public/lib/fa4/fonts')
+    .copy(`app/themes/${theme}/vendor/popper.js`, 'public/lib')
+    .copy(`app/themes/${theme}/vendor/bootstrap.js`, 'public/lib')
+    .copy(`app/themes/${theme}/vendor/daterangepicker/daterangepicker.min.js`, 'public/lib')
+    .copy(`app/themes/${theme}/vendor/daterangepicker/daterangepicker.css`, 'public/css')
+    .copy(`app/themes/${theme}/vendor/moment.min.js`, 'public/lib')
+    .copy(`app/themes/${theme}/vendor/jquery-3.6.0.min.js`, 'public/lib')
+    .copy(`app/themes/${theme}/vendor/sweetalert2.js`, 'public/lib')
+    .copy(`app/themes/${theme}/vendor/xlsx.full.min.js`, 'public/lib')
+    .copy(`app/themes/${theme}/vendor/select2/select2.css`, 'public/css')
+    .copy(`app/themes/${theme}/vendor/select2/select2.min.js`, 'public/lib')
+    .copy(`app/themes/${theme}/css/custom.css`, 'public/css')
+    .copy(`app/themes/${theme}/css/font.css`, 'public/css')
+    .copy(`app/themes/index.html`, 'public')
     .extract(['riot', 'store'])
     .webpackConfig({
         module:{
@@ -64,12 +65,11 @@ mix
         resolve: {
             alias: {
                 package: path.resolve(__dirname, 'package.json'),
-                module: path.resolve(__dirname, 'app/modules'),
-                components: path.resolve(__dirname, 'app/components'),
-                libs: path.resolve(__dirname, 'app/libs'),
-                layout: path.resolve(__dirname, 'app/layouts'),
-                helpers: path.resolve(__dirname, 'app/helpers'),
-                services: path.resolve(__dirname, 'app/services'),
+                appmodules: path.resolve(__dirname, 'app/modules'),
+                appcomponents: path.resolve(__dirname, 'app/components'),
+                applayout: path.resolve(__dirname, 'app/layouts'),
+                apphelpers: path.resolve(__dirname, 'app/helpers'),
+                appsdk: path.resolve(__dirname, 'app/modules/sdk'),
             }
         }
     })

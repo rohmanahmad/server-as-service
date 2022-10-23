@@ -1,22 +1,12 @@
 
-import reportModules from './report/report.index'
-import agentsModules from './agents/agents.index'
-import supportAdminModules from './support-admin/support-admin.index'
-import pendingTasksModules from './pending-tasks/pending-tasks.index'
-import ekycModules from './ekyc/ekyc.index'
-import pushNotificationModules from './push-notification/push-notification.index'
-import billpaymentModules from './billpayment/billpayment.index'
+import AdministrationPages from './server-as-service/pages'
+import AuthPages from './auth/pages'
 
 const moduleObject = {
-    ...reportModules,
-    ...agentsModules,
-    ...supportAdminModules,
-    ...pendingTasksModules,
-    ...ekycModules,
-    ...billpaymentModules,
-    ...pushNotificationModules,
+    ...AdministrationPages,
+    ...AuthPages,
 }
 
-export default function appModule(name) {
+export default function module(name) {
 	return moduleObject[name]
 }

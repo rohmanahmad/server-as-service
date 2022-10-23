@@ -22,7 +22,7 @@
         <input if="{dateType === 'range'}" disabled="{ props.disabled }" type="text" id="{ inputId }" class="form-control {props.elClass}" value="{ defaultValue.join(' - ') }">
     </div>
     <script>
-        import { randomString, showAlertError, debugLog } from 'helpers/utilities'
+        import { randomString, showAlertError, debugLog } from 'apphelpers/utilities'
         import { cloneDeep, set } from 'lodash'
         import moment from 'moment'
         const ranges = {

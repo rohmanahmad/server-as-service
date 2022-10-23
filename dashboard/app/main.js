@@ -1,20 +1,17 @@
 import { app_version } from '../package.json'
 import { component, register } from 'riot'
-import appModule from 'appModule'
-import layoutModule, { layoutComponents } from 'layoutModule'
-import tagModule, { tagComponents } from 'components'
-import MainLayout from './layouts/main-layout.riot'
-import routes from './services/routes'
-import { formatNumber, parseRequestURL, logInfo, logError } from './helpers/utilities.js'
-import { eraseCookie, getCookie } from 'helpers/cookie'
-import { goTo } from 'helpers/ma'
-// import { debugLog } from 'helpers/utilities'
+import layout, { layoutComponents } from 'applayout'
+import tagModule, { tagComponents } from 'appcomponents'
+import module from 'appmodules/index'
+import MainLayout from 'applayout/main-layout.riot'
+import routes from 'appmodules/all-routes'
+import { formatNumber, parseRequestURL } from 'apphelpers/utilities'
+import { getCookie } from 'apphelpers/cookie'
+import { goTo } from 'apphelpers/ma'
 import _ from 'lodash'
-import Swal from 'sweetalert2/dist/sweetalert2.js'
+import Swal from 'sweetalert2/dist/sweetalert2'
 /* plugins app */
-import 'services/app-plugins.js'
-
-import { LogoutAgent } from 'appModule/agents/agents.sdk'
+import './plugins'
 
 window.swal = (title,message,type)=>{
     Swal.fire({
@@ -35,7 +32,7 @@ window.App = {
     currentHash: ''
 }
 
-const guestRoutes = ['register', 'login']
+const guestRoutes = ['auth/login']
 
 const needLogin = (route) => {
     if (guestRoutes.indexOf(route) < 0) {
@@ -54,12 +51,12 @@ const initApp = () => {
     /* register all components */
     routes.forEach((item) => {
         // debugLog('routes', item)
-        register(_.kebabCase(item.hash), appModule(item.component))
+        register(_.kebabCase(item.hash), module(item.component))
     })
 
     layoutComponents.forEach((item) => {
         // debugLog('layout', item)
-        register(_.kebabCase(item), layoutModule(item))
+        register(_.kebabCase(item), layout(item))
     })
 
     tagComponents.forEach((item) => {
@@ -80,27 +77,15 @@ const router = (e) => {
     let parsedURL = getUrl.slice(1) === '' ? 'dashboard' : getUrl.slice(1)
     /* logout */
     if(parsedURL === 'logout') {
-        LogoutAgent()
-            .then((res)=>{
-                eraseCookie('name')
-                eraseCookie('userid')
-                eraseCookie('token')
-                eraseCookie('refresh')
-                // localStorage.removeItem("access")
-                // localStorage.removeItem("token")
-                localStorage.clear()
-            })
-            .catch((err)=>{
-                logError(err)
-            })
-            goTo('login')
+        localStorage.clear()
+        goTo('auth/login')
     }
 
     let routeHash = routes.findIndex( item => {
         return item.hash === parsedURL
     })
 
-    if (!isLogin()) goTo('login')
+    if (!isLogin()) goTo('auth/login')
 
     let authPage = needLogin(parsedURL)
     const objRoute = routes[routeHash] || {menu: true}
@@ -128,33 +113,7 @@ window.cekData = appComponent
 window.addEventListener('hashchange', router)
 window.addEventListener('load', router)
 
-var idleTime = 0
 $(document).ready(function () {
-    //Increment the idle time counter every minute.
-    var idleInterval = setInterval(() => {
-        timerIncrement()
-        // deleteInterval(idleInterval)
-    }, 5 * 1000) // 1 minute
-
-    //Zero the idle timer on mouse movement.
-    $(this).mousemove(function (e) {
-        idleTime = 0
-    })
-  
-    $(this).keypress(function (e) {
-        idleTime = 0
-    })
-
     const env = process.env.MIX_NODE_ENV
-    document.title = 'Commbank CRM ' + (env === 'development' ? 'v' + app_version : '')
+    document.title = 'Dashboard ' + (env === 'development' ? 'v' + app_version : '')
 })
-
-function timerIncrement() {
-    if ((window.location.href || '').indexOf('#/login') < 0) {
-        idleTime = idleTime + 5
-        const timeout = parseInt(process.env.MIX_IDLE_TIMEOUT) || 600
-        if (idleTime > timeout) { // 20 minutes
-            goTo('logout')
-        }
-    }
-}

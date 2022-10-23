@@ -11,7 +11,7 @@
     <input disabled="{ props.disabled }" type="file" class="{ props.elClass || 'form-control' }" onchange="{ callback }" accept="{ props.acceptedMimes }" id="{ inputId }">
     <style></style>
     <script>
-        import { randomString, showAlertError, debugLog } from 'helpers/utilities'
+        import { randomString, showAlertError, debugLog } from 'apphelpers/utilities'
         export default {
             onBeforeMount() {
                 this.inputId = randomString(5, {onlyChars: true})
