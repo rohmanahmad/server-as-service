@@ -5,27 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Dashboard",
-            "request": "launch",
-            "runtimeArgs": [
-                "run",
-                "dev"
-            ],
-            "runtimeExecutable": "npm",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "cwd": "${workspaceFolder}/dashboard",
-            "type": "node"
-        },
-        {
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/api/server.js"
+            "program": "${workspaceFolder}/server.js"
         }
     ]
 }
