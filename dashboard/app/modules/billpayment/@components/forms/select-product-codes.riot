@@ -1,0 +1,15 @@
+<!-- 
+    props:
+    - custom-styles [String] default NULL OPTIONAL
+    - selected [String] default NULL OPTIONAL
+    - callback [Function] REQUIRED
+    - billers [Array{Object{name, title, code}}] default [] OPTIONAL
+ -->
+
+<select-product-codes>
+    <form-dropdown callback="{ updateSelectedCode }" el-class="form-control tx-12" items="{ config.codes }" selected="{ props.selected }"></form-dropdown>
+    <script>
+        import controller from './select-product-codes'
+        export default controller
+    </script>
+</select-product-codes>

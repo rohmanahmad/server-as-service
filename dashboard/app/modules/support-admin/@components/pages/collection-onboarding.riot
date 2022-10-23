@@ -1,0 +1,272 @@
+<collection-onboarding>
+    <div class="row pd-t-20">
+        <div class="col-2">
+            <div class="form-row">
+                <div class="col">
+                    <span class="tx-11">Limit</span><br/>
+                    <form-limit-per-page custom-class="tx-11 pd-l-2" callback="{ (res) => updatePayload('limit', res) }"></form-limit-per-page>
+                </div>
+                <div class="col">
+                    <span class="tx-11">Page</span><br/>
+                    <form-go-to-page total-pages="{ totalPages }" custom-class="tx-11 pd-l-2" callback="{ (res) => updatePayload('page', res) }"></form-go-to-page>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="form-row">
+                <div class="col">
+                    <span class="tx-11">Sort</span><br/>
+                    <sort-data items="{ sortKeys }" el-class="tx-11" callback="{ (res) => updatePayload('sort', res) }"></sort-data>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="form-row">
+                <div class="col">
+                    <span class="tx-11">onBoardingLastModified</span><br/>
+                    <form-date-picker-range show-time="{ true }" date-type="range" el-class="tx-11" callback="{ (res) => updatePayload('onBoardingLastModified', res) }"></form-date-picker-range>
+                </div>
+            </div>
+        </div>
+        <div class="col-2 text-right pd-x-0">
+            <button class="btn btn-danger tx-11 mg-t-20 mg-x-5" onclick="{ resetCollection }">Reset Collection</button>
+        </div>
+    </div>
+    <div class="row pd-t-20">
+        <div class="col-12 overflow-auto">
+            <table class="table table-bordered table-hover bd">
+                <thead>
+                    <tr>
+                        <td class="tx-11 font-weight-bold wd-60">#</td>
+                        <td class="tx-11 font-weight-bold wd-60">id</td>
+                        <td class="tx-11 font-weight-bold wd-100">onBoardingLastModified</td>
+                        <td class="tx-11 font-weight-bold wd-100">onBoardingSessionId</td>
+                        <td class="tx-11 font-weight-bold wd-100">cmId</td>
+                        <td class="tx-11 font-weight-bold wd-100">fraudReview</td>
+                        <td class="tx-11 font-weight-bold wd-100">nik</td>
+                        <td class="tx-11 font-weight-bold wd-100">onBoardingStage</td>
+                        <td class="tx-11 font-weight-bold wd-100">verihubsMediaId</td>
+                        <td class="tx-11 font-weight-bold wd-100">videoCallDate</td>
+                        <td class="tx-11 font-weight-bold wd-100">videoCallInteractionId</td>
+                        <td class="tx-11 font-weight-bold wd-100">videoCallReview</td>
+                        <td class="tx-11 font-weight-bold wd-100">lastSync</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr if="{!items || (items && items.length === 0)}">
+                        <td colspan="13" class="text-center tx-11">No Data Found</td>
+                    </tr>
+                    <tr each="{item in items}">
+                        <td class="tx-11">
+                            <div class="form-inline">
+                                <form-toggle-checklist data-key="{ item._id }" selected-all="{isSelectedAll}" callback="{ checkSelected }"></form-toggle-checklist>
+                                <span class="pd-l-5">
+                                    { item.n }
+                                </span>
+                            </div>
+                        </td>
+                        <td class="tx-11">
+                            <span class="badge badge-success mg-t-2 text-left">{ item.id }</span>
+                        </td>
+                        <td class="tx-11">
+                            { item.onBoardingLastModified }<br>
+                            <span class="badge badge-primary mg-t-2 text-left">UNIX_TIME: <br>{ item.onBoardingLastModifiedNumber }</span><br>
+                            <span class="badge badge-warning mg-t-2 text-left">ORIGINAL_API: <br>{ item.onBoardingLastModifiedOriginal }</span>
+                        </td>
+                        <td class="tx-11">
+                            <span class="badge badge-dark mg-t-2 text-left">{ item.onBoardingSessionId }</span>
+                        </td>
+                        <td class="tx-11">{ item.cmId }</td>
+                        <td class="tx-11">{ item.fraudReview }</td>
+                        <td class="tx-11">{ item.nik }</td>
+                        <td class="tx-11">
+                            <span class="badge badge-danger mg-t-2 text-left">{ item.onBoardingStage }</span>
+                        </td>
+                        <td class="tx-11">{ item.verihubsMediaId }</td>
+                        <td class="tx-11">
+                            { item.videoCallDate }<br>
+                            <span class="badge badge-primary mg-t-2 text-left">UNIX_TIME: <br>{ item.videoCallDateNumber }</span><br>
+                            <span class="badge badge-warning mg-t-2 text-left">ORIGINAL_API: <br>{ item.videoCallDateOriginal }</span>
+                        </td>
+                        <td class="tx-11">{ item.videoCallInteractionId }</td>
+                        <td class="tx-11">{ item.videoCallReview }</td>
+                        <td class="tx-10">{ item.lastSync }</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-12">
+            <table class="table table-bordered bd">
+                <tr>
+                    <td class="tx-11">
+                        <div class="form-inline float-left pd-t-10 mg-r-20">
+                            <form-toggle-checklist data-key="all" selected-all="{isSelectedAll}" callback="{ toggleCheckAll }"></form-toggle-checklist>
+                            <span class="pd-l-5">
+                                Check All
+                            </span>
+                        </div>
+                        <button class="btn btn-warning btn-sm tx-10 mg-t-5 mg-x-5 float-left" onclick="{ removeSelected }">Remove Selected</button>
+                        <button class="btn btn-danger btn-sm tx-10 mg-t-5 mg-x-5 float-left" onclick="{ removeAllByFilter }">Remove All (by filter)</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <style>
+    </style>
+    <script>
+        import {
+            cancelAllRequest,
+        } from 'services/SDK/main'
+        import {
+            collectionRead,
+            collectionWrite,
+            collectionReset
+        } from 'appModule/support-admin/support-admin.sdk'
+        import { result } from 'lodash'
+        import { showAlertError, showAlertSuccess, debugLog } from 'helpers/utilities'
+        export default {
+            collectionName: 'onboarding',
+            isSelectedAll: false,
+            totalPages: 1,
+            sortKeys: [
+                {name: 'id', title: 'Id'},
+                {name: 'onBoardingSessionId', title: 'OnBoardingSessionId'},
+                {name: 'cmId', title: 'CmId'},
+                {name: 'createdAt', title: 'CreatedAt'},
+                {name: 'fraudReview', title: 'FraudReview'},
+                {name: 'lastSync', title: 'LastSync'},
+                {name: 'nik', title: 'Nik'},
+                {name: 'onBoardingLastModified', title: 'OnBoardingLastModified'},
+                {name: 'onBoardingStage', title: 'OnBoardingStage'},
+                {name: 'verihubsMediaId', title: 'VerihubsMediaId'},
+                {name: 'videoCallDate', title: 'VideoCallDate'},
+                {name: 'videoCallInteractionId', title: 'VideoCallInteractionId'},
+                {name: 'videoCallReview', title: 'VideoCallReview'},
+            ],
+            payload: {
+                limit: 10,
+                page: 1,
+                sort_key: 'id',
+                sort_dir: 'desc'
+            },
+            ids: {},
+            onBeforeMount() {
+            },
+            onBeforeUnmount() {
+                cancelAllRequest()
+            },
+            onMounted() {
+                // this.getItems()
+            },
+            onUnmounted() {},
+            updatePayload(field, data) {
+                switch(field) {
+                    case 'sort':
+                        this.payload.sort_key = data.sort_key
+                        this.payload.sort_dir = data.sort_dir
+                        break
+                    case 'limit':
+                        this.payload.limit = data
+                        break
+                    case 'page':
+                        this.payload.page = data
+                        break
+                    case 'onBoardingLastModified':
+                        this.payload.onBoardingLastModified = result(data, 'since', moment()).format('YYYY-MM-DD HH:mm') + ',' + result(data, 'until', moment()).format('YYYY-MM-DD HH:mm')
+                        break
+                }
+                this.update()
+                this.getItems()
+            },
+            getItems() {
+                const payload = this.payload
+                collectionRead(this.collectionName, payload)
+                    .catch(err => {
+                        showAlertError(err)
+                        return null
+                    })
+                    .then(res => {
+                        if (!res) return null
+                        this.totalPages = result(res, 'data.total_pages')
+                        const skip = result(res, 'data.skip', 0)
+                        const items = result(res, 'data.items', [])
+                        this.items = items
+                            .map((x, i) => {
+                                x.n = (skip + 1) + parseInt(i)
+                                return x
+                            })
+                        this.ids = items.reduce((r, x) => {
+                            r[x._id] = false
+                            return r
+                        }, {})
+                        this.update()
+                    })
+            },
+            toggleCheckAll(key, isCheckedAll) {
+                this.isSelectedAll = isCheckedAll
+                for (const id in this.ids) {
+                    this.ids[id] = isCheckedAll
+                }
+                this.update()
+            },
+            checkSelected(key, isChecked) {
+                if (this.isSelectedAll) {
+                    if (!isChecked) this.isSelectedAll = false
+                }
+                this.ids[key] = isChecked
+                this.update()
+            },
+            resetCollection() {
+                const confirmation = confirm('Are You Sure??')
+                if (!confirmation) return null
+                collectionReset(this.collectionName)
+                    .catch(err => {
+                        setAlertError(err)
+                        return null
+                    })
+                    .then(res => {
+                        if (res) {
+                            showAlertSuccess('Reset Successfully')
+                        }
+                        this.getItems()
+                    })
+            },
+            removeSelected() {
+                const confirmation = confirm('Are You Sure??')
+                if (!confirmation) return null
+                let ids = []
+                for (const id in this.ids) {
+                    if (this.ids[id]) ids.push(id)
+                }
+                ids = ids.join()
+                collectionWrite(this.collectionName, {...this.payload, ids, write_type: 'delete'})
+                    .catch(err => {
+                        setAlertError(err)
+                        return null
+                    })
+                    .then(res => {
+                        if (res) {
+                            showAlertSuccess('Reset Successfully')
+                        }
+                        this.getItems()
+                    })
+            },
+            removeAllByFilter() {
+                const confirmation = confirm('Are You Sure??')
+                if (!confirmation) return null
+                collectionWrite(this.collectionName, {...this.payload, ids: null, write_type: 'delete'})
+                    .catch(err => {
+                        setAlertError(err)
+                        return null
+                    })
+                    .then(res => {
+                        if (res) {
+                            showAlertSuccess('Reset Successfully')
+                        }
+                        this.getItems()
+                    })
+            },
+        }
+    </script>
+</collection-onboarding>

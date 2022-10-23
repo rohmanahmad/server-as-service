@@ -1,0 +1,16 @@
+<!-- 
+    props:
+    - custom-styles [String] default NULL OPTIONAL
+    - selected [String] default NULL OPTIONAL
+    - callback [Function] REQUIRED
+    - billers [Array{Object{name, title}}] default [] OPTIONAL
+ -->
+
+<select-payment-methods>
+    <form-dropdown if="{ props.dropdown }" name="payment-method" callback="{ updateSelectedMethod }" el-class="form-control tx-12" items="{ config.methods }" selected="{ props.selected }"></form-dropdown>
+    <form-select-two-js if="{ !props.dropdown }" callback="{ updateSelectedMethod }" el-class="" selected="{ props.selected || '' }" multiple="{ true }" items="{ config.methods }" ></form-select-two-js>
+    <script>
+        import controller from './select-payment-methods'
+        export default controller
+    </script>
+</select-payment-methods>

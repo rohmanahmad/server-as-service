@@ -1,0 +1,49 @@
+{
+  "private": true,
+  "name": "dashboard",
+  "app_version": "3.6.0-rc60e",
+  "node_version": "14.17.3",
+  "version": "1.1.0",
+  "description": "Server As Service Dashboard",
+  "scripts": {
+    "dev": "nodemon -x npm run watch --watch .env --watch package.json --watch webpack.mix.js",
+    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "cross-env node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch-poll": "npm run watch -- --watch-poll",
+    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --port 8008 --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "build": "npm run production ",
+    "production": "cross-env node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@riotjs/compiler": "^4.3.0",
+    "@riotjs/webpack-loader": "^4.0.1",
+    "axios": "^0.26.1",
+    "bootstrap": "^4.3.1",
+    "cross-env": "^5.2.0",
+    "eslint-config-riot": "^2.0.0",
+    "flatpickr": "^4.6.2",
+    "jquery-zoom": "^1.7.21",
+    "js-file-download": "^0.4.12",
+    "laravel-mix": "^4.0.16",
+    "laravel-mix-purgecss": "^4.1.0",
+    "mix-env-file": "^0.1.0",
+    "moment": "^2.29.3",
+    "node-sass": "^4.12.0",
+    "perfect-scrollbar": "^1.4.0",
+    "riot": "^4.2.0",
+    "riot-route": "^3.1.4",
+    "sass-loader": "^7.1.0",
+    "script-loader": "^0.7.2",
+    "store": "^2.0.12",
+    "sweetalert2": "^8.14.0",
+    "tinymce": "^6",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.26.7",
+    "browser-sync-webpack-plugin": "^2.0.1",
+    "resolve-url-loader": "^2.3.1",
+    "vue-template-compiler": "^2.6.10"
+  }
+}

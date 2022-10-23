@@ -1,0 +1,233 @@
+<onboarding-detail-fraud-review>
+    <div class="br-mainpanel">
+        <div class="br-pageheader">
+            <nav class="breadcrumb pd-0 mg-0 tx-12">
+                <span class="breadcrumb-item">Customers</span>
+                <span class="breadcrumb-item">Onboarding</span>
+                <span class="breadcrumb-item active">Detail(Fraud Review)</span>
+            </nav>
+        </div>
+        <div class="br-pagebody pd-r-5 pd-l-5 mg-t-10">
+            <div class="br-section-wrapper pd-x-20 pd-t-10">
+                <div class="row">
+                    <div class="col-12">
+                        <a href="{setLink('com_mob/on-boarding')}" class="btn btn-primary">
+                            Back
+                        </a>
+                    </div>
+                </div>
+                <div class="row pd-t-20 pd-b-40">
+                    <div class="col-sm-3 bd-r bd-t">
+                        <form id="form-review-submit">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td class="tx-12">
+                                        <label for="fraud-status">Fraud - Review Status</label> <br>
+                                        <select id="status" class="form-control" onchange="{eventChangedReviewStatus}">
+                                            <option value="{frs[0]}" each="{frs in Object.entries(formComponents.ReviewStatus)}">{ frs[1] }</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr if="{showComponents.escalationReason}">
+                                    <td class="tx-12">
+                                        <label for="fraud-reason">Fraud - Escalation Reason</label> <br>
+                                        <select id="reason" class="form-control">
+                                            <option value="{fer[0]}" each="{fer in Object.entries(formComponents.EscalationReasons)}">{ fer[1] }</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr if="{showComponents.escalationTo}">
+                                    <td class="tx-12">
+                                        <label for="fraud-status">Fraud - Escalation To  </label> <br>
+                                        <div class="form-group form-check mg-b-0 pd-l-10" each="{fet in Object.entries(formComponents.EscalationTo)}">
+                                            <input type="checkbox" class="mg-t-2" id="{fet[0]}" value="{fet[0]}"> 
+                                            <label class="mg-l-5 " for="exampleCheck1"> { fet[1] } </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tx-12">
+                                        <label for="fraud-status">Fraud - Review Note</label> <br>
+                                        <textarea class="form-control" id="note" rows="3"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-top: 1px solid #C0C0C0">
+                                        <button disabled="{loading.submitReview ? 'true' : ''}" class="btn btn-primary float-right tx-11" onclick="{submitForm}">
+                                            <span if="{!loading.submitReview}">Submit</span>
+                                            <span if="{loading.submitReview}" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                            <span if="{loading.submitReview}">Loading...</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                    <div class="col-sm-9 bd-l bd-t">
+                        <onboarding-detail reviewtype="{dataType}" sessionid="{sessionId}"></onboarding-detail>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        tr th, tr td {
+            letter-spacing: 0px;
+            font-size: 12px;
+            padding: 8px;
+        }
+        .wrapper:hover, .wrapper-filter-and-search:hover {
+            color: #C0C0C0;
+        }
+        .wrapper{
+            width: 840px;
+        }
+        .alert-download {
+            position: absolute;
+            bottom: 0px;
+            right: 5px;
+            z-index: 9999;
+            margin-bottom: 5px;
+        }
+    </style>
+    
+    <script>
+        import {
+            cancelAllRequest,
+
+        } from 'services/SDK/main'
+        import {
+            ComMoOnBoardingSubmitReviewFraud,
+        } from 'appModule/ekyc/ekyc.sdk'
+        import { createAgentActivity } from 'appModule/agents/agent-activity.sdk'
+        import riot from 'riot'
+        import { getStorage } from 'helpers/storage'
+        import { result } from 'lodash'
+        import { showAlertError, showAlertSuccess } from 'helpers/utilities'
+        import { goTo } from 'helpers/ma'
+        const defaultValues = {
+            ReviewStatus: {
+                '-': '-',
+                'FRAUD': 'Fraud',
+                'NOT_FRAUD': 'Not Fraud',
+                'SUSPICIOUS': 'Suspicious',
+            },
+            EscalationReasons: {
+                '-': '-',
+                'REJECTED_CUSTOMER': 'Rejected Customer',
+                'NEED_FUTHER_INVESTIGATION': 'Need Futher Investigation',
+                'OTHER': 'Other',
+            },
+            EscalationTo: {
+                // '-': '-',
+                'AML_COMPLIANCE': 'AML Compliance',
+                'FRAUD_INVESTIGATOR': 'Fraud Investigator',
+                'OTHER': 'Other',
+            }
+        }
+        export default {
+            dataType: 'fraud-review',
+            sessionId: '',
+            formComponents: {
+                ...defaultValues
+            },
+            showComponents: {},
+            loading: {
+                submitReview: false,
+            },
+            onBeforeMount(){
+                this.showComponents = {
+                    escalationReason: true,
+                    escalationTo: true
+                }
+            },
+            onBeforeUnmount() {
+                cancelAllRequest()
+            },
+            onMounted() {
+                console.log('[detail] onboarding')
+                this.sessionId = getStorage('SESSION_ID', 'ON-BOARDING')
+                this.changeFormComponents(0)
+                this.logAgentActivity('Open Onboarding Fraud Review', 'onBoardingSessionId=' + this.sessionId)
+            },
+            logAgentActivity(action, detail) {
+                createAgentActivity({
+                    module: 'CommBank Mobile - OnBoarding',
+                    action,
+                    detail
+                })
+            },
+            eventChangedReviewStatus(e){
+                this.changeFormComponents(e.target.selectedIndex)
+            },
+            changeFormComponents (selectedIndex) {
+                if (selectedIndex === 2) {
+                    this.showComponents = {
+                        escalationTo: false,
+                        escalationReason: false
+                    }
+                } else {
+                    this.showComponents = {
+                        escalationTo: true,
+                        escalationReason: true
+                    }
+                }
+                this.update()
+            },
+            async submitForm(e) {
+                try {
+                    e.preventDefault()
+                    this.loading.submitReview = true
+                    this.update()
+                    const sessionId = this.sessionId
+                    const status = this.$('#status').value
+                    const reason = this.$('#reason')
+                    const escalationTo = result(defaultValues, 'EscalationTo', {})
+                    const escalateTo = Object.keys(escalationTo)
+                        .map(x => {
+                            const isCheck = $(`#${x}`).is(":checked")
+                            if (isCheck) return x
+                            return false
+                        })
+                        .filter(x => x)
+                        .join(',')
+                    const notes = this.$('#note').value
+                    let payload = {
+                        review_type: 'FRAUD',
+                        session_id: sessionId,
+                        review_status: status,
+                        escalation_reason: '-',
+                        escalation_to: '-',
+                        notes: notes
+                    }
+                    if (status !== 'NOT_FRAUD') {
+                        payload['escalation_reason'] = result(reason, 'value', '')
+                        payload['escalation_to'] = escalateTo
+                        for (const p in payload) {
+                            const v = payload[p]
+                            if (!v || (v && v.length === 0) || v === '-') throw new Error(`${p} is Required`)
+                        }
+                    // } else {
+                    //     if (notes.length === 0 || notes.length === '-') throw new Error('Note is Required')
+                    }
+                    if (window.run_debug) debugger
+                    // validate
+                    if (!payload.session_id) throw new Error('Invalid Session ID')
+                    await ComMoOnBoardingSubmitReviewFraud(payload)
+                    showAlertSuccess()
+                    this.$('#form-review-submit').reset()
+                    this.isNeedRefreshHistory = true
+                    let detail = []
+                    detail.push('onBoarding_Session_Id= '+ this.sessionId)
+                    detail.push('Review Status= '+ status)
+                    this.logAgentActivity('Submit Fraud Review', detail.join(', '))
+                } catch (err) {
+                    showAlertError(err)
+                }
+                this.loading.submitReview = false
+                this.update()
+            }
+        }
+    </script>
+</onboarding-detail-fraud-review>

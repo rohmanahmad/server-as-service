@@ -1,0 +1,100 @@
+<!-- 
+    props:
+        - masterData
+        - showModal
+ -->
+
+<push-details>
+    <div id="{ modalId }" class="modal fade show" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content tx-size-sm">
+                <div class="modal-header pd-x-20">
+                    <h6 class="tx-16 mg-b-0 tx-uppercase tx-inverse">
+                        Notification Detail
+                    </h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body pd-l-20 pd-r-20 pd-b-20 pd-t-0">
+                    <div class="row row-sm mg-t-20">
+                        <div class="col-12 tx-12">
+                            <table class="table bd" if="{ data }">
+                                <tr>
+                                    <td class="text-right wd-150">Notification ID</td>
+                                    <td class="text-left">: { data.notificationId }</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Notification Type</td>
+                                    <td class="text-left">: { data.notificationType }</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Message Category</td>
+                                    <td class="text-left">: { data.messageCategory }</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Expired In</td>
+                                    <td class="text-left">: { data.expiryPeriodInSecond }</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Status</td>
+                                    <td class="text-left">: { data.status }</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Target Link</td>
+                                    <td class="text-left">: { data.targetLink }</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Short Description</td>
+                                    <td class="text-left">: { data.shortDesc }</td>
+                                </tr>
+                            </table>
+                            <table class="table bd" if="{ data }">
+                                <tr>
+                                    <td class="text-right">Title</td>
+                                    <td class="text-left">: { data.title }</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Body</td>
+                                    <td class="text-left">: <raw html="{ data.body }"></raw></td>
+                                </tr>
+                            </table>
+                            <table class="table bd" if="{ data && data.schedule }">
+                                <tr>
+                                    <td class="text-left tx-bold" colspan="2">Schedule</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right wd-150">Cron</td>
+                                    <td class="text-left">: { data.schedule.cron }</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Created At</td>
+                                    <td class="text-left">: { data.schedule.createdAt }</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Start Date</td>
+                                    <td class="text-left">: { data.schedule.startDate }</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">End Date</td>
+                                    <td class="text-left">: { data.schedule.endDate }</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div><!-- modal-body -->
+                <div class="modal-footer wrap">
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="btn btn-secondary tx-11 pendingModal" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- modal-dialog -->
+    </div>
+    <script>
+        import controller from './details'
+        export default controller
+    </script>
+</push-details>

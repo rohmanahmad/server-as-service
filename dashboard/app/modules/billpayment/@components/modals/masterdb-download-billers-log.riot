@@ -1,0 +1,60 @@
+<modal-masterdb-billers-log>
+    <div id="{modal.id}" class="modal fade" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content tx-size-sm">
+                <div class="modal-header pd-x-20">
+                    <h6 class="tx-16 mg-b-0 tx-uppercase tx-inverse">
+                        (Download) Log History
+                    </h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body pd-l-20 pd-r-20 pd-b-20 pd-t-10">
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <td colspan="4" class="tx-10 pd-0-force">
+                                    <label for="date" class="mg-b-0">Date</label>
+                                    <form-date-picker-range el-class="form-control-xs tx-12 h-auto mg-0 pd-5" show-time="{ false }" show-icon="{ false }" shortcut="{ false }" date-type="{ 'single' }" callback="{ updateDate }" custom-styles="width: 150px;"></form-date-picker-range>
+                                    <hr>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="tx-10 pd-l-0-force">
+                                    <input type="checkbox" value="ALL" onclick="{ toggleCheckAllBillers }"> <span class="mg-x-5">ALL BILLERS</span>
+                                    <hr>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody if="{ !useAllBillers }">
+                            <tr each="{gp in itemGroup}">
+                                <td each="{ch in gp.childs}" class="tx-10 pd-0-force">
+                                    <div class="form-group">
+                                        <input type="checkbox" value="{ ch.billerName }"> <span class="mg-x-5">{ ch.billerName }</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div><!-- modal-body -->
+                <div class="modal-footer wrap">
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="btn btn-secondary mg-r-20 tx-11 pendingModal" data-dismiss="modal">Cancel</button>
+                            <button onclick="{ downloadSelected }" disabled="{isprocessing ? 'true' : ''}" class="btn btn-primary tx-11">
+                                    <span if="{!isprocessing}">Download</span>
+                                    <span if="{isprocessing}" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    <span if="{isprocessing}">Downloading...</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- modal-dialog -->
+    </div>
+    <script>
+        import controller from './masterdb-download-billers-log'
+        export default controller
+    </script>
+</modal-masterdb-billers-log>

@@ -1,0 +1,1004 @@
+<customers-view>
+    <div class="br-mainpanel">
+        <div class="br-pageheader">
+            <nav class="breadcrumb pd-0 mg-0 tx-12">
+                <a class="breadcrumb-item">Customer</a>
+                <span class="breadcrumb-item active">Detail</span>
+            </nav>
+        </div>
+        <div class="br-pagebody pd-r-5 pd-l-5 mg-t-10">
+            <div class="br-section-wrapper pd-l-40 pd-r-40 pd-t-20">
+                <div class="row">
+                    <div class="col-12 pd-0 mg-b-20">
+                        <a href="{setLink('com_mob/customers')}" class="br-menu-link btn btn-primary btn-xs menuback btn-xs wd-100">
+                            <i class="menu-item-icon icon ion-ios-undo-outline tx-24"></i>
+                            <span class="menu-item-label tx-white">Back</span>
+                        </a>
+                        <!-- <button class="btn btn-outline-primary btn-xs" onclick="{Back}" id="searchCustomersviews"><i class="menu-item-icon ion-ios-undo-outline tx-24  mg-r-10"></i>Back</button> -->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 pd-0">
+                        <div class="pd-20 rounded">
+                            <div class="row">
+                                <div class="col-12 pd-0 mg-b-15">
+                                    <h5>Detail Information - {fullName}</h5>
+                                    <div class="pd-10 bd-t bd-b">
+                                        <ul class="nav nav-pills flex-column flex-md-row" role="tablist">
+                                            <li class="nav-item">
+                                                <a role="tab"
+                                                    class="nav-link {this.menu['customer-detail'] ? 'active' : ''} pointer"
+                                                    data-toggle="tab"
+                                                    aria-selected="false"
+                                                    onclick="{() => Actions([],'customer-detail')}"
+                                                    id="customDetail">
+                                                    Customer Detail
+                                                </a>
+                                            </li>
+                                            <li class="nav-item  mg-l-10" each="{v in menuItems}">
+                                                <a role="tab"
+                                                    class="nav-link {this.menu[v.name] ? 'active' : ''} show pointer"
+                                                    data-toggle="tab"
+                                                    aria-selected="false"
+                                                    onclick="{() => Actions(v, v.name)}"
+                                                    id="{v.name}">
+                                                        {v.title}
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 pd-r-0 pd-l-0 pd-t-0 pd-b-10">
+                                    <div class="row" if="{this.menu['customer-history'] || this.menu['block-history']}">
+                                        <div class="col-2 pd-r-2 tx-12">
+                                            Since
+                                            <form-date-picker-single name="ekyc.detail.customer-history.since" el-class="tx-12" callback="{ (res) => UpdateDateSince('customer-history', res) }" if="{this.menu['customer-history']}"> </form-date-picker-single>
+                                            <form-date-picker-single name="ekyc.detail.block-history.since" el-class="tx-12" callback="{ (res) => UpdateDateSince('block-history', res) }" if="{this.menu['block-history']}"> </form-date-picker-single>
+                                        </div>
+                                        <div class="col-2 pd-r-2 tx-12">
+                                            Until
+                                            <form-date-picker-single name="ekyc.detail.customer-history.until" el-class="tx-12" callback="{ (res) => UpdateDateUntil('customer-history', res) }" if="{this.menu['customer-history']}"> </form-date-picker-single> 
+                                            <form-date-picker-single name="ekyc.detail.block-history.until" el-class="tx-12" callback="{ (res) => UpdateDateUntil('block-history', res) }" if="{this.menu['block-history']}"> </form-date-picker-single> 
+                                        </div>
+                                        <div class="col-8 tx-12">
+                                            <span if="{this.menu['customer-history']}">Search</span>
+                                            <div class="row">
+                                                <div class="col-5" if="{this.menu['customer-history']}">
+                                                    <input class="form-control tx-12" placeholder="Search Action" id="searchViewCustomersActions" onchange="{eventActions}">
+                                                </div>
+                                                <div class="col-4" if="{this.menu['customer-history']}">
+                                                    <input class="form-control tx-12" placeholder="Search Notes" id="searchViewCustomersNotes" onchange="{eventNotes}">
+                                                </div>
+                                                <div class="col-3 {this.menu['customer-history'] ? 'mg-t-0' : 'mg-t-20'}">
+                                                    <button class="btn btn-outline-warning pd-l-15 pd-r-15 mg-l-5 btn-sm float-right" if="{this.menu['block-history'] || this.menu['customer-history']}" onclick="{ Refresh }" data-toggle="tooltip" data-placement="top" title="Refresh">
+                                                        <i class="ion-loop tx-20"></i>
+                                                    </button>
+                                                    <button class="btn btn-outline-primary pd-l-15 pd-r-15 btn-sm float-left" if="{this.menu['block-history']}" onclick="{downloadCSV}" data-toggle="tooltip" data-placement="top" title="Download CSV">
+                                                        <i class="ion-android-download tx-20"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Customer Detail -->
+                            <div class="row tx-12" if="{this.menu['customer-detail']}">
+                                <div class="col-12 pd-0">
+                                    <table class="table table-bordered bd">
+                                        <tbody>
+                                            <tr if="{!isLoading}" each="{v in this.cd}" id="{v.key}">
+                                                <td class="tx-12" width="300">{v.title}</td>
+                                                <td class="tx-12">{v.value}</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr if="{!isLoading && this.totalcd === 0}">
+                                                <td colspan="2" class="tx-center tx-12">Data Not Found</td>
+                                            </tr>
+                                            <tr if="{isLoading}">
+                                                <td colspan="2" class="tx-center tx-12">Loading...</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- Customer History -->
+                            <div class="row" if="{this.menu['customer-history']}">
+                                <div class="col-12 pd-0">
+                                    <table class="table table-bordered table-striped mg-b-0 b-b-1 table-list bd">
+                                        <thead>
+                                            <tr>
+                                                <th class="tx-left tx-12" width="150">Activity Date</th>
+                                                <th class="tx-left tx-12">Action</th>
+                                                <th class="tx-left tx-12">Notes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody if="{!isLoading}">
+                                            <tr each="{i in this.ch}">
+                                                <td class="tx-12">{i.date}</td>
+                                                <td class="tx-12">{i.action}</td>
+                                                <td class="tx-12">
+                                                    <raw html="{ (i.notes || '') }"></raw>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr if="{ !isLoading && this.totalch === 0}">
+                                                <td colspan="3" class="tx-center tx-12">Data Not Found</td>
+                                            </tr>
+                                            <tr if="{ isLoading}">
+                                                <td colspan="3" class="tx-center tx-12">Loading...</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    <hr>
+                                    <ul
+                                        class="pagination pagination-basic pagination-rounded mg-b-0 pull-right"
+                                        if="{this.menu['customer-history']}">
+                                            <li class="page-item {v.disabled === true ? 'disabled' : ''} hidden-xs-down" id="firstPagingUserAccess" each="{(v,i) in this.paginprev}">
+                                                <a class="page-link c_pointer" onclick="{first}" aria-label="First">
+                                                    <i class="icon ion-ios-arrow-back"></i>
+                                                </a>
+                                            </li>
+                                            <li class="page-item active" id="firstPagingUserAccess">
+                                                <a class="page-link" aria-label="First">
+                                                    {pagcurrent}
+                                                </a>
+                                            </li>
+                                            <li class="page-item {v.disabled === true ? 'disabled' : ''}" id="forwardPagingUserAccess" each="{(v,i) in this.paginnext}">
+                                                <a class="page-link c_pointer" onclick="{forward}" aria-label="Forward">
+                                                    <i class="icon ion-ios-arrow-forward"></i>
+                                                </a>
+                                            </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- Block/unblock History -->
+                            <div class="row" if="{this.menu['block-history']}">
+                                <div class="col-12 pd-0" style="overflow-x: scroll;">
+                                    <table class="table table-bordered table-striped mg-b-10 b-b-1 bd">
+                                        <thead>
+                                            <tr>
+                                                <!-- <th class="tx-left" rowspan="2">#</th> -->
+                                                <th class="tx-12 tx-left" rowspan="2">Activity Date</th>
+                                                <th class="tx-12 tx-left" rowspan="2">Requested By</th>
+                                                <th class="tx-12 tx-left" rowspan="2">Action</th>
+                                                <th class="tx-12 tx-center" colspan="3">Approved / Rejected</th>
+                                                <th class="tx-12 tx-left" rowspan="2">Notes</th>
+                                            </tr>
+                                            <tr>
+                                                <th class="tx-left tx-12" style="border-left: 1px solid #e9ecef;">Status</th>
+                                                <th class="tx-left tx-12">By</th>
+                                                <th class="tx-left tx-12">At</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody if="{!isLoading}">
+                                            <tr each="{i in this.di}">
+                                                <!-- <td>{i.no}</td> -->
+                                                <td class="tx-12">{i.requested_at}</td>
+                                                <td class="tx-12">{i.requested_by}</td>
+                                                <td class="tx-12">{i.action === 'paylater' ? 'Paylater Transaction Repayment' : i.action}</td>
+                                                <td class="tx-12" title="{i.reason.approved || i.reason.rejected}">{i.status}</td>
+                                                <td class="tx-12">{i.action_by}</td>
+                                                <td class="tx-12">{i.action_at}</td>
+                                                <td class="tx-12">{i.notes}</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr if="{this.totaldiv === 0 && !isLoading}">
+                                                <td colspan="7" class="tx-center tx-12">Data Not Found</td>
+                                            </tr>
+                                            <tr if="{isLoading}">
+                                                <td colspan="7" class="tx-center tx-12">Loading...</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                <div class="col-12 pd-t-10" if="{!isLoading}">
+                                    <ul class="pagination pagination-basic pagination-rounded mg-b-0 pull-right">
+                                        <li class="page-item {v.disabled === true ? 'disabled' : ''} hidden-xs-down" id="firstPagingUserAccess" each="{(v,i) in this.paginprev}">
+                                            <a class="page-link c_pointer" onclick="{first}" aria-label="First">
+                                                <i class="icon ion-ios-arrow-back"></i>
+                                            </a>
+                                        </li>
+                                        <li class="page-item active" id="firstPagingUserAccess">
+                                            <a class="page-link" aria-label="First">
+                                                {pagcurrent}
+                                            </a>
+                                        </li>
+                                        <li class="page-item {v.disabled === true ? 'disabled' : ''}" id="forwardPagingUserAccess" each="{(v,i) in this.paginnext}">
+                                            <a class="page-link c_pointer" onclick="{forward}" aria-label="Forward">
+                                                <i class="icon ion-ios-arrow-forward"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- Paylater -->
+                            <div class="row tx-12" if="{this.menu['paylater_detail'] && !isLoading}">
+                                <div class="col-12 pd-0">
+                                    <!-- Summary -->
+                                    <div class="row">
+                                        <div class="col-12 font-weight-bold mb-3 tx-14">
+                                            Summary
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <table class="table table-bordered bd">
+                                                <tr>
+                                                    <td class="tx-12">Overdraft Account Number</td>
+                                                    <td class="tx-12" ref="OverdraftAccountNumber">{paylaterdata.odAccountNumber || '-'}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="tx-12">Overdraft Account Status</td>
+                                                    <td class="tx-12" ref="OverdraftAccountStatus">{paylaterdata.accountStatus || '-'}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="tx-12">Paylater Limit</td>
+                                                    <td class="tx-12" ref="PaylaterLimit">IDR {fN(parseFloat(paylaterdata.paylaterLimit || 0))}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="tx-12">Available Limit</td>
+                                                    <td class="tx-12" ref="AvailableLimit">IDR {fN(parseFloat(paylaterdata.availableLimit || 0))}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="tx-12">Credit Status</td>
+                                                    <td class="tx-12" ref="CreditStatus">{paylaterdata.creditStatus || '-'}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="col-6">
+                                            <table class="table table-bordered bd">
+                                                <tr>
+                                                    <td class="tx-12">Billing Date</td>
+                                                    <td class="tx-12" ref="BillingDate">{fD(paylaterdata.billDate, 'DD MMM')}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="tx-12">Due Date</td>
+                                                    <td class="tx-12" ref="DueDate">{fD(paylaterdata.dueDate, 'DD MMM')}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="tx-12">Monthly Fee (if there is outstanding)</td>
+                                                    <td class="tx-12" ref="MonthlyFee">IDR {fN(parseFloat(paylaterdata.monthlyFee || 0))}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="tx-12">Late Fee (if there is late payment)</td>
+                                                    <td class="tx-12" ref="LateFee">IDR {fN(parseFloat(paylaterdata.lateFee || 0))}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="tx-12">Paylater Since</td>
+                                                    <td class="tx-12" ref="PaylaterSince">{fD(paylaterdata.facilityStartDate)}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <!-- Paylater Billing Data -->
+                                    <div class="row">
+                                        <div class="col-12 font-weight-bold mb-3 tx-14">
+                                            <hr>
+                                            Paylater Billing Data
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <table class="table table-bordered table-striped mg-b-0 b-b-1 table-list bd">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="tx-12">Billing Date</th>
+                                                        <th class="tx-12">Due Date</th>
+                                                        <th class="tx-12">Billed Amount</th>
+                                                        <th class="tx-12">Status</th>
+                                                        <th class="tx-12">Amount Due</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody if="{paylaterdata.billingDetails}">
+                                                    <tr each="{bill in paylaterdata.billingDetails}">
+                                                        <td class="tx-12">{fD(bill.billingDate)}</td>
+                                                        <td class="tx-12">{fD(bill.dueDate)}</td>
+                                                        <td class="tx-12">IDR {fN(parseFloat(bill.billAmount || 0))}</td>
+                                                        <td class="tx-12">{bill.status}</td>
+                                                        <td class="tx-12">IDR {fN(parseFloat(bill.amountDue || 0))}</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tbody if="{!paylaterdata.billingDetails || (paylaterdata.billingDetails && paylaterdata.billingDetails.length === 0)}">
+                                                    <tr>
+                                                        <td colspan="5" class="text-center tx-12">No Data</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <!-- Paylater UnBilled Data -->
+                                    <div class="row mt-3">
+                                        <div class="col-12 font-weight-bold mb-3 tx-14">
+                                            <hr>
+                                            Unbilled Transactions
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <table class="table table-bordered table-striped mg-b-0 b-b-1 table-list bd">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="tx-12">Transaction Date</th>
+                                                        <th class="tx-12">Transaction Description</th>
+                                                        <th class="tx-12">Amount</th>
+                                                        <th class="tx-12">Status</th>
+                                                        <th class="tx-12">Repayment</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody if="{paylaterdata.unbilledTransactions}">
+                                                    <tr each="{unbill in paylaterdata.unbilledTransactions}">
+                                                        <td class="tx-12">{fD(unbill.transactionDate)}</td>
+                                                        <td class="tx-12">{unbill.transactionDescription}</td>
+                                                        <td class="tx-12">IDR {fN(parseFloat(unbill.amount))}</td>
+                                                        <td class="tx-12" ref="status-{unbill.externalRefNo}">{unbill.status}</td>
+                                                        <td class="tx-12">
+                                                            <button class="btn btn-outline-secondary btn-icon p-1 m-1 d-block disabled w-100" if="{unbill.done_repayment}">Done</button>
+                                                            <button class="btn btn-outline-secondary btn-icon p-1 m-1 d-block disabled w-100" if="{unbill.pending_repayment}">Pending</button>
+                                                            <button
+                                                                if="{unbill.need_repayment}"
+                                                                class="btn btn-outline-warning btn-icon p-1 m-1 d-block w-100"
+                                                                data-payload="refNo:{unbill.externalRefNo},amount:{unbill.amount},trxDesc:{unbill.transactionDescription}"
+                                                                onclick="{launchModalRepayment}">
+                                                                Execute
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <tbody if="{!paylaterdata.unbilledTransactions || (paylaterdata.unbilledTransactions && paylaterdata.unbilledTransactions.length === 0)}">
+                                                    <tr>
+                                                        <td colspan="5" class="text-center tx-12">No Data</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="2" class="tx-bold">Total Unbilled Transactions</td>
+                                                        <td>IDR {fN(parseFloat(paylaterdata.unbilledTransactionsTotal || 0))}</td>
+                                                        <td colspan="2"></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <!-- Paylater Closing Facility Data -->
+                                    <div class="row mt-3">
+                                        <div class="col-12 font-weight-bold mb-3 tx-14">
+                                            <hr>
+                                            Paylater Closing Facility Data
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <table class="table table-bordered bd">
+                                                <tr>
+                                                    <th>Closing Amount Due</th>
+                                                    <th>Remaining Amount to be Billed</th>
+                                                    <th>Total Outstanding</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>IDR {fN(parseFloat(paylaterdata.closingFacility ? paylaterdata.closingFacility.closingAmountDue : 0))}</td>
+                                                    <td>IDR {fN(parseFloat(paylaterdata.closingFacility ? paylaterdata.closingFacility.remainingAmountToBilled : 0))}</td>
+                                                    <td>IDR {fN(parseFloat(paylaterdata.closingFacility ? paylaterdata.closingFacility.totalOutstanding : 0))}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="row" if="{isLoading}">
+                                <div class="ripple-loader2 col-12 bd"></div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="modal-repayment" class="modal fade show" if="{payload}">
+            <div class="modal-dialog modal-md" role="document">
+                <div class="modal-content tx-size-sm">
+                    <div class="modal-header pd-x-20">
+                        <h6 class="tx-16 mg-b-0 tx-uppercase tx-inverse tx-bold">Manual Repayment Confirmation</h6>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <!-- modal repayment body -->
+                    <div class="modal-body pd-l-20 pd-r-20 pd-b-20 pd-t-0">
+                        <div class="row">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td width="150">Full Name</td>
+                                    <td width="10">:</td>
+                                    <td>{customer.fullName}</td>
+                                </tr>
+                                <tr>
+                                    <td>CIF</td>
+                                    <td>:</td>
+                                    <td>{customer.cif}</td>
+                                </tr>
+                                <tr>
+                                    <td>Transaction Ref.</td>
+                                    <td>:</td>
+                                    <td>{payload.refNo}</td>
+                                </tr>
+                                <tr>
+                                    <td>Amount</td>
+                                    <td>:</td>
+                                    <td>{payload.amount}</td>
+                                </tr>
+                                <tr>
+                                    <td>Notes</td>
+                                    <td>:</td>
+                                    <td>
+                                        <input id="input-notes" type="text" class="form-control form-control-sm" value="{payload.notes}">
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            class="btn {buttons.modal_repayment.process ? 'btn-success' : 'btn-secondary'} tx-size-xs"
+                            disabled="{!buttons.modal_repayment.process}"
+                            onclick="{doRepayment}">
+                            {!buttons.modal_repayment.process ? 'is Processing' : 'Process'}
+                        </button>
+                        <button
+                            class="btn btn-outline-warning tx-size-xs"
+                            data-dismiss="modal">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div><!-- modal-dialog -->
+        </div>
+    </div>
+    <style>
+        table.table-list>tbody>tr:hover {
+            background: #dedede;
+        }
+        .c_pointer{
+            cursor: pointer;
+        }
+        tr td{
+            font-size: 0.875rem;
+        }
+        a.menuback{
+            color:#0866C6 !important;
+            width: max-content;
+            border-radius: 3px;
+        }
+        a.menuback:hover{
+            color:#fff !important;
+            background: #0866C6 !important;
+        }
+        .tx-left{
+            text-align: left;
+        }
+        .table th {
+            padding: 1rem 1rem 1rem 0.7rem !important;
+        }
+        .pull-right{
+            float: right;
+        }
+        .refresbutton{
+            position: absolute;
+            top: 12px;
+            right: 15;
+        }
+        .donwloadbutton{
+            position: absolute;
+            top: 12px;
+            right: 50px;
+        }
+        img.downloadCSV:hover{
+            filter: hue-rotate(45deg);
+        }
+        .table-bordered {
+            border: 1px solid #dee2e6;
+        }
+        .table-bordered > thead > tr > th:first-child, .table-bordered > thead > tr > td:first-child {
+            border-left-width: 1;
+        }
+        input.dateStart{
+            width: 100px;
+        }
+        input.dateEnd{
+            width: 100px;
+        }
+    </style>
+
+    <script>
+        import { cancelAllRequest, p } from 'services/SDK/main'
+        import {
+            getDetailCustomers, 
+            getHistoryCustomers, 
+            getHistoryBlockUnblockCustomers, 
+            getPaylaterDetail,
+            doRequestRepayment,
+        } from 'appModule/ekyc/customers.sdk'
+        import { getStorage } from 'helpers/storage'
+        import { result, findIndex, set } from 'lodash'
+        import { goTo } from 'helpers/ma'
+        import { debugLog } from 'helpers/utilities'
+        
+        const component = [
+            "customer.details",
+            "block.unblock.history",
+            "customer.action.history"
+        ]
+
+        export default {
+            buttons: {},
+            menu: {}, 
+            keyComponent:[],
+            paylaterdata: {},
+            customerdetaildata: {},
+            // BUILD-IN EVENTS
+            onBeforeUnmount() {
+                cancelAllRequest()
+            },
+            onBeforeMount() {
+                this.paylaterdata = {
+                    // di initial dlu menghindari error saat object dibawah ini masih null
+                    closingFacility: {},
+                    billingDates: [],
+                    unbilledTransactions: []
+                }
+                this.keyComponent = [
+                    {
+                        key:'Account No',
+                        value : 'accountNumber'
+                    },
+                    {
+                        key:'CIF',
+                        value: 'cifNumber'
+                    },
+                    {
+                        key: 'Phone Number',
+                        value: 'phoneNumber'
+                    },
+                    {
+                        key:'Email',
+                        value:'email'
+                    }
+                ]
+                this.menu = {
+                    'customer-detail': true,
+                    'customer-history': false,
+                    'block-history':false,
+                    'paylater_detail':false
+                }
+                this.buttons = {
+                    modal_repayment: {
+                        process: true
+                    }
+                }
+            },
+            onMounted() {
+                // this.KeyVal = localStorage.KeyValView ? localStorage.KeyValView :'Account No'
+                this.searchValue = ''
+                this.queryString= window.location.hash.replace('#/com_mob/customer-view?','')
+                this.username = getStorage('current_user', 'customer')
+                // this.setMenuActive('customer-detail')
+                this.isLoading = true
+                this.pagination = {
+                    page: 1
+                }
+                this.customer = {}
+                this.paginationpage =  this.pagination.page
+                // this.username = p('userid')
+                this.renderDetail()
+                this.update()
+            },
+            // END OF BUILD-IN EVENTS
+            // UTILITIES
+            showPopup(type, {title, message}) {
+                if (type === 'error') {
+                    Swal.fire({
+                        type: 'error',
+                        title: title,
+                        text: message
+                    })
+                } else if (type === 'success') {
+                    Swal.fire({
+                        type: 'success',
+                        title: title,
+                        text: message
+                    })
+                }
+            },
+            setMenuActive(id = 'customer-detail') {
+                const dataIds = ['customer-detail', 'customer-history', 'block-history', 'paylater_detail']
+                for (const i of dataIds) {
+                    let state = false
+                    if (i === id) state = true
+                    this.menu[i] = state
+                }
+            },
+            getSince(key) {
+                return localStorage[key] ? localStorage[key] : moment().subtract(1, 'month').format('YYYY-MM-DD')
+            },
+            getUntil(key) {
+                return localStorage[key] ? localStorage[key] : moment(new Date()).format('YYYY-MM-DD')
+            },
+            fN(n) {
+                return formatNumber(n.toFixed(2))
+            },
+            fD(datestring, formatString='DD MMM YYYY') {
+                if (!datestring) return '-'
+                return moment(datestring).format(formatString)
+            },
+            // END OF UTILITIES
+            // HELPERS
+            Actions(e , name){
+                this.link = e.link
+                this.isLoading = true
+                const startDateCH = localStorage['startDateCH']
+                const enddateCH = localStorage['enddateCH']
+                const startDateBUH = localStorage['startDateBUH']
+                const enddateBUH = localStorage['enddateBUH']
+                if(name === 'customer-detail' && !this.menu['customer-detail']){
+                    this.setMenuActive('customer-detail')
+                    this.renderDetail(e)
+                    this.update()
+                } else if(name === 'customer-history' && !this.menu['customer-history']){
+                    this.paginationpage = 1
+                    this.setMenuActive('customer-history')
+                    this.since = this.getSince(startDateCH)
+                    this.until = this.getUntil(enddateCH)
+                    this.renderHistory()
+                    this.update()
+                } else if(name === 'block-history' && !this.menu['block-history']){
+                    this.setMenuActive('block-history')
+                    this.paginationpage = 1
+                    this.since = this.getSince(startDateBUH)
+                    this.until = this.getUntil(enddateBUH)
+                    this.renderBlockUnblock()
+                    this.update()
+                } else if(name === 'paylater_detail' && !this.menu['paylater_detail']){
+                    this.setMenuActive('paylater_detail')
+                    this.renderPaylater()
+                    this.update()
+                }
+            },
+            // END OF HELPERS
+            renderDetail(){
+                getDetailCustomers(this.queryString)
+                    .then((response)=>{
+                        const data = response.data
+                        this.menuItems = data.otherInfo ? data.otherInfo : []
+                        this.fullName = result(data, 'meta.full_name') || result(data, 'meta.cif')
+                        this.customer = (data.items || []).reduce((r, x)=>{
+                            r[x.key] = x.value
+                            return r
+                        }, {})
+                        const items = data.items
+                        this.cd = items
+                        this.isLoading = false
+                        this.update()
+                    })
+                    .catch((err)=>{
+                        console.log(err)
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Oops...',
+                            text: err.message || err.error || 'Server Not Responding',
+                        })
+                    })
+            },
+            renderHistory(){
+                this.isLoading = true
+                this.update()
+                const since = this.since
+                const until = this.until
+                const data = {
+                    since,
+                    until,
+                    page : (this.paginationpage < 1) ? 1 : this.paginationpage 
+                }
+                debugLog(data)
+                if(this.actionsValue){
+                    data.action = this.actionsValue
+                }
+                if(this.Notes){
+                    data.notes = this.Notes
+                }
+                getHistoryCustomers(this.link, data)
+                    .then((response)=>{
+                        const data = response.data.items
+                        this.pagin = response.data.pagination
+                        this.paginprev = [this.pagin.prev]
+                        this.paginnext = [this.pagin.next]
+                        this.pagcurrent = this.pagin.current
+                        this.totalch = data.length
+                        this.ch = data
+                        // this.valuedata['customer-history'] = data
+                        this.isLoading = false
+                        this.update()
+                    })
+                    .catch((err)=>{
+                        console.log(err)
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Oops...',
+                            text: err.message || err.error || 'Server Not Responding' ,
+                        })
+                    })
+            },
+            renderBlockUnblock(){
+                this.isLoading = true
+                this.update()
+                const since = this.since
+                const until = this.until
+                const data = {
+                    since,
+                    until,
+                    page : (this.paginationpage < 1) ? 1 : this.paginationpage 
+                    }
+                    this.update()
+                    getHistoryBlockUnblockCustomers(this.link, data)
+                    .then((response)=>{
+                        const data = response.data.items
+
+                        this.pagin = response.data.pagination
+                        this.paginprev = [this.pagin.prev]
+                        this.paginnext = [this.pagin.next]
+                        this.pagcurrent = this.pagin.current
+                        this.totaldiv = data.length
+                        this.di = data
+                        // this.valuedata['block-history'] = data
+                        this.isLoading = false
+                        this.update()
+                    })
+                    .catch((err)=>{
+                        console.log(err)
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Oops...',
+                            text: err.message || err.error || 'Server Not Responding',
+                        })
+                    })
+            },
+            UpdateDateSince(key, res) {
+                this.paginationpage = 1
+                const date = res.date.format('YYYY-MM-DD')
+                this.since = date
+                if (key === 'customer-history') {
+                    localStorage.setItem('startDateCH', date)
+                    this.renderHistory()
+                } else {
+                    localStorage.setItem('startDateBUH', date)
+                    this.renderBlockUnblock()
+                }
+            },
+            UpdateDateUntil(key, res){
+                this.paginationpage = 1
+                const date = res.date.format('YYYY-MM-DD')
+                this.until = date
+                if (key === 'customer-history') {
+                    localStorage.setItem('enddateCH', date)
+                    this.renderHistory()
+                } else {
+                    localStorage.setItem('enddateBUH', date)
+                    this.renderBlockUnblock()
+                }
+            },
+            // PAYLATER
+            renderPaylater(){
+                this.isLoading = true
+                const data = {
+                    cif: this.customer.cif
+                }
+                getPaylaterDetail(data)
+                    .then((response) => {
+                        this.isLoading = false
+                        // console.log('before', md5(JSON.stringify(this.paylaterdata)))
+                        console.log(response)
+                        this.paylaterdata = response.data || {}
+                        // console.log('after', md5(JSON.stringify(this.paylaterdata)))
+                        this.update()
+                        if (window.run_debug) debugger
+                    })
+                    .catch((err)=>{
+                        console.log(err)
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Oops...',
+                            text: err.message || err.error || 'Server Not Responding' ,
+                        })
+                    })
+            },
+            launchModalRepayment (e) {
+                const cif = this.customer.cif
+                const target = e.currentTarget
+                this.payload = (target.dataset.payload || '')
+                    .split(',')
+                    .reduce((r, x) => {
+                        const key = x.split(':')
+                        r[key[0]] = key[1].trim()
+                        return r
+                    }, {
+                        cif,
+                        refNo: '',
+                        amount: 0,
+                        trxDesc: '',
+                        notes: 'Requested By Customer'
+                    })
+                console.log(this.payload)
+                this.update()
+                $('#modal-repayment').modal('show')
+            },
+            doRepayment (e) {
+                this.buttons.modal_repayment.process = false // enable "process" button
+                this.update()
+                let payload = this.payload
+                const newNotes = this.$('#input-notes').value
+                if (newNotes.length > 0) payload.notes = newNotes
+                const index = findIndex(this.paylaterdata.unbilledTransactions, {externalRefNo: payload.refNo})
+                const ref = this.$(`[ref="status-${payload.refNo}"]`)
+                doRequestRepayment(payload)
+                    .then((r) => {
+                        set(this.paylaterdata, `unbilledTransactions[${index}].status`, 'Pending Manual Repayment')
+                        set(this.paylaterdata, `unbilledTransactions[${index}].pending_repayment`, true)
+                        set(this.paylaterdata, `unbilledTransactions[${index}].need_repayment`, false)
+                        this.buttons.modal_repayment.process = true // enable "process" button
+                        this.update()
+                        $('#modal-repayment').modal('hide')
+                    })
+                    .catch((err) => {
+                        this.buttons.modal_repayment.process = true // enable "process" button
+                        this.update()
+                        console.error(err)
+                        this.showPopup('error', {title: 'Oops...', message: (err.message || err.error || 'Server Not Responding')})
+                    })
+            },
+            // END OF PAYLATER
+            SearchId(e){
+                e.preventDefault()
+                goTo(`customers/view?${this.endpointValue}=${this.$('#searchViewCustomers').value}`)
+                this.queryString = window.location.hash.replace('#/customers/view?','')
+                let searchValue =  this.$('#searchViewCustomers').value
+                this.username = searchValue
+                this.setMenuActive('customer-detail')
+                this.renderDetail()
+                this.update()
+            },
+            Refresh(){
+                this.isLoading = true
+                if(this.menu['customer-history']){
+                    this.renderHistory()
+                } else if(this.menu['block-history']){
+                    this.renderBlockUnblock()
+                }
+                this.update()
+            },
+            eventActions(){
+                let dataValue = this.$('#searchViewCustomersActions').value
+                this.actionsValue = dataValue
+                this.renderHistory()
+                this.update()
+            },
+            eventNotes(){
+                let dataValue = this.$('#searchViewCustomersNotes').value
+                this.Notes = dataValue
+                this.renderHistory()
+                this.update()
+            },
+            downloadCSV(){
+                const since = this.since
+                const until = this.until
+                const data = {
+                    since,
+                    until,
+                    custid :this.username,
+                    output : 'report'
+                }
+                    getHistoryBlockUnblockCustomers(this.link,  data)
+                    .then((response)=>{
+                        const JSONData = response.data.items
+                        this.generateCsv(JSONData, `block-unblock-history-${since}-${until}`, true)
+                    })
+                    .catch((err)=>{
+                        console.log(err)
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Oops...',
+                            text: err.message || err.error || 'Server Not Responding',
+                        })
+                    })
+            },
+            Back(){
+                goTo(`customers?userid=${p('userid')}`)
+            },
+            forward(e){
+                this.isLoading = true
+                this.paginationpage++
+                if(this.menu['customer-history']){
+                    this.renderHistory()
+                } else if (this.menu['block-history']){
+                    this.renderBlockUnblock()
+                }
+                this.update()
+            },
+            first(){
+                this.isLoading = true
+                this.paginationpage--
+                if(this.menu['customer-history']){
+                    this.renderHistory()
+                } else if(this.menu['block-history']){
+                    this.renderBlockUnblock()
+                }
+                this.update()
+            },
+            onUnmounted(){
+                localStorage.removeItem("startDateCH")
+                localStorage.removeItem("enddateCH")
+                localStorage.removeItem("startDateBUH")
+                localStorage.removeItem("enddateBUH")
+            },
+            keyValue(key,val){
+                this.KeyVal = key
+                this.endpointValue = val
+                localStorage.setItem('KeyValView', val)
+                this.update()
+            },
+            generateCsv(JSONData, ReportTitle, ShowLabel){
+                try {
+                    var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData
+                    var CSV = ''
+                    if (ShowLabel) {
+                        var row = ""
+                        for (var index in arrData[0]) {
+                            row += index + ','
+                        }
+                        row = row.slice(0, -1)
+                        CSV += row + '\r\n'
+                    }
+                    for (var i = 0; i < arrData.length; i++) {
+                        var row = ""
+                        var o = 1
+                        for (var index in arrData[i]) {
+                            var a = arrData[i][index] ? arrData[i][index] : "-"
+                            row += '"' + a + '"'
+                            if(o < Object.keys(arrData[i]).length){
+                                row += ','
+                            }
+                            o++
+                        }
+                        row.slice(0, row.length - 1)
+                        CSV += row + '\r\n'
+                    }
+    
+                    if (CSV == '') {
+                        alert("Invalid data")
+                        return
+                    }
+    
+                    var fileName = "Report_"
+                    fileName += ReportTitle.replace(/ /g, "_")
+                    var uri = 'data:text/csv;charset=utf-8,' + CSV
+                    var link = document.createElement("a")
+                    link.href = uri
+                    link.style = "visibility:hidden"
+                    link.download = fileName + ".csv"
+    
+                    document.body.appendChild(link)
+                    link.click()
+                    document.body.removeChild(link)
+                } catch (err) {
+                    throw err
+                }
+            }
+        }
+
+        $(document).on('click', '.monthselect', function () {
+            $(".monthselect option").removeAttr('disabled')
+        })
+    </script>
+</customers-view>

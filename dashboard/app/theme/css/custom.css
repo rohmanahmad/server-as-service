@@ -1,0 +1,60 @@
+.br-menu-link{
+    color:#adb5bd !important;
+}
+
+.br-menu-link:hover{
+    color:#fff !important;
+}
+
+.br-menu-link.with-sub.active{
+    color:#fff !important;
+}
+.pointer{
+    cursor:pointer;
+}
+
+button:hover{
+    color: #fff
+}
+.br-menu-link.active{
+    color: #fff!important;
+}
+.ripple-loader {
+    background: #fff url(../images/loading.svg) center center no-repeat;
+    width: 100%;
+    height: 99%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 900;
+    display: block;
+}
+.ripple-loader2 {
+    background: #fff url(../images/loading.svg) center center no-repeat;
+    width: 100%;
+    height: 200px;
+    display: block;
+}
+
+.ripple-loader-full{
+    display: block;
+    z-index: 9999;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: #201a1aa6 url(../images/loading.svg) center center no-repeat;
+}
+
+.titte-loading{
+    position: absolute;
+    top: 53%;
+    left: 47%;
+    color: #ffff;
+}
+.popover-body {
+    padding: 5px !important;
+}

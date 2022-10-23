@@ -1,0 +1,209 @@
+<ekyc-parameterization-modal-confirmation>
+    <div id="modal-confirmation" class="modal fade show">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content tx-size-sm">
+                <div class="modal-header pd-x-20">
+                    <h6 class="tx-16 mg-b-0 tx-uppercase tx-inverse">
+                        Change Business Parameter
+                    </h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body pd-l-20 pd-r-20 pd-b-20 pd-t-0">
+                    <div class="row row-sm">
+                        <div class="col-12 mg-t-20">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td colspan="3" class="pd-b-10 tx-12">Threshold To Passed Face Comparison to Dukcapil<hr></td>
+                                </tr>
+                                <tr>
+                                    <td class="tx-12 pd-r-0">CBM Onboarding</td>
+                                    <td class="tx-12 style_titik_2 pd-r-0 pd-l-0" width="10">:</td>
+                                    <td class="tx-12">
+                                        <span>{res(props.config, 'cbm.old_value')}</span>
+                                        <span class="pd-r-10 pd-l-10">Change To</span>
+                                        <span>{res(props.config, 'cbm.new_value')}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tx-12 pd-r-0">Threshold to Require Video Call</td>
+                                    <td class="tx-12 style_titik_2 pd-r-0 pd-l-0">:</td>
+                                    <td class="tx-12">
+                                        <span>{res(props.config, 'vc.old_value')}</span>
+                                        <span class="pd-r-10 pd-l-10">Change To</span>
+                                        <span>{res(props.config, 'vc.new_value')}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tx-12 pd-r-0">Note</td>
+                                    <td class="tx-12 style_titik_2 pd-r-0 pd-l-0">:</td>
+                                    <td class="tx-12">
+                                        <input type="text" class="form-control" placeholder="Enter Note Here" id="note">
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div><!-- modal-body -->
+                <div class="modal-footer wrap">
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="btn btn-secondary mg-r-20 tx-11 pendingModal" data-dismiss="modal">Cancel</button>
+                            <button
+                                onclick="{confirmProcess}"
+                                disabled="{isprocessing ? 'true' : ''}"
+                                class="btn btn-primary tx-11">
+                                    <span if="{!isprocessing}">Process</span>
+                                    <span if="{isprocessing}" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    <span if="{isprocessing}">Loading...</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- modal-dialog -->
+    </div>
+    <script>
+        import {
+            cancelAllRequest,
+        } from 'services/SDK/main'
+        import {
+            createAgentActivity
+        } from 'appModule/agents/agent-activity.sdk'
+        import {
+            AddPendingThresholdParameters,
+        } from 'appModule/ekyc/ekyc.sdk'
+        import { result } from 'lodash'
+        import { showAlertError, showAlertSuccess } from 'helpers/utilities'
+        export default {
+            isprocessing: false,
+            res(...args) {
+                return result(...args)
+            },
+            onBeforeMount() {
+                this.config = {
+                    cbm: {
+                        old_value: null,
+                        new_value: null
+                    },
+                    vc: {
+                        old_value: null,
+                        new_value: null
+                    },
+                    notes: ''
+                }
+                this.isprocessing = false
+            },
+            onUpdated () {
+                if (this.props.config && this.props.showModal) {
+                    $('#modal-confirmation').modal('show')
+                }
+            },
+            logAgentActivity(action, detail, module) {
+                createAgentActivity({
+                    module: module || 'Parameterization - Business Parameter',
+                    action,
+                    detail
+                })
+            },
+            confirmProcess() {
+                this.config.notes = this.$('#note').value
+                const config = this.props.config
+                const html = `
+                    <table class="table table-borderless">
+                        <tr>
+                            <td colspan="3" class="tx-12">Threshold to Passed Face Comparison to Dukcapil</td>
+                        </tr>
+                        <tr>
+                            <td class="tx-12">
+                                CBM Onboarding
+                            </td>
+                            <td class="tx-12">:</td>
+                            <td class="tx-12">
+                                <span style="color: #d3d6e1;">old_value ${config.cbm.old_value}</span>
+                                <b>new_value: ${config.cbm.new_value}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tx-12">
+                                <b>Threshold to Require Video Call</b>
+                            </td>
+                            <td class="tx-12">:</td>
+                            <td class="tx-12">
+                                <span style="color: #d3d6e1;">old_value ${config.vc.old_value}</span>
+                                <b>new_value: ${config.vc.new_value}</b>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tx-12">
+                                Action
+                            </td>
+                            <td class="tx-12">:</td>
+                            <td class="tx-12">Change Business Parameter</td>
+                        </tr>
+                        <tr>
+                            <td class="tx-12">
+                                Notes
+                            </td>
+                            <td class="tx-12">:</td>
+                            <td class="tx-12">${this.config.notes}</td>
+                        </tr>
+                    </table>
+                `
+                Swal.fire({
+                    title: 'Confirm Action',
+                    html,
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Submit'
+                })
+                    .then((confirm) => {
+                        if (confirm.value) {
+                            this.process()
+                        }
+                    })
+                // return confirm
+            },
+            process () {
+                const note = this.config.notes
+                if (note.length === 0) {
+                    showAlertError(new Error('Note Required'))
+                    return false
+                }
+                this.addPendingTask(note)
+                    .catch(console.error)
+            },
+            async addPendingTask(note) {
+                try {
+                    this.isprocessing = true
+                    this.update()
+                    const config = this.props.config
+                    const body = {
+                        cbm_threshold: config.cbm.new_value,
+                        vc_threshold: config.vc.new_value,
+                        old_cbm_threshold: config.cbm.old_value,
+                        old_vc_threshold: config.vc.old_value,
+                        note
+                    }
+                    const d = await AddPendingThresholdParameters(body)
+                    this.pendingMode = true
+                    $('#modal-confirmation').modal('hide')
+                    showAlertSuccess('Added to Pending')
+                    let detail = []
+                    detail.push(`THRESHOLD_FACE_COMPARISON: ${body.old_cbm_threshold} to ${body.cbm_threshold}`)
+                    detail.push(`THRESHOLD_VIDEO_CALL: ${body.old_vc_threshold} to ${body.vc_threshold}`)
+                    this.logAgentActivity('Submit Business Parameter Changes', detail.join(', '))
+                    this.logAgentActivity('Pending Business Parameter Changes', detail.join(' And '), 'My Pending Tasks - Business Parameter')
+                    this.props.callback(true)
+                } catch (err) {
+                    showAlertError(err)
+                }
+                this.isprocessing = false
+                this.update()
+            }
+        }
+    </script>
+</ekyc-parameterization-modal-confirmation>

@@ -1,0 +1,67 @@
+<modal-settlement-monthly-report>
+    <div id="{ modalId }" class="modal fade" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content tx-size-sm">
+                <div class="modal-header pd-x-20">
+                    <h6 class="tx-16 mg-b-0 tx-uppercase tx-inverse">
+                        Settlement User Download Generate
+                    </h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body pd-l-20 pd-r-20 pd-b-20 pd-t-0">
+                    <div class="row row-sm">
+                        <div class="col-12 mg-t-20">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td class="tx-12">
+                                        Start Date
+                                    </td>
+                                    <td class="tx-12" width="10">:</td>
+                                    <td class="tx-12">
+                                        <form-date-picker-range callback="{setDate}" name="from_date" options="{dateOptions}"></form-date-picker-range>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tx-12">
+                                        End Date
+                                    </td>
+                                    <td class="tx-12">:</td>
+                                    <td class="tx-12">
+                                        <form-date-picker-range callback="{setDate}" name="end_date" options="{dateOptions}"></form-date-picker-range>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tx-12">
+                                        Biller Provider Name
+                                    </td>
+                                    <td class="tx-12">:</td>
+                                    <td class="tx-12">
+                                        <select-biller-providers name="provider" dropdown="{ true }" title="{'Select Provider'}" selected="{ formItems.provider_name }" el-class="form-control" callback="{ cbProvider }" accept-all-value="{ true }"></select-biller-providers>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div><!-- modal-body -->
+                <div class="modal-footer wrap">
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="btn btn-secondary mg-r-20 tx-11 pendingModal" data-dismiss="modal">Cancel</button>
+                            <button onclick="{submitForm}" disabled="{isprocessing ? 'true' : ''}" class="btn btn-primary tx-11">
+                                    <span if="{!isprocessing}">Generate</span>
+                                    <span if="{isprocessing}" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    <span if="{isprocessing}">Loading...</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- modal-dialog -->
+    </div>
+    <script>
+        import controller from './settlement-user-download-generate'
+        export default controller
+    </script>
+</modal-settlement-monthly-report>

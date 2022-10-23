@@ -1,0 +1,195 @@
+<user-create>
+    <div class="br-mainpanel">
+        <div class="br-pageheader">
+            <nav class="breadcrumb pd-0 mg-0 tx-12">
+                <a class="breadcrumb-item">Agent</a>
+                <span class="breadcrumb-item active">user create</span>
+            </nav>
+        </div>
+        <div class="br-pagebody pd-x-20 pd-sm-x-30 pd-b-20">
+            <div class="br-section-wrapper tx-11">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="form-layout form-layout-4 bd-0 pd-0 pd-b-20">
+                            <h6 class="br-section-label mg-b-40">Create New User</h6>
+                            <div class="row">
+                                <label class="col-sm-3 form-control-label">User ID</label>
+                                
+                                <div class="col-sm-9 mg-t-10 mg-sm-t-0">
+                                    <div class="input-group mb-3">
+                                        <input
+                                            type="text"
+                                            class="form-control tx-11"
+                                            placeholder="Enter User ID"
+                                            value="{selected_data.userid}"
+                                            id="form-userid">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary tx-11" onclick="{doSearchByUserID}">
+                                                <i class="ion-android-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <span class="cl-red" style="font-size: 8pt;" if="{search.required}">Userid is Required</span>
+                                    <span class="cl-red" style="font-size: 8pt;" if="{search.no_user}">No User Found</span>
+                                    <span class="cl-red" style="font-size: 8pt;" if="{search.loading}">Please Wait...</span>
+                                </div>
+                            </div><!-- row -->
+                            <div class="row mg-t-20">
+                                <label class="col-sm-3 form-control-label">User Name</label>
+                                <div class="col-sm-9 mg-t-10 mg-sm-t-0">
+                                    <input
+                                        class="form-control tx-11"
+                                        placeholder="Enter User Name"
+                                        id="form-username"
+                                        value="{selected_data.username}" disabled>
+                                </div>
+                            </div>
+                            <div class="row mg-t-20">
+                                <label class="col-sm-3 form-control-label">User Role</label>
+                                <div class="col-sm-9 mg-t-10 mg-sm-t-0">
+                                    <select class="form-control tx-11 pointer" data-placeholder="Choose Browser"  id="form-role">
+                                        <option
+                                            value="{i.name}"
+                                            selected="{i.checked === true ? 'selected' : ''}"
+                                            each={i in selectRole}>
+                                            {i.title}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                <div class="row">
+                    <div class="col-md-8">
+                        <button class="btn btn-outline-primary pull-right mg-r-30 tx-11" onclick="{Submit}">Submit</button>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-layout-footer">
+                        </div><!-- form-layout-footer -->
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .cl-red{
+            color : red;
+        }
+    </style>
+    
+    <script>
+        import {
+            cancelAllRequest,
+        } from 'services/SDK/main'
+        import {
+            CreateAgenList, 
+            getListRole,
+            ValidateUserId 
+        } from 'appModule/agents/agents.sdk'
+        import { goTo } from 'helpers/ma'
+        
+        export default {
+            search: {
+                required: false,
+                no_user: false,
+                loading: false
+            },
+            selected_data: {
+                username: null,
+                userid: null,
+                user_role: null
+            },
+            // build-in events
+            onBeforeMount() {
+                cancelAllRequest()
+            },
+            onMounted(){
+                console.log('mounting user create ')
+                this.nameval = ''
+                this.renderListRole()
+                this.update()
+            },
+            // custom events
+            doSearchByUserID () {
+                this.search = {loading: true}
+                this.update()
+                const userid = this.$('#form-userid').value
+                if (userid.length === 0) {
+                    this.search = {required: true}
+                    this.update()
+                    return false
+                }
+                ValidateUserId({ userid })
+                    .then((res) => {
+                        this.search.loading = false
+                        const name = res.data.name
+                        if (!name || (name && name.length === 0)) {
+                            this.search = { no_user: true }
+                        }
+                        this.selected_data.userid = res.data.userid
+                        this.selected_data.username = name
+                        this.update()
+                    })
+                    .catch((err) => {
+                        this.search.loading = false
+                        console.error(err)
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Oops...',
+                            text: err.message || err.error || 'Server Not Responding'
+                        })
+                        this.update()
+                    })
+            },
+            // helpers
+            Submit(e){
+                this.selected_data.user_role = this.$('#form-role').value
+                const data = this.selected_data
+                if(data.userid) {
+                    CreateAgenList(data)
+                        .then((response)=>{
+                            Swal.fire(
+                                response.message,
+                                '',
+                                'success'
+                            )
+                            goTo('user/access')
+                        })
+                        .catch((err)=>{
+                            console.log(err)
+                            Swal.fire({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: err.message || err.error || 'Server Not Responding'
+                            })
+                        })
+                } else {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'User Not Found'
+                    })
+                }
+                this.update()
+            },
+            renderListRole(){
+                getListRole()
+                .then((response)=>{
+                    this.selectRole = (response.data.items.reverse())
+                    this.update()
+                })
+                .catch((err)=>{
+                    console.error(err)
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: err.message || err.error || 'Server Not Responding',
+                        // footer: '<a href>Why do I have this issue?</a>'
+                    })
+                })
+            }
+        }
+    </script>
+</user-create>

@@ -1,0 +1,50 @@
+<!-- 
+    props:
+        - name
+        - el-class
+        - title
+        - items {name, title}
+        - selected
+        - disabled Boolean
+ -->
+<form-dropdown>
+    <select name="{ props.name }" id="{ dropdownId }" class="{ props.elClass || 'form-control' }" onchange="{callback}" disabled="{ props.disabled }">
+        <option value="">{props.title || 'Choose One'}</option>
+        <option value="{ item.name }" each="{ item in props.items }" selected="{ item.name === props.selected }">{ item.title }</option>
+    </select>
+    <style></style>
+    <script>
+        import { randomString, showAlertError, debugLog } from 'helpers/utilities'
+        import { result } from 'lodash'
+        export default {
+            onBeforeMount() {
+                this.dropdownId = 'dropdown-' + randomString(10, { onlyChars: true })
+            },
+            onMounted(props) {
+                debugLog(`[${this.name}] [MOUNTED]`)
+                if (typeof props.callback !== 'function') {
+                    showAlertError(new Error('[Form Dropdown] Callback Should Be a Function'))
+                }
+            },
+            // onUpdated(props) {
+            //     if (props.selected) {
+            //         const data = result(props, 'items', []).filter(x => x.name === props.selected)[0]
+            //         this.callback(null, { value: props.selected, data })
+            //     }
+            // },
+            callback(e, res) {
+                const defaultResponse = {
+                    id: this.dropdownId,
+                    name: this.props.name,
+                }
+                if (res) return this.props.callback({...defaultResponse, ...res})
+                const valueOfInput = this.$('#' + this.dropdownId).value
+                this.props.callback({
+                    ...defaultResponse,
+                    value: valueOfInput,
+                    data: result(this.props, 'items', []).filter(x => x.name === valueOfInput)[0]
+                })
+            }
+        }
+    </script>
+</form-dropdown>

@@ -1,0 +1,13 @@
+<body-footer>
+    <div class="br-mainpanel pd-0 pd-t-10 pd-b-10 pd-r-10 tx-9 mg-t-0 text-center">
+        App Version : v{version}
+    </div>
+    <script>
+        import { app_version } from 'packagejson'
+        export default {
+            onBeforeMount() {
+                this.version = app_version
+            }
+        }
+    </script>
+</body-footer>

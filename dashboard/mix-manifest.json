@@ -1,0 +1,19 @@
+{
+    "/public/js/main.js": "/public/js/main.js",
+    "/public/css/all.css": "/public/css/all.css",
+    "/public/js/manifest.js": "/public/js/manifest.js",
+    "/public/js/vendor.js": "/public/js/vendor.js",
+    "/public/css/vendor.css": "/public/css/vendor.css",
+    "/public/lib/popper.js": "/public/lib/popper.js",
+    "/public/lib/bootstrap.js": "/public/lib/bootstrap.js",
+    "/public/lib/daterangepicker.min.js": "/public/lib/daterangepicker.min.js",
+    "/public/css/daterangepicker.css": "/public/css/daterangepicker.css",
+    "/public/lib/moment.min.js": "/public/lib/moment.min.js",
+    "/public/lib/jquery-3.6.0.min.js": "/public/lib/jquery-3.6.0.min.js",
+    "/public/lib/sweetalert2.js": "/public/lib/sweetalert2.js",
+    "/public/lib/xlsx.full.min.js": "/public/lib/xlsx.full.min.js",
+    "/public/css/select2.css": "/public/css/select2.css",
+    "/public/lib/select2.min.js": "/public/lib/select2.min.js",
+    "/public/css/custom.css": "/public/css/custom.css",
+    "/public/css/font.css": "/public/css/font.css"
+}

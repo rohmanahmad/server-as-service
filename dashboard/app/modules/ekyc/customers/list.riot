@@ -1,0 +1,520 @@
+<customers>
+    <div class="br-mainpanel">
+        <div class="br-pageheader">
+            <nav class="breadcrumb pd-0 mg-0 tx-12">
+                <span class="breadcrumb-item">Commbank Mobile</span>
+                <span class="breadcrumb-item">Customers</span>
+                <span class="breadcrumb-item active">List</span>
+            </nav>
+        </div>
+
+        <div class="br-pagebody pd-r-5 pd-l-5 mg-t-10">
+            <div class="br-section-wrapper pd-x-20 pd-sm-x-30 pd-t-40">
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="tx-12" style="padding: 2px !important;" width="140">
+                                    <label class="float-left pd-t-10">Search For Customer:</label>
+                                </td>
+                                <td style="padding: 2px !important;" width="140">
+                                    <select class="form-control wd-150 float-left" id="keySearch">
+                                        <option each="{o in keyComponent}" selected="{o.selected}" value="{o.value}">{o.name}</option>
+                                    </select>
+                                </td>
+                                <td style="padding: 2px !important;" width="300">
+                                    <input id="querySearch" type="text" value="{currentQueryValue}" placeholder="Search" class="form-control float-left">
+                                </td>
+                                <td style="padding: 2px !important;">
+                                    <button class="btn btn-primary btn-xs backgroundred float-left" onclick="{doSearch}" id="searchCustomers">Search</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="row pd-t-20">
+                    <!-- table list -->
+                    <div class="col-sm-12 pd-0">
+                        <table class="table table-bordered table-hover bd">
+                            <thead>
+                                <tr>
+                                    <th style="padding-left: 15px;" class="tx-11" width="30">#</th>
+                                    <th style="padding-left: 15px;" class="tx-11">Full Name</th>
+                                    <th style="padding-left: 15px;" class="tx-11">CIF</th>
+                                    <th style="padding-left: 15px;" class="tx-11">Default Number</th>
+                                    <th style="padding-left: 15px;" class="tx-11" width="220">Activation Status</th>
+                                    <th style="padding-left: 15px;" class="tx-11" width="200">User Status</th>
+                                    <th style="padding-left: 15px;" class="tx-11 text-right" width="100">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tx-12">
+                                <tr each="{item in items}" if="{this.hasData && !isLoading}">
+                                    <td class="width-30">{item.n}</td>
+                                    <td>{item.full_name}</td>
+                                    <td>{item.cif}</td>
+                                    <td>{item.default_account_number}</td>
+                                    <td style="padding-right: 2px;">
+                                        <span class="mg-r-10">{ item.activation_status }</span>
+                                        <button onclick="{() =>Actions(action, item)}" 
+                                            class="btn mg-r-5 pd-2 {action['btn-class']}" 
+                                            each="{action in item.cifAction}">
+                                            { action.title }
+                                        </button>
+                                    </td>
+                                    <td class="wd-85">
+                                        <span class="mg-r-10 float-left">{ item.status }</span>
+                                        <button each="{action in item.statusActions}" if="{action.title}" onclick="{() =>Actions(action, item)}"
+                                            class="btn mg-r-5 pd-2 {action['btn-class']} float-right">
+                                            { action.title }
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button each="{action in item.detail}" if="{action.title}" onclick="{() =>Actions(action, item)}"
+                                            class="btn pd-2 {action['btn-class']}">
+                                            { action.title }
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr if="{isLoading}">
+                                    <th colspan="8" class="text-center">Loading...</th>
+                                </tr>
+                            </tbody>
+                            <tfoot if="{!this.hasData && !isLoading}">
+                                <tr>
+                                    <td colspan="8" class="text-center tx-12">No Data</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <!-- paginations -->
+                    <div class="col-12">
+                        <div class="align-items-center justify-content-center float-right mg-t-20">
+                            <ul class="pagination pagination-basic pagination-rounded mg-b-0" if="{hasData || currentPage > 1}">
+                                <li class="page-item {!isHasPrev ? 'disabled' : ''}  hidden-xs-down">
+                                    <a class="page-link c_pointer" onclick="{doPrev}" aria-label="First">
+                                        <i class="icon ion-ios-arrow-back"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item active">
+                                    <a class="page-link" aria-label="First">
+                                    {currentPage}
+                                    </a>
+                                </li>
+                                <li class="page-item {!isHasNext ? 'disabled' : ''}">
+                                    <a class="page-link c_pointer" onclick="{doNext}" aria-label="Forward">
+                                        <i class="icon ion-ios-arrow-forward"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="row pd-t-20" if="{isLoading}">
+                    <div class="col-12 bd pd-0">
+                        <div class="ripple-loader2"></div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <div class="{this.isLoadingfull === true ? 'ripple-loader-full' : 'd-none'}"> <span class="titte-loading">Please Wait...</span></div>
+
+    <div id="modalGetReason" class="modal">
+        <div class="modal-dialog modal-xs" role="document">
+            <div class="modal-content bd-0 tx-14">
+                <div class="modal-header pd-x-20">
+                    <h6 class="tx-14 mg-b-0 tx-uppercase tx-inverse tx-bold">{this.selectedAction}</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body pd-20">
+                    <table class="wd-100p">
+                        <tr>
+                            <td class="tx-13 pd-r-20 pd-b-20 wd-100">Full Name</td>
+                            <td class="tx-13 pd-b-20" >: {fullName}</td>
+                        </tr>
+                        <tr >
+                            <td class="tx-13 pd-r-20 pd-b-20">Actions</td>
+                            <td class="tx-13 pd-b-20">: {selectedAction}</td>
+                        </tr>
+                        <tr>
+                            <td class="tx-13">Notes</td>
+                            <td>
+                                <span class="pd-r-2 float-left">:</span>
+                                <input type="text" 
+                                    style="max-width: 90%;"
+                                    class="form-control form-control-sm float-left"
+                                    value="{noteValue}"
+                                    placeholder="Enter Notes Here" id="notes" name="formBlock" autofocus>
+                                <span class="float-left mg-t-5 pd-l-5 text-danger tx-8 wd-200">{this.errorNote}</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        class="btn btn-success tx-11 tx-uppercase pd-y-12 pd-x-25"
+                        onclick="{ () => processRequestBlockUnblock() }">
+                            Process
+                    </button>
+                    <button class="btn btn-outline-warning" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div><!-- modal-dialog -->
+    </div>
+
+    <style>
+        .table tr:hover {
+            background: #dedede;
+        }
+        .table td {
+            font-weight: 400;
+        }
+        .cell-actions {
+            padding-right: 1px !important;
+            padding-left: 1px !important;
+        }
+        .btn-outline-secondary.disabled:hover{
+            color: #6c757d;
+        }
+        .curtom-width-height{
+            width: max-content;
+            height: 23px;
+        }
+        .c_pointer{
+            cursor: pointer;
+        }
+        .b-b-1{
+            border-bottom: 1px solid #ced4da;
+        }
+        .disabled:hover {
+            cursor: default;
+        }
+        .cl-red{
+            color : red;
+        }
+        a.blockModal{
+            cursor:pointer;
+            color :#0866C6 !important;
+        }
+        a.blockModal:hover{
+            color: #ffffff !important;
+            background:#0866C6;
+        }
+        .tx-left{
+            text-align: left;
+        }
+        tr td{
+            /* font-size: 0.875rem; */
+            font-size: 12px;
+        }
+        button:hover{
+            color:#fff
+        }
+        .dropdown-menu.show{
+            transform: translate3d(0px, 42px, 0px) !important;
+        }
+        .tx-c{
+            text-align: center;
+        }
+        .table th {
+            padding: 1rem 1rem 1rem 0.7rem !important;
+        }
+        .width-30{
+            width: 30px;
+        }
+        .wd-max-c {
+            width:max-content;
+        }
+    </style>
+    <script>
+        import {
+            cancelAllRequest,
+            p,
+        } from 'services/SDK/main'
+        import {
+            CustomerList,
+            BlockCustomers, 
+            UnBlockCustomers,
+            BlockActivation
+        } from 'appModule/ekyc/customers.sdk'
+        import { result, sortBy } from 'lodash'
+        import { goTo} from 'helpers/ma'
+        import { changeStorage, getStorage } from 'helpers/storage'
+        const pjson = require('packagejson') //aliases
+        
+        let total = 24
+        let limit = 10
+
+        export default {
+            noteValue: '',
+            errorNote: null,
+            confirmationTemplate: `
+                <div class="row">
+                    <div class="col-md-9 offset-md-2">
+                        <table>
+                            <tr> 
+                                <td class="pd-r-20"> Full Name </td>
+                                <td>: {FULLNAME}</td>
+                            </tr>
+                            <tr>
+                                <td>Actions </td> 
+                                <td>: {ACTION}</td>
+                            </tr>
+                            <tr>
+                                <td>Note </td> 
+                                <td>: {NOTE}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            `,
+            currentQueryValue: '',
+            hasData: false,
+            currentPage: 1,
+            keyComponent: [],
+            onBeforeUnmount() {
+                cancelAllRequest()
+            },
+            onBeforeMount() {
+                this.keyComponent = [
+                    {name : 'Account No', value : 'accountNumber', selected: false},
+                    {name : 'CIF', value : 'cifNumber', selected: false},
+                    {name : 'Phone Number', value : 'phoneNumber', selected: false},
+                    {name : 'Email', value : 'email', selected: false}
+                ]
+            },
+            onMounted() {
+                console.log('customer list mounted')
+                this.isInitial = true
+                const currentSelectedKey = getStorage('keySearch', 'customer')
+                this.currentQueryValue = getStorage('querySearch', 'customer')
+                this.keyComponent = this.keyComponent.map((x) => {
+                    x.selected = false
+                    if (x.value === currentSelectedKey) x.selected = true
+                    return x
+                })
+                this.render()
+            },
+            loading(value = true) {
+                this.isLoading = value
+                this.update()
+            },
+            render(){
+                this.getCustomerList()
+                    .then(() => {
+                    })
+            },
+            Actions({title, link, name}, item){
+                const userid = item.userid
+                changeStorage({'current_user': userid}, 'customer')
+                this.selectedAction = title
+                this.fullName = item.full_name
+                this.update()
+                if (!name) return false
+                if(name === 'view'){
+                   goTo(link)
+                } else if(name.toLowerCase() === 'block'){
+                    this.showModalInteraction(link, 'Block')
+                } else if(name.toLowerCase() === 'unblock'){
+                    this.showModalInteraction(link, "Unblock")
+                } else if(name.toLowerCase() === 'block_cif') {
+                    this.showModalInteraction(link, "Block CIF")
+                } else if(name.toLowerCase() === 'unblock_cif') {
+                    this.showModalInteraction(link, "Unblock CIF")
+                }
+            },
+            doNext() {
+                this.currentPage += 1
+                this.doSearch()
+            },
+            doPrev() {
+                if (this.isHasPrev) {
+                    this.currentPage -= 1
+                    this.doSearch()
+                }
+            },
+            getQueryData() {
+                let keySearch,querySearch,page
+                if (this.isInitial) {
+                    keySearch = getStorage('keySearch', 'customer')
+                    querySearch = getStorage('querySearch', 'customer')
+                    page = getStorage('queryPage', 'customer', 1)
+                    this.currentPage = parseInt(page) || 1
+                    if (!keySearch || !querySearch) return false
+                } else {
+                    keySearch = this.$('#keySearch').value
+                    querySearch = this.$('#querySearch').value
+                    page = this.currentPage
+                    if (querySearch.length < 3) throw new Error('Minimun 3 chars')
+                    changeStorage({keySearch, querySearch, page}, 'customer')
+                }
+                return {
+                    q: `${keySearch}:${querySearch}`,
+                    page
+                }
+            },
+            doSearch(e) {
+                if (e) e.preventDefault()
+                this.isInitial = false
+                this.getCustomerList()
+                    .then(function () {
+                    })
+            },
+            async getCustomerList (){
+                this.loading(true)
+                try {
+                    this.hasData = false
+                    const params = this.getQueryData()
+                    if (!params) {
+                        this.loading(false)
+                        return false
+                    }
+                    const response = await CustomerList(params)
+                    const data = response.data
+                    const pagination = data.pagination
+                    this.items = result(data, 'items', []).map(x => {
+                        // cif block unblock
+                        const actions = x.actions
+                        x.cifAction = actions.filter(o => ['block_cif', 'unblock_cif', 'pending_approval_cif'].indexOf(o.name) > -1)
+                        x.statusActions = actions.filter(o => ['block', 'unblock', 'pending_approval'].indexOf(o.name) > -1)
+                        x.detail = actions.filter(o => ['view'].indexOf(o.name) > -1)
+                        // if (x.actions.length === 1) x.actions = [{}, ...x.actions]
+                        return x
+                    })
+                    this.isHasPrev = !(result(pagination, 'prev.disabled', false))
+                    this.isHasNext = !(result(pagination, 'next.disabled', false))
+                    // this.currentPage = result(pagination, 'current', 1)
+                    if (window.run_debug) debugger
+                    if (this.items.length > 0) this.hasData = true
+                    this.update()
+                    this.loading(false)
+                } catch (err) {
+                    Swal.fire(err.message, '', 'error')
+                    this.loading(false)
+                }
+            },
+            async doBlockUnblockCIF(action) {
+                try {
+                    this.loadingFull(true)
+                    const endpoint = `${this.link}&notes=${this.noteValue}`
+                    const blockResponse = await BlockActivation(endpoint)
+                    const responseStatus = result(blockResponse, 'data.status', 'Success')
+                    this.loadingFull(false)
+                    Swal.fire(responseStatus, '', 'success')
+                    this.render()
+                } catch (err) {
+                    this.showError(err)
+                }
+            },
+            async doBlockUnblockStatus(action) {
+                try {
+                    const actionLowerCase = action.toLowerCase()
+                    const data = {notes: this.noteValue}
+                    const endpoint = `${this.link}&notes=${this.noteValue}`
+                    let response = null
+                    let swalMessage = null
+                    if (actionLowerCase === 'block') {
+                        swalMessage = 'Blocked'
+                        response = await BlockCustomers(endpoint)
+                    }
+                    else if (actionLowerCase === 'unblock') {
+                        swalMessage = 'Added to Pending Task'
+                        response = await UnBlockCustomers(endpoint)
+                    }
+                    this.loadingFull(false)
+                    Swal.fire(swalMessage, '', 'success')
+                    this.render()
+                } catch (err) {
+                    this.showError(err)
+                }
+            },
+            resetNote() {
+                this.errorNote = null
+                this.noteValue = ''
+                this.update()
+            },
+            showError(err) {
+                Swal.fire({
+                    type: 'error',
+                    title: 'Oops...',
+                    text: err.message || 'Server Not Responding',
+                })
+                this.isLoadingfull = false
+                this.update()
+                console.error(err)
+            },
+            validateNoteValue() {
+                const notes = this.$('#notes').value
+                if (notes.length === 0) {
+                    this.errorNote = 'Note Required'
+                    this.update()
+                    return false
+                }
+                this.noteValue = notes
+                return true
+            },
+            showModalInteraction(link, action) {
+                this.resetNote()
+                this.link = link
+                this.namevalue = action
+                this.update()
+                setTimeout(()=>{
+                    $('#modalGetReason').modal('show')
+                }, 1)
+            },
+            async getConfirmation(html) {
+                const confirm = await Swal.fire({
+                    title: 'Confirm Actions',
+                    html,
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Submit'
+                })
+                return confirm
+            },
+            loadingFull(value=true) {
+                this.isLoadingfull = value
+                this.update()
+            },
+            processRequestBlockUnblock() {
+                const action = this.namevalue
+                this.validateNoteValue() // getting note and validate
+                if (!this.noteValue) {
+                    return false
+                }
+                const html = this.confirmationTemplate
+                    .replace('{ACTION}', this.selectedAction)
+                    .replace('{FULLNAME}', this.fullName)
+                    .replace('{NOTE}', this.noteValue)
+                this.getConfirmation(html)
+                    .then(({value}) => {
+                        // hidden modal 
+                        if (value) {
+                            if (['Block CIF', 'Unblock CIF'].indexOf(action) > -1) {
+                                this.doBlockUnblockCIF(action).catch(console.error)
+                            } else {
+                                this.doBlockUnblockStatus(action).catch(console.error)
+                            }
+                        }
+                        $('#modalGetReason').modal('hide')
+                    })
+            },
+            views(e) {
+                this.view = true
+                this.cd = Cd
+                this.cdv = true
+                this.update()  
+            },
+            keyValue(val){
+                this.KeyVal = val.value
+                this.KeyName = val.name
+                //localStorage.setItem('KeyVal', val)
+                this.update()
+            }
+        }
+    </script>
+</customers>

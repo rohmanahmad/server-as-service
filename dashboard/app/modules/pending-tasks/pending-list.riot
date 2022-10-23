@@ -1,0 +1,338 @@
+<task-pendings>
+    <div class="br-mainpanel">
+        <div class="br-pageheader">
+            <nav class="breadcrumb pd-0 mg-0 tx-12">
+                <a class="breadcrumb-item">My Pending Tasks</a>
+                <span class="breadcrumb-item active">List</span>
+            </nav>
+        </div>
+        <div class="br-pagebody">
+            <div class="br-section-wrapper pd-x-20 pd-sm-x-30 pd-t-40">
+                <div class="row">
+                    <!-- Form Filter -->
+                    <div class="col-10 pd-0">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td style="padding-top: 20px;" class="tx-12 wd-150">Search Pending Task:</td>
+                                <td>
+                                    <input
+                                        class="form-control tx-12"
+                                        placeholder="Primary Account Number / User ID"
+                                        name="searchPendingTask"
+                                        id="searchPendingTask">
+                                </td>
+                                <td>
+                                    <button
+                                        class="btn btn-primary pd-9 tx-12"
+                                        onclick="{SearchId}"
+                                        id="SearchPendingTask">
+                                        Search
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- Rows Limit -->
+                    <div class="col-12 pd-0 mg-b-15">
+                        <select class="form-control pointer tx-11" data-placeholder="Choose Browser" style="width: 100px;" id="selectpagePendingTask" onchange="{changeLimit}">
+                            <option value="5" selected="{this.limit === 5 ? 'selected' : ''}" class="c_option">5</option>
+                            <option value="10" selected="{this.limit === 10 ? 'selected' : ''}" class="c_option">10</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 bd pd-0 bd-b-0">
+                        <table class="table table-striped table-bordered mg-b-0 b-b-1 table-list">
+                            <thead>
+                                <tr>
+                                    <td class="font-weight-bold tx-10 tx-left width-30">#</td>
+                                    <td class="font-weight-bold tx-10 tx-left" width="120">Activity Date</td>
+                                    <td class="font-weight-bold tx-10 tx-left" width="100">Account ID</td>
+                                    <td class="font-weight-bold tx-10 tx-left" width="120">Account Name</td>
+                                    <td class="font-weight-bold tx-10 tx-left" width="120">User ID / CIF</td>
+                                    <td class="font-weight-bold tx-10 tx-left">Status Request</td>
+                                    <td class="font-weight-bold tx-10 tx-left" width="100">Request By</td>
+                                    <td class="font-weight-bold tx-10 tx-left" width="100">Action</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr if="{ !isLoading && !isNoData }" each="{(v,i) in items}">
+                                    <td class="valign-middle width-30">{v.no}</td>
+                                    <td class="valign-middle">
+                                        <span class="d-block">{v.activity_date.split(' ')[0]}</span>
+                                        <span class="d-block">{v.activity_date.split(' ')[1]}</span>
+                                    </td>
+                                    <td class="valign-middle">{v.account.id}</td>
+                                    <td class="valign-middle">{v.account.name}</td>
+                                    <td class="valign-middle">{v.account.userid || v.account.cif || '-'}</td>
+                                    <td class="valign-middle">{v.status.title}</td>
+                                    <td class="valign-middle">{v.requested_by.name}</td>
+                                    <td class="valign-middle">
+                                        <button
+                                            onclick="{() => confirmation('approve', v)}"
+                                            class="btn btn-primary btn-xs tx-10 p-1 m-1 d-block pd-l-5 pd-r-5"
+                                            style="width: 50px;">
+                                                {getVal(v, 'actions.approve.title', '-')}
+                                        </button>
+                                        <button
+                                            onclick="{() => confirmation('reject', v)}"
+                                            class="btn btn-warning btn-xs tx-10 p-1 m-1 d-block pd-l-5 pd-r-5"
+                                            style="width: 50px;">
+                                                {getVal(v, 'actions.reject.title', '-')}
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr if="{ !isLoading && isNoData }">
+                                    <td colspan="8" class="text-center">No Data Found</td>
+                                </tr>
+                                <tr if="{ isLoading }">
+                                    <td colspan="8" class="text-center">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" if="{!this.isLoading}">
+                    <div class="col-12">
+                        <div class="mg-t-20 float-right">
+                            <ul class="pagination pagination-basic pagination-rounded mg-b-0">
+                                <li class="page-item { isPrevDisabled ? 'disabled' : ''} hidden-xs-down" id="firstPagingPendingList">
+                                    <a class="page-link pointer" onclick="{doprev}" aria-label="First">
+                                        <i class="icon ion-ios-arrow-back"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item active">
+                                    <a class="page-link pointer">{currentPage}</a>
+                                </li>
+                                <li class="page-item { isNextDisabled ? 'disabled' : ''}" id="forwardPagingPendingList">
+                                    <a class="page-link pointer" onclick="{donext}" aria-label="Forward">
+                                        <i class="icon ion-ios-arrow-forward"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <modal-approval if="{Object.keys(modalData || {}).length > 0}" scenario="{ modalData.scenario }" datajson="{modalData}" result="{getResultFromModal}"></modal-approval>
+    <!-- <modal-approval if="{Object.keys(modalData || {}).length > 0}" type="reject" datajson="{modalData}"></modal-approval> -->
+    </div>
+    <style>
+        .style_titik_2 {
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+        .c_pointer{
+            cursor: pointer;
+        }
+        .valign-middle {
+            vertical-align: middle;
+        }
+        .b-b-1{
+            border-bottom: 1px solid #ced4da;
+        }
+        .c_option:hover{
+            cursor: pointer;
+        }
+        tr td{
+            font-size: 12px;
+            /* font-size: 0.875rem; */
+        }
+        /* a.pendingModal.btn-outline-warning{
+            color :#ffffff !important;
+        } */
+        a.pendingModal.btn-outline-warning:hover{
+            color: #ffffff !important;
+            /* background:#0866C6; */
+        }
+        .tx-left{
+            text-align: left;
+        }
+        .table th {
+            padding: 1rem 1rem 1rem 0.7rem !important;
+        }
+        .width-30{
+            width: 30px;
+        }
+        table.table-list>tbody>tr:hover {
+            background: #dedede;
+        }
+
+    </style>
+
+    <script>
+        import {
+            cancelAllRequest,
+        } from 'services/SDK/main'
+        import {
+            getListTask,
+            ApproveRequestTask,
+            RejectRequesTask,
+        } from 'appModule/pending-tasks/pending-tasks.sdk'
+        import { createAgentActivity } from 'appModule/agents/agent-activity.sdk'
+        import { result, set } from 'lodash'
+        export default {
+            pagelimit: 10,
+            paginationpage: 1,
+            lgModal: [/* 'business-parameter',  */'role-change', 'role-create', 'create-user', 'block-user', 'paylater', 'delete-user', 'change-user', 'block-user', 'unblock-user'],
+            getVal(args1, args2) {
+                return result(args1, args2)
+            },
+            showPopup(type, {title, message}) {
+                if (type === 'error') {
+                    Swal.fire({
+                        type: 'error',
+                        title: title,
+                        text: message
+                    })
+                } else if (type === 'success') {
+                    Swal.fire({
+                        type: 'success',
+                        title: title,
+                        text: message
+                    })
+                }
+            },
+            // events and default functions
+            onBeforeMount() {
+                this.isNoData = true
+                this.items = []
+                cancelAllRequest()
+            },
+            onMounted() {
+                console.log('mounting pending list')
+                this.limit = 10;
+                this.currentPage = 1;
+                this.params = {page: 1, limit: 10}
+                this.isLoading = true 
+                this.items = []
+                this.modalData = {}
+                this.update()
+                this.render()
+                this.logAgentActivity('Open My Pending Tasks', '')
+            },
+            render(){
+                getListTask(this.params)
+                    .then((response)=>{
+                        const data = response.data;
+                        this.currentPage = result(data, 'pagination.current', 1)
+                        this.items = result(data, 'items', []);
+                        this.isLoading = false;
+                        this.isNextDisabled = result(data, 'pagination.next.disabled', false)
+                        this.isPrevDisabled = result(data, 'pagination.prev.disabled', false)
+                        this.isNoData = this.items.length === 0
+                        this.update()
+                    })
+                    .catch((err)=>{
+                        console.log(err)
+                        const message = err.message || err.error || err.message || 'Server Not Responding'
+                        this.showPopup('error', {title: 'Oopss...', message})
+                    })
+            },
+            logAgentActivity(action, detail) {
+                /* permintaan mas fahmi */
+                // createAgentActivity({
+                //     module: 'My Pending Tasks - Business Parameter',
+                //     action,
+                //     detail
+                // })
+            },
+            // approve Data
+            getResultFromModal(modalResult) {
+                this.render()
+            },
+            confirmation(type, item) {
+                const taskType = result(item, 'type')
+                this.modalData = {
+                    type: taskType,
+                    task_id: result(item, 'task_id'),
+                    modal_class: (this.lgModal.indexOf(taskType) > -1 ? 'modal-lg' : 'modal-md'),
+                    requested_by: result(item, 'requested_by.name', '-'),
+                    actions: result(item, 'status.title', '-'),
+                    note: result(item, 'notes'),
+                }
+                this.modalData.before = {
+                    fullname: result(item, 'account.name'),
+                    status: result(item, 'prompt_data.onrejected.status'),
+                    access: result(item, 'prompt_data.onrejected.access_list'),
+                    trx_desc: result(item, 'prompt_data.onrejected.trx_desc'),
+                    amount: result(item, 'prompt_data.onrejected.amount'),
+                    cbm_threshold: result(item, 'prompt_data.onrejected.cbm_threshold'),
+                    vc_threshold: result(item, 'prompt_data.onrejected.vc_threshold')
+                }
+                if (type === 'approve') {
+                    this.modalData.scenario = 'approve'
+                    this.modalData.after = {
+                        fullname: result(item, 'account.name'),
+                        status: result(item, 'prompt_data.onapproved.status'),
+                        access: result(item, 'prompt_data.onapproved.access_list'),
+                        trx_desc: result(item, 'prompt_data.onapproved.trx_desc'),
+                        amount: result(item, 'prompt_data.onapproved.amount'),
+                        cbm_threshold: result(item, 'prompt_data.onapproved.cbm_threshold'),
+                        vc_threshold: result(item, 'prompt_data.onapproved.vc_threshold')
+                    }
+                    this.modalData.approve_link = result(item, 'actions.approve.link')
+                } else {
+                    this.modalData.scenario = 'reject'
+                    this.modalData.after = {
+                        fullname: result(item, 'account.name'),
+                        status: result(item, 'prompt_data.onrejected.status'),
+                        access: result(item, 'prompt_data.onrejected.access_list'),
+                        trx_desc: result(item, 'prompt_data.onrejected.trx_desc'),
+                        amount: result(item, 'prompt_data.onrejected.amount'),
+                        cbm_threshold: result(item, 'prompt_data.onrejected.cbm_threshold'),
+                        vc_threshold: result(item, 'prompt_data.onrejected.vc_threshold')
+                    }
+                    this.modalData.reject_link = result(item, 'actions.reject.link')
+                }
+                this.links = result(item, 'link')
+                if (!item) console.error('No Item Found')
+                const customer = result(item, 'account', {})
+                if (customer) this.modalData.customer = customer
+                this.update()
+            },
+            changeLimit(e){
+                const params = this.params
+                this.pagelimit = (e.target.value)
+                params['limit'] = this.pagelimit 
+                this.isLoading = true
+                this.update({
+                    params
+                })
+                if (window.run_debug) debugger
+                this.render()
+            },
+            donext(e){
+                this.isLoading = true
+                this.params.page += 1
+                this.paginationpage = this.params.page
+                this.render()
+                this.update()
+            },
+            doprev(){
+                this.isLoading = true
+                this.params.page -= 1
+                this.paginationpage = this.params.page
+                this.render()
+                this.update()
+            },
+            SearchId(e){
+                e.preventDefault()
+                this.isLoading = true;
+                this.update()
+                this.params = {
+                    limit : this.pagelimit,
+                    page : this.paginationpage,
+                    search :this.$('#searchPendingTask').value
+                }
+                this.render()
+            }
+        }
+    
+    </script>
+</task-pendings>

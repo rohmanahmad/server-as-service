@@ -1,0 +1,233 @@
+<bill-payment-report-validation>
+    <div class="br-mainpanel">
+        <div class="br-pageheader">
+            <nav class="breadcrumb pd-0 mg-0 tx-12">
+                <span class="breadcrumb-item">Settlement Tools</span>
+                <span class="breadcrumb-item">Settlement Report Validation</span>
+                <span class="breadcrumb-item active">List</span>
+            </nav>
+        </div>
+        <div class="br-pagebody pd-r-5 pd-l-5 mg-t-10">
+            <div class="br-section-wrapper pd-x-10 pd-sm-x-30 pd-t-40">
+                <div class="row">
+                    <div class="col-2 tx-11 pd-t-0 pd-l-0">
+                        Transaction Start Date
+                        <form-date-picker-single name="bilpayment.reportvalidation.startdate.filter" el-class="tx-11" callback="{ (r) => updateSearchPayload('start', r) }" show-icon="{ true }" show-time="{ false }" custom-styles="" custom-class=""></form-date-picker-single>
+                        <!-- <form-date-picker-range
+                            el-class="tx-12"
+                            el-format="YYYY/MM/DD"
+                            name="start"
+                            initial-date="{ search.start }"
+                            show-time="{ false }"
+                            show-icon="{ true }"
+                            shortcut="{ false }"
+                            date-type="{ 'single' }"
+                            callback="{ (r) => updateSearchPayload('start', r) }"
+                            custom-styles="">
+                        </form-date-picker-range> -->
+                    </div>
+                    <div class="col-2 tx-11 pd-x-0">
+                        Transaction End Date
+                        <form-date-picker-single name="bilpayment.reportvalidation.enddate.filter" el-class="tx-11" callback="{ (r) => updateSearchPayload('end', r) }" show-icon="{ true }" show-time="{ false }" custom-styles="" custom-class=""></form-date-picker-single>
+                        <!-- <form-date-picker-range
+                            el-class="tx-12"
+                            el-format="YYYY/MM/DD"
+                            name="end"
+                            initial-date="{ search.end }"
+                            show-time="{ false }"
+                            show-icon="{ true }"
+                            shortcut="{ false }"
+                            date-type="{ 'single' }"
+                            callback="{ (r) => updateSearchPayload('end', r) }"
+                            custom-styles="">
+                        </form-date-picker-range> -->
+                    </div>
+                    <div class="col-3 tx-11 pd-r-10">
+                        Biller Provider Name
+                        <select-biller-providers
+                            dropdown="{ false }"
+                            accept-all-value="{ false }"
+                            billers="{ null }"
+                            selected="{ search.billers }"
+                            callback="{ (r) => updateSearchPayload('billers', r) }"
+                            el-class="form-control">
+                        </select-biller-providers>
+                    </div>
+                    <div class="col-2 pd-x-0 tx-11">
+                        Status
+                        <!-- <dropdown-settlement-status
+                            el-class="tx-12"
+                            title="All Status"
+                            name="billpayment.settlement-tools.filter.status"
+                            callback="{ (r) => updateSearchPayload('status', r) }"
+                            custom-styles="">
+                        </dropdown-settlement-status> -->
+                        <inquiry-settlement-status
+                            el-class="tx-12"
+                            name="settlement-status"
+                            callback="{ (r) => updateSearchPayload('status', r) }"
+                            custom-styles="">
+                        </inquiry-settlement-status>
+                    </div>
+                    <div class="col-3 pd-x-0">
+                        <form-button-loading
+                            el-name="search"
+                            el-class="btn btn-primary btn-md mg-x-10 tx-12 mg-t-15"
+                            el-onloading-title="Searching..."
+                            el-title="Search"
+                            callback="{ searchData }"
+                            el-isloading="{ table.loadingdata }">
+                        </form-button-loading>
+                        <form-button-loading
+                            if="{ access.generate }"
+                            el-name="billpayment.settlement-tools.settlement-report-validation.generate"
+                            el-class="btn btn-warning btn-md mg-x-0 tx-12 mg-t-15 float-right"
+                            el-onloading-title="Generating..."
+                            el-title="Generate"
+                            callback="{ showModalGenerateTransaction }"
+                            el-isloading="{ onGenerating }">
+                        </form-button-loading>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 pd-t-0 mg-t-20 overflow-x-scroll pd-x-0 bd">
+                        <table class="table table-bordered table-hover table-striped mg-l-0 bd-b" id="{ table.id }">
+                            <thead>
+                                <tr class="tx-12">
+                                    <td class="">#</td>
+                                    <td class="text-center tx-bold tx-11">Transaction Date & Time</td>
+                                    <td class="text-center tx-bold tx-11">Reference Number</td>
+                                    <td class="text-center tx-bold tx-11">Biller Provider name</td>
+                                    <td class="text-center tx-bold tx-11">Product Category</td>
+                                    <td class="text-center tx-bold tx-11">Product Code (FCUBS)</td>
+                                    <td class="text-center tx-bold tx-11">PTBC Escrow Account Number</td>
+                                    <td class="text-center tx-bold tx-11">Counterparty Name</td>
+                                    <td class="text-center tx-bold tx-11">Partner's Bank Account Number</td>
+                                    <td class="text-center tx-bold tx-11">Partner's Bank Destination Name</td>
+                                    <td class="text-center tx-bold tx-11">Settlement Amount</td>
+                                    <td class="text-center tx-bold tx-11">TTC</td>
+                                    <td class="text-center tx-bold tx-11">Remarks</td>
+                                    <!-- <td class="text-center tx-bold tx-11">File</td> -->
+                                    <td class="text-center tx-bold tx-11">Settlement Payment Method</td>
+                                    <td class="text-center tx-bold tx-11">Status</td>
+                                    <td class="text-center tx-bold tx-11">Actions</td>
+                                    <td class="text-center tx-bold tx-11">Select</td>
+                                </tr>
+                            </thead>
+                            <tbody class="tx-11">
+                                <tr if="{ table.loadingdata }">
+                                    <td colspan="18" class="text-center">Loading Data...</td>
+                                </tr>
+                                <tr if="{ !table.loadingdata }" each="{ item in table.items }">
+                                    <td class="tx-11">{ item.n }</td>
+                                    <td class="tx-11">{ item.createdOnFormatted }</td> <!-- Transaction Date & Time -->
+                                    <td class="tx-11">{ item.referenceNumber }</td> <!-- Reference Number -->
+                                    <td class="tx-11">{ item.billerProviderName }</td> <!-- Biller Provider name -->
+                                    <td class="tx-11">{ item.productCategory }</td> <!-- Product Category -->
+                                    <td class="tx-11">{ item.productCodeFcubs }</td> <!-- Product Code (FCUBS) -->
+                                    <td class="tx-11">{ item.ptbcEscrowAccountNumber }</td> <!-- PTBC Escrow Account Number -->
+                                    <td class="tx-11">{ item.counterPartyName }</td> <!-- Counterparty Name -->
+                                    <td class="tx-11">{ item.partnerBankAccountNumber }</td> <!-- Partner's Bank Account Number -->
+                                    <td class="tx-11">{ item.partnerBankDestinationName }</td> <!-- Partner's Bank Destination Name -->
+                                    <td class="tx-11 text-right">{ item.settlementAmount }</td> <!-- Partner's Bank Destination Name -->
+                                    <td class="tx-11">{ item.ttc }</td> <!-- TTC* -->
+                                    <td class="tx-11">{ item.remarks }</td> <!-- Remarks -->
+                                    <!-- <td class="tx-11"> -->
+                                        <!-- <a href="{ item.download_file_aggregator }" target="_blank" class="btn btn-sm btn-secondary pd-5 tx-10">File</a> -->
+                                        <!-- dipakai jika download tidak bisa langsung menggunakan url dari billpayment api tp butuh penyesuaian
+                                            <form-button-loading
+                                            el-class="btn btn-sm btn-secondary pd-5 tx-10"
+                                            el-title="File"
+                                            el-onloading-title="Downloading..."
+                                            el-isloading="{ loading[item.fileIdentifier] }"
+                                            callback="{ (e) => downloadFileAggregator(e, item) }">
+                                        </form-button-loading> -->
+                                    <!-- </td> -->
+                                    <td class="tx-11">{ item.settlementPaymentMethod }</td> <!-- Settlement Payment Method -->
+                                    <td class="tx-11">{ item.status }</td> <!-- Status -->
+                                    <td class="tx-11"> <!-- Action -->
+                                        <!-- <button class="btn btn-sm btn-info mg-1 tx-10 w-100" onclick="{ (e) => doView(e, item) }">View</button> -->
+                                        <button if="{ item.actions.edit }" class="btn btn-sm btn-warning mg-1 tx-10 w-100" onclick="{ () => showEditInquiry(item) }">Edit</button>
+                                    </td>
+                                    <td class="text-center">
+                                        <input type="checkbox" data-name="{ item.referenceNumber }" data-status="{ item.status }" onclick="{ toggleCheck }" class="mg-t-10">
+                                    </td>
+                                </tr>
+                                <tr if="{ !table.loadingdata && table.isNoData }">
+                                    <td colspan="18" class="text-center tx-11">No Data Found</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" if="{ !table.isNoData && !table.loadingdata }">
+                    <div class="col-12 pd-t-10 pd-r-0">
+                        <form-button-loading
+                            if="{ access.authorize_reject }"
+                            el-isloading="{ loading.reject }"
+                            el-is-disabled="{ buttonDisabled || disableToAuthorizeOrReject }"
+                            el-class="btn float-right btn-danger mg-1 tx-11 mg-l-10"
+                            callback="{ doReject }"
+                            el-onloading-title="Loading..."
+                            el-title="Reject"
+                            el-data="{JSON.stringify({buttonDisabled,disableToAuthorizeOrReject})}">
+                        </form-button-loading>
+                        <form-button-loading
+                            if="{ access.authorize_reject }"
+                            el-isloading="{ loading.authorize }"
+                            el-is-disabled="{ buttonDisabled || disableToAuthorizeOrReject }"
+                            el-class="btn float-right btn-success mg-1 tx-11 mg-l-10"
+                            callback="{ doAuthorize }"
+                            el-onloading-title="Loading..."
+                            el-title="Authorize"
+                            el-data="{{buttonDisabled,disableToAuthorizeOrReject}}">
+                        </form-button-loading>
+                        <form-button-loading
+                            if="{ access.confirm }"
+                            el-isloading="{ loading.confirm }"
+                            el-is-disabled="{ buttonDisabled || disableToConfirm }"
+                            el-class="btn float-right btn-primary mg-1 tx-11 mg-l-10"
+                            callback="{ doConfirm }"
+                            el-onloading-title="Loading..."
+                            el-title="Confirm"
+                            el-data="{{buttonDisabled,isValidToConfirm}}">
+                        </form-button-loading>
+                        <!-- <form-button-loading
+                            el-class="btn float-right btn-warning mg-1 tx-11 mg-r-40"
+                            el-is-disabled="{ buttonDisabled }"
+                            callback="{ downloadTransactionDetails }"
+                            el-onloading-title="Loading..."
+                            el-title="Download Transaction Details">
+                        </form-button-loading> -->
+                        <form-button-loading
+                            el-class="btn float-right btn-warning mg-1 tx-11 mg-r-40"
+                            el-is-disabled="{ buttonDisabled }"
+                            callback="{ directDownloadTransactionDetails }"
+                            el-onloading-title="Loading..."
+                            el-title="Download Transaction Details">
+                        </form-button-loading>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- <div class="col-12 pd-t-10">
+                        <form-custom-pagination
+                            el-class="float-right"
+                            callback="{ paginationCallback }"
+                            available-limits="{ dataInformation.availableLimits }"
+                            has-prev="{ pagination.hasPrev }"
+                            has-next="{ pagination.hasNext }"
+                            available-pages="{ dataInformation.availablePages }"
+                            current-page="{ dataInformation.currentPage }"
+                            ></form-custom-pagination>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <modal-settlement-inquiry-edit callback="{ updateSettlement }" show-modal="{ modal.show }" item="{ modal.editItem }"></modal-settlement-inquiry-edit>
+    <modal-settlement-generate-transaction callback="{ updateModal }" show-modal="{ modalGenerate.show }"></modal-settlement-generate-transaction>
+    <script>
+        import controller from './settlement-report-validation'
+        export default controller
+    </script>
+</bill-payment-report-validation>

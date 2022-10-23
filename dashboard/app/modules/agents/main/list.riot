@@ -1,0 +1,555 @@
+<user-access>
+    <div class="br-mainpanel">
+        <div class="br-pageheader">
+            <nav class="breadcrumb pd-0 mg-0 tx-12">
+                <a class="breadcrumb-item">Settings</a>
+                <span class="breadcrumb-item active">User Access</span>
+            </nav>
+        </div>
+        <div class="br-pagebody">
+            <div class="br-section-wrapper pd-x-20 pd-sm-x-30 pd-t-40">
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="pd-t-20 wd-150">Search User Id:</td>
+                                <td>
+                                    <input class="form-control tx-11" 
+                                        placeholder="Primary Account Number / User ID" 
+                                        id="searchAgent" name="searchAgent">
+                                </td>
+                                <td>
+                                    <button class="btn btn-outline-primary btn-xs tx-11" 
+                                        onclick="{SearchId}" 
+                                        id="SearchUserAccess">
+                                        Search
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 pd-0 mg-b-15">
+                        <select class="form-control c_pointer d-in-tab tx-10" 
+                            data-placeholder="Choose Browser" 
+                            style="width: 100px;" id="selectpage" 
+                            onchange="{changeLimit}">
+                            <option value="5" selected="{this.pagelimit === 5 ? 'selected' : ''}">5</option>
+                            <option value="10" selected="{this.pagelimit === 10 ? 'selected' : ''}">10</option>
+                            <option value="10" selected="{this.pagelimit === 15 ? 'selected' : ''}">15</option>
+                            <option value="10" selected="{this.pagelimit === 20 ? 'selected' : ''}">20</option>
+                            <option value="10" selected="{this.pagelimit === 25 ? 'selected' : ''}">25</option>
+                            <option value="10" selected="{this.pagelimit === 30 ? 'selected' : ''}">30</option>
+                        </select>
+                        <select class="form-control c_pointer d-in-tab mg-l-10 tx-10" 
+                            data-placeholder="Choose Browser" 
+                            style="width: 100px;" id="selectpage" 
+                            onchange="{changeType}">
+                            <option value="" selected="{this.tipePage === '---' ? 'selected' : ''}">---</option>
+                            <option value="asc" selected="{this.tipePage === 'asc' ? 'selected' : ''}">Accending</option>
+                            <option value="desc" selected="{this.tipePage === 'desc' ? 'selected' : ''}">Descending</option>
+                        </select>
+                    </div>
+                    <div class="col-12 bd pd-0 bd-b-0">
+                        <table class="table table-striped mg-b-0 b-b-1">
+                            <thead>
+                                <tr>
+                                    <td class="tx-11 font-weight-bold tx-left width-30">#</td>
+                                    <td class="tx-11 font-weight-bold tx-left">User Id </td>
+                                    <td class="tx-11 font-weight-bold tx-left">User Name</td>
+                                    <td class="tx-11 font-weight-bold tx-left">User Role</td>
+                                    <td class="tx-11 font-weight-bold tx-left">Creation Date</td>
+                                    <td class="tx-11 font-weight-bold tx-left">User Status</td>
+                                    <td class="tx-11 font-weight-bold tx-left">Action</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr each="{(v,i) in this.items}">
+                                    <td class="width-30">{i + 1}</td>
+                                    <td>{v.userid}</td>
+                                    <td>{v.name}</td>
+                                    <td>{v.role.title}</td>
+                                    <td>{v.created}</td>
+                                    <td>{v.status.string}</td>
+                                    <td style="padding-top:5px; padding-bottom:5px;">
+                                        <button onclick="{() => Action(v , val.name)}" 
+                                            class="btn {val['btn-class']} btn-icon mg-r-5 mg-b-5 mg-t-5" 
+                                            value="{val.title}" id="BlockUserAccess" 
+                                            each="{val in v.actions}">
+                                            <div class="{val.name === 'unblock' ? 'mg-r-15 mg-l-15' :'mg-r-10 mg-l-10'} curtom-width-height tx-10" 
+                                                value="{val}">
+                                                {val.title}
+                                            </div>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="">
+                                    <td colspan="6"></td>
+                                    <td>
+                                        <a href="{setLink(o.link,{})}" 
+                                            class="btn btn-outline-primary btn-icon mg-r-10 pull-right width-min" 
+                                            id="AddUser" 
+                                            each="{o in actions}">
+                                            <div class="mg-r-15 mg-l-15 curtom-width-height tx-10" 
+                                                style="width:max-content;">
+                                                {o.title}
+                                            </div>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div class="{this.isLoading === true ? 'ripple-loader' : 'd-none'}"></div>
+                    </div>
+                </div> 
+                <!-- <div class="card shadow-base bd-0 pd-25 ht-100p" if="{isLoading}">
+                    <div class="media mg-b-25"> -->
+                        
+                    <!-- </div>
+                </div> -->
+                <!-- paginations -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="mg-t-20 float-right">
+                            <ul class="pagination pagination-basic pagination-rounded mg-b-0">
+                                <li class="page-item {v.disabled === true ? 'disabled' : ''}  hidden-xs-down" id="firstPagingUserAccess" each="{(v,i) in this.paginprev}">
+                                    <a class="page-link c_pointer" onclick="{first}" aria-label="First">
+                                        <i class="icon ion-ios-arrow-back"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item active" id="firstPagingUserAccess" if="{this.paginnext || this.paginprev}">
+                                    <a class="page-link" aria-label="First">
+                                       {pagcurrent}
+                                    </a>
+                                </li>
+                                <li class="page-item {v.disabled === true ? 'disabled' : ''} " id="forwardPagingUserAccess" each="{(v,i) in this.paginnext}">
+                                    <a class="page-link c_pointer" onclick="{forward}" aria-label="Forward">
+                                        <i class="icon ion-ios-arrow-forward"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="{this.isLoadingfull === true ? 'ripple-loader-full' : 'd-none'}"> <span class="titte-loading">Please Wait...</span></div>
+    
+    <div id="modalChange" class="modal show">
+        <div class="modal-dialog modal-md" role="document">
+            <form name="change-agent" id="change-agent">
+            <div class="modal-content tx-size-sm">
+            <div class="modal-header pd-x-20">
+                <h6 class="tx-14 mg-b-0 tx-uppercase tx-inverse tx-bold">
+                    Message Change User
+                </h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body pd-20">
+                <div class="row row-sm">
+                    <div class="col-12">
+                        <div class="form-layout form-layout-4 bd-0 pd-10">
+                            <h6 class="br-section-label mg-b-40 mg-t-0">Change User</h6>
+                            <div class="row">
+                                <label class="col-sm-4 form-control-label">User ID</label>
+                                <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input type="text" 
+                                    class="form-control" disabled 
+                                    placeholder="Enter User ID"
+                                    value="{userid}" name="userid" id="userid">
+                                </div>
+                            </div><!-- row -->
+                            <div class="row mg-t-20">
+                                <label class="col-sm-4 form-control-label">User Name</label>
+                                <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                <input type="text" 
+                                    class="form-control" disabled 
+                                    placeholder="Enter User Name" 
+                                    value="{namevalue}"  name="role" id="role">
+                                </div>
+                            </div>
+                            <div class="row mg-t-20">
+                                <label class="col-sm-4 form-control-label">User Role</label>
+                                <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                    <hr/>
+                                    <select class="form-control c_pointer" 
+                                        data-placeholder="Choose Browser"  
+                                        id="selectpage" 
+                                        onchange="{changeRole}">
+                                        <option value="{i.name}" 
+                                            selected="{i.checked === true ? 'selected' : ''}" 
+                                            each={i in this.selectRole}>
+                                            {i.title}
+                                        </option>
+                                    </select>
+                                <!-- <input type="text" class="form-control" placeholder="Enter User Role"> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- modal-body -->
+
+            <div class="modal-footer">
+                <button type="button" 
+                    class="btn btn-outline-primary tx-size-xs" 
+                    id="modalChangeSave" onclick="{() => save(e)}" 
+                    data-dismiss="modal">
+                    Save
+                </button>
+                <button type="button" 
+                    class="btn btn-outline-secondary tx-size-xs" 
+                    data-dismiss="modal" 
+                    id="modalChangeCancel">
+                    Cancel
+                </button>
+            </div>
+            </div>
+        </form>
+        </div><!-- modal-dialog -->
+    </div>
+
+    <style>
+        .curtom-width-height{
+            width: 40px;
+            height: 23px;
+        }
+        .c_pointer{
+            cursor: pointer;
+        }
+        .b-b-1{
+            border-bottom: 1px solid #ced4da;
+        }
+        .tx-left{
+            text-align: left;
+        }
+        tr td{
+            /* font-size: 0.875rem; */
+            font-size: 12px;
+        }
+        button:hover{
+            color:#fff;
+        }
+        .table th {
+            padding: 1rem 1rem 1rem 0.7rem !important;
+        }
+        .width-30{
+            width: 30px;
+        }
+        .d-in-tab{
+            display: inline-table
+        }
+        .width-min{
+            width: min-content;
+        }
+    </style>
+    
+    <script>
+        import {
+            cancelAllRequest,
+        } from 'services/SDK/main'
+        import {
+            UserAgenList, 
+            ChangeRoleAgent, 
+            getListRole, 
+            BlockAgenUser, 
+            UnBlockAgenUser, 
+            RemoveUserAgent 
+        } from 'appModule/agents/agents.sdk'
+        import { goTo } from 'helpers/ma'
+        let limit = 10
+        const component = [
+                "user.create",
+            ]
+        export default {
+            onBeforeMount() {
+                cancelAllRequest()
+            },
+            onMounted() {
+                console.log('mounting pending list')
+                this.listtotal = 1
+                this.tipePage = '---'
+                this.isLoading = true
+                this.pagelimit = limit;
+                this.pagination = { page: 1 }
+                this.MenuAddUser = false
+                this.paginationpage =  this.pagination.page
+                this.render()
+                this.renderListRole()
+                this.update()
+            },
+            render(){
+                    const data = {
+                        limit : this.pagelimit,
+                        page :  (this.paginationpage < 1) ? 1 : this.paginationpage ,
+                        sort : (this.tipePage === '---') ? '' : this.tipePage ,
+                    }
+                UserAgenList(data)
+                    .then((response)=>{
+                        if (!localStorage.access) {
+                            goTo('logout')
+                        }
+                        let access = JSON.parse(localStorage.access);
+                        _.filter(access, (val) => {
+                                if(component.indexOf(val) > -1){
+                                    this.MenuAddUser = true;
+                                }
+                            })
+                        this.listtotal = response.data.total;
+
+                        this.paginations = this.listtotal / this.pagelimit;
+                        const data = response.data
+                        this.actions = data.actions;
+                        this.items = data.items;
+                        this.paginprev = [data.pagination.prev];
+                        this.paginnext = [data.pagination.next];
+                        this.pagcurrent = data.pagination.current
+                        this.isLoading = false
+                        this.update()
+                    })
+            },
+            renderListRole(){
+                getListRole()
+                .then((response)=>{
+                    this.selectRole = (response.data.items)
+                    this.update()
+                })
+            },
+            Action(e, val){
+                if(val === 'block'){
+                    this.Block(e, "Block")
+                } 
+
+                if(val === 'unblock'){
+                    this.UnBlock(e, "Unblock")
+                }
+
+                if(val === 'change'){
+                    this.Change(e)
+                }
+
+                if(val === 'delete'){
+                    this.Delete(e)
+                }
+            },
+            Change(e){
+                var namerole = (e.role.name)
+                const val = _.map(this.selectRole,(val)=>{
+                    if(val.name.toLowerCase() === namerole.toLowerCase()){
+                        val.name = val.name
+                        val.checked = true
+                    } else {
+                        val.name = val.name
+                        val.checked = false
+                    }
+                    return val
+                })
+                this.userid =  e.userid
+                this.namevalue =  e.name;
+                // setTimeout(()=>{
+                    $('#modalChange').modal('show');
+                // },1)
+                this.update()
+            },
+            Delete(e){
+                const data = {
+                    userid : e.userid
+                }
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Deleted'
+                    }).then((result) => {
+                    if (result.value) {
+                        this.isLoadingfull = true;
+                        this.update()
+                        RemoveUserAgent(data)
+                            .then((response)=>{
+                                this.isLoadingfull = false;
+                                this.update()
+                                Swal
+                                    .fire(
+                                        response.message,
+                                        '',
+                                        'success'
+                                        )
+                             this.render()
+                            })
+                            .catch((error) => {
+                                Swal
+                                    .fire(
+                                        'Error!',
+                                        error.error,
+                                        'error'
+                                    )
+                            })
+                    }
+                })
+            },
+            Block(e, val){
+                const data = {
+                    userid : e.userid
+                }
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: val 
+                    }).then((result) => {
+                    if (result.value) {
+                        this.isLoadingfull = true;
+                        this.update()
+                        BlockAgenUser(data)
+                        .then((response)=>{
+                            this.isLoadingfull = false;
+                            this.update()
+                            Swal.fire(
+                            response.message,
+                            '',
+                            'success'
+                            )
+                            this.render()
+                        })
+                        .catch((err)=>{
+                            console.error(err)
+                            Swal.fire({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: err.message || err.error || 'Server Not Responding',
+                                // footer: '<a href>Why do I have this issue?</a>'
+                            })
+                        })
+                    }
+                })
+            },
+            UnBlock(e, val){
+                const data = {
+                    userid : e.userid
+                }
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: val 
+                    }).then((result) => {
+                    if (result.value) {
+
+                        this.isLoadingfull = true;
+                        this.update()
+                        UnBlockAgenUser(data)
+                        .then((response)=>{
+                            this.isLoadingfull = false;
+                            this.update()
+                            Swal.fire(
+                            response.message,
+                            '',
+                            'success'
+                            )
+                            this.render()
+                        })
+                        .catch((err)=>{
+                            console.error(err)
+                            Swal.fire({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: err.message || err.error || 'Server Not Responding',
+                                // footer: '<a href>Why do I have this issue?</a>'
+                            })
+                        })
+                    }
+                })
+            },
+            changeLimit(e){
+                this.isLoading = true
+                this.paginationpage = 0
+                this.pagelimit = (e.target.value)
+                this.render()
+                this.update()
+            },
+            changeType(e){
+                this.tipePage = (e.target.value)
+                this.render()
+                this.update()
+            },
+            forward(e){
+                this.isLoading = true
+                this.paginationpage++
+                this.render()
+                this.update()
+            },
+            first(){
+                this.isLoading = true
+                this.paginationpage--
+                this.render()
+                this.update()
+            },
+            SearchId(e){
+                e.preventDefault()
+                this.isLoading = true;
+                this.update()
+                const data = {
+                        limit : this.pagelimit,
+                        page : this.paginationpage,
+                        userid :this.$('#searchAgent').value
+                    }
+                UserAgenList(data)
+                    .then((response)=>{
+                        const data = response.data
+                        this.actions = data.actions;
+                        this.items = data.items;
+                        this.isLoading = false
+                        this.update()
+                    })
+            },
+            save(e){
+                const data = {
+                    userid : this.userid,
+                    role : this.userRole
+                }
+                ChangeRoleAgent(data)
+                    .then((response)=>{
+                        Swal.fire(
+                            response.message,
+                            '',
+                            'success'
+                            )
+                        this.render()
+                    })
+                    .catch((err)=>{
+                        console.error(err)
+                        Swal.fire({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: err.message || err.error || 'Server Not Responding',
+                                // footer: '<a href>Why do I have this issue?</a>'
+                            })
+                    })
+            },
+            changeRole(e){
+                var nameRoleval = (e.target.value) ;
+                this.userRole = nameRoleval;
+                this.update();
+            }
+        }
+    </script>
+</user-access>

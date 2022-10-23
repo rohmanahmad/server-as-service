@@ -1,0 +1,134 @@
+<!-- 
+    props:
+        - callback function
+        - titles
+        - current-status Int
+ -->
+<form-toggle-switch>
+    <div class="form-inline">
+        <label class="switch float-left">
+            <input type="checkbox" onchange="{ changeState }" checked="{ config.stateValue > 0 }" id="{ toggleId }">
+            <span class="slider round"></span>
+        </label>
+        <label class="float-right mg-l-5 switch-title-{stateType} tx-11">{ config.title }</label>
+    </div>
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: #3ded16;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+        .switch-title-on {
+            color: #3ded16;
+        }
+        .switch-title-off {
+            color: #ccc;
+        }
+    </style>
+    <script>
+        import { randomString, debugLog } from 'helpers/utilities'
+        export default {
+            toggleId: randomString(5, {onlyChars: true}),
+            config: {
+                isChecked: false,
+                stateValue: 0, // 0: OFF, 1: ON
+                titles: ['Off', 'On'], // menyesuaikan index
+                title: 'Off',
+                stateType: 'off',
+            },
+            onBeforeMount(props) {
+                this.init(props)
+            },
+            onMounted(props) {
+                debugLog(`[${this.name}] [MOUNTED]`)
+                if (typeof props.callback !== 'function') {
+                    showAlertError(new Error('[Form Toggle] Callback Should Be a Function'))
+                }
+            },
+            onBeforeUpdate(props) {
+                this.init(props)
+            },
+            init(currentProps) {
+                if (currentProps.titles) this.config.titles = currentProps.titles
+                this.config.stateValue = currentProps.currentStatus
+                this.config.title = this.config.titles[this.config.stateValue]
+            },
+            changeState(e) {
+                if (e) {
+                    const target = e.target
+                    const isChecked = $(target).is(':checked')
+                    if (isChecked) {
+                        this.config.stateType = 'on'
+                        this.config.stateValue = 1
+                        this.config.title = this.config.titles[this.config.stateValue]
+                    } else {
+                        this.config.stateType = 'off'
+                        this.config.stateValue = 0
+                        this.config.title = this.config.titles[this.config.stateValue]
+                    }
+                    this.config.isChecked = isChecked
+                    this.callback()
+                    this.update()
+                }
+            },
+            callback() {
+                this.props.callback(this.config)
+            }
+        }
+    </script>
+</form-toggle-switch>

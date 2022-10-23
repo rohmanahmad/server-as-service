@@ -1,0 +1,15 @@
+<!-- 
+    props:
+        - name [String]
+        - callback [Function]
+        - selected [Int/String]
+        - disabled [Boolean]
+ -->
+
+ <partners-dropdown>
+    <form-dropdown title="Choose One" name="{ props.name }" disabled="{ props.disabled }" callback="{ callback }" items="{ partners }" el-class="form-control tx-12" selected="{ props.selected }"></form-dropdown>
+    <script>
+        import controller from './partners-dropdown'
+        export default controller
+    </script>
+</partners-dropdown>

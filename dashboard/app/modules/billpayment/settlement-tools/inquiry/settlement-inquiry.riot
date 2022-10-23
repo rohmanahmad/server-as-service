@@ -1,0 +1,133 @@
+<bill-payment-inquiry>
+    <div class="br-mainpanel">
+        <div class="br-pageheader">
+            <nav class="breadcrumb pd-0 mg-0 tx-12">
+                <span class="breadcrumb-item">Settlement Tools</span>
+                <span class="breadcrumb-item">Settlement Inquiry</span>
+                <span class="breadcrumb-item active">List</span>
+            </nav>
+        </div>
+        <div class="br-pagebody pd-r-5 pd-l-5 mg-t-10">
+            <div class="br-section-wrapper pd-x-10 pd-sm-x-30 pd-t-40">
+                <div class="row">
+                    <div class="col-2 tx-11 pd-t-0 pd-l-0">
+                        Transaction Start Date
+                        <!-- <form-date-picker-range el-class="tx-12" el-format="YYYY/MM/DD" name="start" initial-date="{ search.start }" show-time="{ false }" show-icon="{ true }" shortcut="{ false }" date-type="{ 'single' }" callback="{ (r) => updateSearchPayload('start', r) }" custom-styles=""></form-date-picker-range> -->
+                        <form-date-picker-single name="bilpayment.startdate.filter" el-class="tx-11" callback="{ (r) => updateSearchPayload('start', r) }" show-icon="{ true }" show-time="{ false }" custom-styles="" custom-class=""></form-date-picker-single>
+                    </div>
+                    <div class="col-2 tx-11 pd-x-0">
+                        Transaction End Date
+                        <!-- <form-date-picker-range el-class="tx-12" el-format="YYYY/MM/DD" name="end" initial-date="{ search.end }" show-time="{ false }" show-icon="{ true }" shortcut="{ false }" date-type="{ 'single' }" callback="{ (r) => updateSearchPayload('end', r) }" custom-styles=""></form-date-picker-range> -->
+                        <form-date-picker-single name="bilpayment.enddate.filter" el-class="tx-11" callback="{ (r) => updateSearchPayload('end', r) }" show-icon="{ true }" show-time="{ false }" custom-styles="" custom-class=""></form-date-picker-single>
+                    </div>
+                    <div class="col-3 tx-11">
+                        Biller Provider Name
+                        <select-biller-providers
+                            dropdown="{ false }"
+                            billers="{ null }"
+                            accept-all-value="{ false }"
+                            selected="{ search.billers }"
+                            callback="{ (r) => updateSearchPayload('billers', r) }"
+                            el-class="form-control"
+                            custom-styles="min-width: 200px"></select-biller-providers>
+                    </div>
+                    <div class="col-2 tx-11 pd-x-0">
+                        Status
+                        <inquiry-settlement-status el-class="tx-12" name="settlement-status" callback="{ (r) => updateSearchPayload('status', r) }" custom-styles=""></inquiry-settlement-status>
+                    </div>
+                    <div class="col-3 pd-x-5">
+                        <form-button-loading
+                            el-name="search"
+                            el-class="btn btn-primary btn-md mg-x-10 tx-12 mg-t-15"
+                            el-onloading-title="Searching..."
+                            el-title="Search"
+                            callback="{ searchData }"
+                            el-isloading="{ table.loadingdata }"></form-button-loading>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 pd-t-0 mg-t-20 overflow-x-scroll pd-x-0 bd">
+                        <table class="table table-bordered table-hover table-striped mg-l-0 bd-b" id="{ table.id }">
+                            <thead>
+                                <tr class="tx-12">
+                                    <td class="">#</td>
+                                    <td class="text-center tx-bold tx-11">Transaction Date & Time</td>
+                                    <td class="text-center tx-bold tx-11">Reference Number</td>
+                                    <td class="text-center tx-bold tx-11">Biller Provider name</td>
+                                    <td class="text-center tx-bold tx-11">Product Category</td>
+                                    <td class="text-center tx-bold tx-11">Product Code (FCUBS)</td>
+                                    <td class="text-center tx-bold tx-11">PTBC Escrow Account Number</td>
+                                    <td class="text-center tx-bold tx-11">Counterparty Name</td>
+                                    <td class="text-center tx-bold tx-11">Partner's Bank Account Number</td>
+                                    <td class="text-center tx-bold tx-11">Partner's Bank Destination Name</td>
+                                    <td class="text-center tx-bold tx-11">Settlement Amount</td>
+                                    <td class="text-center tx-bold tx-11">TTC</td>
+                                    <td class="text-center tx-bold tx-11">Remarks</td>
+                                    <td class="text-center tx-bold tx-11">Settlement Payment Method</td>
+                                    <td class="text-center tx-bold tx-11">Status</td>
+                                    <td class="text-center tx-bold tx-11">Actions</td>
+                                </tr>
+                            </thead>
+                            <tbody class="tx-11">
+                                <tr if="{ table.loadingdata }">
+                                    <td colspan="16" class="text-center">Loading Data...</td>
+                                </tr>
+                                <tr if="{ !table.loadingdata }" each="{ item in table.items }">
+                                    <td class="tx-11">{ item.n }</td>
+                                    <td class="tx-11">{ item.createdOnFormatted }</td> <!-- Transaction Date & Time -->
+                                    <td class="tx-11">{ item.referenceNumber }</td> <!-- Reference Number -->
+                                    <td class="tx-11">{ item.billerProviderName }</td> <!-- Biller Provider name -->
+                                    <td class="tx-11">{ item.productCategory }</td> <!-- Product Category -->
+                                    <td class="tx-11">{ item.productCodeFcubs }</td> <!-- Product Code (FCUBS) -->
+                                    <td class="tx-11">{ item.ptbcEscrowAccountNumber }</td> <!-- PTBC Escrow Account Number -->
+                                    <td class="tx-11">{ item.counterPartyName }</td> <!-- Counterparty Name -->
+                                    <td class="tx-11">{ item.partnerBankAccountNumber }</td> <!-- Partner's Bank Account Number -->
+                                    <td class="tx-11">{ item.partnerBankDestinationName }</td> <!-- Partner's Bank Destination Name -->
+                                    <td class="tx-11 text-right">{ item.settlementAmount }</td> <!-- Partner's Bank Destination Name -->
+                                    <td class="tx-11">{ item.ttc }</td> <!-- TTC* -->
+                                    <td class="tx-11">{ item.remarks }</td> <!-- Remarks -->
+                                    <td class="tx-11">{ item.settlementPaymentMethod }</td> <!-- Settlement Payment Method -->
+                                    <td class="tx-11">{ item.statusFormatted }</td> <!-- Status -->
+                                    <td class="tx-11"> <!-- Action -->
+                                        <button class="btn btn-sm btn-info mg-1 tx-10 w-100" onclick="{ (e) => doView(e, item) }">View</button>
+                                        <button if="{ access.edit && item.status === 'REJECTED_FROM_CHECKER' }" class="btn btn-sm btn-warning mg-1 tx-10 w-100" onclick="{ () => showEditInquiry(item) }">Edit</button>
+                                        <form-button-loading
+                                            if="{ access.authorize_reject && item.status === 'SUBMITTED_BY_MAKER' }"
+                                            el-class="btn btn-sm btn-success tx-10 mg-1 tx-10 w-100"
+                                            callback="{ (e) => doAuthorize(e, item) }"
+                                            el-onloading-title="Loading..."
+                                            el-title="Authorize">
+                                        </form-button-loading>
+                                    </td>
+                                </tr>
+                                <tr if="{ !table.loadingdata && table.isNoData }">
+                                    <td colspan="16" class="text-center tx-11">No Data Found</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- <div class="col-12 pd-t-10">
+                        <form-custom-pagination
+                            el-class="float-right"
+                            callback="{ paginationCallback }"
+                            available-limits="{ dataInformation.availableLimits }"
+                            has-prev="{ pagination.hasPrev }"
+                            has-next="{ pagination.hasNext }"
+                            available-pages="{ dataInformation.availablePages }"
+                            current-page="{ dataInformation.currentPage }"
+                            ></form-custom-pagination>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <modal-settlement-inquiry-edit callback="{ updateSettlement }" show-modal="{ modals.updateSettlement.show}" item="{ modals.updateSettlement.item }"></modal-settlement-inquiry-edit>
+    <modal-settlement-inquiry-view callback="{ cbModalView }" show-modal="{ modals.showDetail.show }" item="{ modals.showDetail.item }"></modal-settlement-inquiry-edit>
+    <script>
+        import controller from './settlement-inquiry'
+        
+        export default controller
+    </script>
+</bill-payment-inquiry>

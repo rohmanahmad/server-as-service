@@ -1,0 +1,65 @@
+<!-- 
+    props:
+        - el-class String Default form-control
+        - el-height Int Default 300
+        - rows Int Default 10
+        - cols Int Defautl 10
+        - value String Default ''
+        - callback Function
+ -->
+
+<form-tinymce>
+    <textarea
+        id="texteditor"
+        class="{ props.elClass || 'form-control tx-10' }"
+        id="{ inputId }"
+        cols="{ props.cols }"
+        rows="{ props.rows }"
+        onkeyup="{ updateContent }">
+            { this.value }
+        </textarea>
+    <script>
+        import { randomString, showAlertError, debugLog } from 'helpers/utilities'
+        export default {
+            onBeforeMount(props) {
+                if (typeof props.callback !== 'function') return showAlertError(new Error('[Form TinyMCE] Required Callback'))
+                this.inputId = randomString(10, {onlyChars: true})
+                if (props.value) this.value = props.value
+                this.callbackData = {
+                    value: this.value,
+                    id: this.inputId
+                }
+            },
+            onMounted() {
+                debugLog(`[${this.name}] [MOUNTED]`)
+                if (!tinymce) return null
+                tinymce.init({
+                    selector: 'textarea#' + this.inputId,
+                    content_style: "body {font-size: 10px;}",
+                    menubar: '',
+                    setup: (editor) => {
+                        editor.on('keyup', this.updateContent)
+                    },
+                    ...(this.props.elHeight ? {height: this.props.elHeight + 'px'} : {})
+                })
+                .then((ww) => {
+                    $('.tox-statusbar__branding').remove()
+                })
+            },
+            onBeforeUnmount() {},
+            onUpdated() {},
+            // callback
+            callback() {
+                this.props.callback(this.callbackData)
+            },
+            updateContent(e) {
+                const valueHTML = tinymce.activeEditor.getContent()
+                const valueText = tinymce.activeEditor.getContent({format : 'text'})
+                this.callbackData.value = valueHTML
+                this.callbackData.text = valueText
+                console.log({valueHTML, valueText})
+                this.callback()
+            },
+        }
+    </script>
+</form-tinymce>

@@ -1,0 +1,126 @@
+<modal-approval-dialog>
+    <div id="{ modalId }" class="modal fade show" data-backdrop="static">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content tx-size-sm">
+                <div class="modal-header pd-x-20">
+                    <h6 class="tx-16 mg-b-0 tx-uppercase tx-inverse">
+                        Push Notification Approval
+                    </h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body pd-l-20 pd-r-20 pd-b-20 pd-t-0">
+                    <div class="row mg-t-20">
+                        <div class="col-12 tx-11">
+                            <table class="table bd table-bordered table-striped" if="{ item }">
+                                <thead>
+                                    <tr>
+                                        <td></td>
+                                        <th>Before</th>
+                                        <th>After</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th class="wd-120">
+                                            <span class="float-left">Notification ID</span>
+                                        </th>
+                                        <td if="{ item }">{ item.notificationId }</td>
+                                        <td if="{ props.elData }">{ props.elData.notificationId }</td>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <span class="float-left">Notification Title</span>
+                                        </th>
+                                        <td if="{ item }">{ item.title }</td>
+                                        <td if="{ props.elData }">{ props.elData.title }</td>
+                                    </tr>
+                                    <!-- <tr>
+                                        <th>
+                                            <span class="float-left">Description</span>
+                                        </th>
+                                        <td if="{ item }">{ item.shortDesc }</td>
+                                        <td if="{ props.elData }">{ props.elData.shortDesc }</td>
+                                    </tr> -->
+                                    <tr>
+                                        <th>
+                                            <span class="float-left">Status</span>
+                                        </th>
+                                        <td if="{ item }">{ item.status }</td>
+                                        <td if="{ props.elData }">{ props.elData.status }</td>
+                                    </tr>
+                                    <tr if="{ item.schedule }">
+                                        <th>
+                                            <span class="float-left">Schedule Time</span>
+                                        </th>
+                                        <td if="{ item }">{ item.schedule.time }</td>
+                                        <td if="{ props.elData }">{ props.elData.schedule.time }</td>
+                                    </tr>
+                                    <tr if="{ item.schedule }">
+                                        <th>
+                                            <span class="float-left">Start Date</span>
+                                        </th>
+                                        <td title="{ item.schedule.startDate }">{ item.schedule.startDateFormatted }</td>
+                                        <td if="{ props.elData }" title="{ props.elData.schedule.startDate }">{ props.elData.schedule.startDateFormatted }</td>
+                                    </tr>
+                                    <tr if="{ item.schedule }">
+                                        <th>
+                                            <span class="float-left">End Date</span>
+                                        </th>
+                                        <td title="{ item.schedule.endDate }">{ item.schedule.endDateFormatted }</td>
+                                        <td if="{ props.elData }" title="{ props.elData.schedule.endDate }">{ props.elData.schedule.endDateFormatted }</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row pd-t-10" if="{ isWaitingForApproval }">
+                        <div class="col-5">
+                            <textarea placeholder="Your Comment Here" id="{ inputText1Id }" cols="30" rows="2" class="form-control tx-12"></textarea>
+                        </div>
+                        <div class="col-7 mg-t-10 pd-l-0 pd-r-0">
+                            <div class="form-inline">
+                                <form-upload-comment-attachment callback="{ uploadCallback }"></form-upload-comment-attachment>
+                                <button class="btn btn-outline-success mg-l-10 tx-11 pd-l-5" if="{ callbackData.uploaded }" disabled>
+                                    <i class="fa fa-check"></i> Success
+                                </button>
+                                <a target="_blank" class="btn btn-outline-warning mg-l-10 tx-11" href="{ callbackData.file_url }" title="Test Download File" if="{ (callbackData.uploaded && callbackData.file_url) }">
+                                    <i class="fa fa-download"></i>
+                                </a>
+                                <span class="btn btn-outline-danger mg-l-10" if="{ callbackData.isUpload }">Failed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- modal-body -->
+                <div class="modal-footer wrap" if="{ props.elData }">
+                    <div class="row">
+                        <div class="col-12">
+                            <form-button-loading
+                                if="{ props.elData.status === 'WAITING_FOR_APPROVAL' }"
+                                el-class="btn tx-11 wd-150 btn-danger mg-r-10"
+                                el-is-disabled="{ buttons.reject.disabled }"
+                                el-isloading="{ buttons.reject.loading }"
+                                el-title="Reject"
+                                callback="{ doReject }"
+                                el-onloading-title="Rejecting..."/>
+                            <form-button-loading
+                                if="{ props.elData.status === 'WAITING_FOR_APPROVAL' }"
+                                el-class="btn tx-11 wd-150 btn-success"
+                                el-is-disabled="{ buttons.approve.disabled }"
+                                el-isloading="{ buttons.approve.loading }"
+                                el-title="Approve"
+                                callback="{ doApprove }"
+                                el-onloading-title="Approving..."/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- modal-dialog -->
+    </div>
+    <script>
+        import controller from './approval-dialog'
+
+        export default controller
+    </script>
+</modal-approval-dialog>

@@ -1,0 +1,30 @@
+<limit-per-page>
+    <select class="form-control {customClass}" id="{ randomID }" onchange="{ updateData }">
+        <option each="{val in values}" value="{val}">{val}</option>
+    </select>
+    <script>
+        import { randomString, showAlertError, debugLog } from 'helpers/utilities'
+
+        export default {
+            values: [10, 20, 50, 100],
+            customClass: '',
+            onBeforeMount(props) {
+                if (props.customClass) this.customClass = props.customClass
+                if (typeof props.callback !== 'function') showAlertError(new Error('Callback Required'))
+                this.randomID = randomString(10, {onlyChars: true})
+            },
+            onMounted() {
+                debugLog(`[${this.name}] [MOUNTED]`)
+            },
+            onUpdated(props) {
+                if (props.values) {
+                    this.values = props.values
+                }
+            },
+            updateData() {
+                const limitSelected = this.$('#' + this.randomID).value || 10
+                if (typeof this.props.callback === 'function') this.props.callback(parseInt(limitSelected))
+            }
+        }
+    </script>
+</limit-per-page>

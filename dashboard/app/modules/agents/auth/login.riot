@@ -1,0 +1,31 @@
+<auth-login>
+    <div class="d-flex align-items-center justify-content-center bg-br-primary ht-100v">
+        <div class="login-wrapper wd-300 wd-xs-350 pd-r-40 pd-l-40 bg-white rounded shadow-base">
+            <div if="{ invalidDomains.length > 0 }" class="float-right pd-x-0" style="margin-right: -40px">
+                <form-button-icon el-class="btn btn-default" el-left-icon="fa fa-info-circle" callback="{ permitDomains }"></form-button-icon>
+            </div>
+            <div class="signin-logo tx-center tx-28 tx-bold tx-inverse mg-b-20 pd-t-40">
+                <img src="./images/logo-ptbc.png" width="200" class="img-responsive">
+            </div>
+            <form name="login-form" id="login-form" onsubmit="{ doLogin }">
+                <div class="form-group">
+                    <input type="text"  name="username" class="form-control tx-12" placeholder="Enter your username" data-rule="required">
+                </div><!-- form-group -->
+                <div class="form-group">
+                    <input type="password" name="password" class="form-control tx-12" placeholder="Enter your password" data-rule="required">
+                </div><!-- form-group -->
+                <button type="submit" class="btn btn-info btn-block tx-12">Sign In</button>
+                <span class="pd-t-40 tx-center d-block tx-10 pd-b-10">App Version : {version_app}</span>
+            </form>
+        </div><!-- login-wrapper -->
+    </div>
+    <style>
+        .pull-right{
+            float: right;
+        }
+    </style>
+    <script>
+        import controller from './login'
+        export default controller
+    </script>
+</auth-login>

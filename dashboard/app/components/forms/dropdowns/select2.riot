@@ -1,0 +1,51 @@
+<!-- 
+    props:
+    - el-class [String] default "form-control" OPTIONAL
+    - multiple [Boolean] default TRUE OPTIONAL
+    - selected [String] default NULL OPTIONAL
+    - items [Array{Object({name, title})}]
+ -->
+<select2-js>
+    <select class="{ props.elClass || 'form-control' }" id="{ config.selectorId }" multiple="{ props.multiple }" style="{props.customStyles}">
+        <option each="{ list in props.items }" value="{ list.name }" data-value="{ list.name }" selected="{ props.selected === list.name ? 'true' : '' }">{ list.title }</option>
+    </select>
+    <script>
+        import {
+            cancelAllRequest,
+            // settlementGenerateMonthlyReport
+        } from 'services/SDK/main'
+        import { showAlertError, randomString, debugLog } from 'helpers/utilities'
+        export default {
+            onBeforeMount(props) {
+                this.config = {}
+                this.config.loading = false
+                this.config.selectorId = randomString(10, { onlyChars: true })
+            },
+            onMounted(props) {
+                debugLog(`[${this.name}] [MOUNTED]`)
+                this.init(this.props.select2Options)
+            },
+            onBeforeUpdate(props) {
+            },
+            onUpdated(props) {},
+            onBeforeUnmount(props) {
+                cancelAllRequest()
+            },
+            init(opt={}) {
+                const id = '#' + this.config.selectorId
+                $(id).select2(opt)
+                $(id).on('select2:close', this.callback)
+            },
+            callback(e) {
+                const id = '#' + this.config.selectorId
+                const el = $(id).find(':selected')
+                let selectedItems = []
+                for (const x in el) {
+                    const value = el[x].value
+                    if (value) selectedItems.push(value)
+                }
+                this.props.callback(selectedItems)
+            }
+        }
+    </script>
+</select2-js>

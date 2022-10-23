@@ -1,0 +1,66 @@
+<!-- 
+    props:
+    - el-title String
+    - el-body String[html]
+    - el-image String[base64]
+ -->
+
+ <preview-android>
+    <div
+        style="background-image: url('./notification-assets/android.png');padding: 15% 4.6632124352% 0;background-repeat: no-repeat;background-size: 100%;display: flex;margin: 4px;">
+        <div class="android-preview bg-white d-flex justify-content-between mb-2  pd-8 mg-4 rounded-0" style="width: 96%;">
+            <div class="android-content-text overflow-hidden w-100 float-left">
+                <div class="wrap-head overflow-hidden w-100 tx-10">
+                    { props.elTitle }
+                </div>
+                <div class="wrap-body overflow-hidden float-left w-100">
+                    <raw class="wrap-html tx-8" html="{ props.elBody }"></raw>
+                </div>
+                <!-- <div class="wrap2" if="{ isContentOverflow }">
+                    ...
+                </div> -->
+            </div>
+            <div class="android-content-image wd-30 float-right">
+                <img src="{ props.elImage }" class="wrap-thumb float-right" alt="">
+            </div>
+        </div>
+    </div>
+    <p class="text-center"> Android</p>
+    <style>
+        .wrap-html>p {
+            height: 20px;
+            width: 100px;
+            max-width: 100%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .wrap-html p {
+            padding: 0px;
+        }
+        .wrap-head {
+            height: 15px;
+            max-width: 95%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .wrap-body {
+            height: 15px;
+            max-width: 95%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0px;
+        }
+        .wrap-thumb {
+            width: 30px;
+            max-height: 35px;
+            overflow: hidden;
+        }
+    </style>
+    <script>
+        export default {
+            onBeforeMount(props) {
+                // this.isContentOverflow = false
+            }
+        }
+    </script>
+</preview-android>

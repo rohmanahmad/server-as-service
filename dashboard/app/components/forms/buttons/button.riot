@@ -1,0 +1,33 @@
+<!-- 
+    props:
+     - disabled [Boolean]
+     - callback [Function]
+     - elClass [String]
+     - elStyles [String]
+     - elTitle [String]
+     - elData [Any/Mixed]
+ -->
+
+<form-button>
+    <button disabled="{ props.disabled }" class="{ props.elClass || 'btn' }" style="{ props.elStyles }" onclick="{ callback }" id="{ buttonId }">{ props.elTitle || 'Sample Button' }</button>
+    <style></style>
+    <script>
+        import { randomString, showAlertError, debugLog } from 'helpers/utilities'
+        export default {
+            buttonId: randomString(5, {onlyChars: true}),
+            onMounted(props) {
+                debugLog(`[${this.name}] [MOUNTED]`)
+                if (typeof props.callback !== 'function') {
+                    showAlertError(new Error('[Form Button] Callback Should Be a Function'))
+                }
+            },
+            callback() {
+                if (typeof this.props.callback === 'function') this.props.callback({
+                    id: this.buttonId,
+                    title: this.props.title,
+                    data: (this.props.elData || {})
+                })
+            }
+        }
+    </script>
+</form-button>

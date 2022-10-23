@@ -1,0 +1,307 @@
+<ekyc-parameterization-task-approval>
+    <div id="modal-approval" class="modal fade show" if="{modalData}">
+        <div class="modal-dialog {modalData.modal_class}" role="document">
+            <div class="modal-content tx-size-sm">
+                <div class="modal-header pd-x-20">
+                    <h6 class="tx-16 mg-b-0 tx-uppercase tx-inverse tx-bold">
+                        {modalComponents.title}
+                    </h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body pd-l-20 pd-r-20 pd-b-20 pd-t-0">
+                    <div class="row row-sm">
+                        <div class="col-12 mg-t-20">
+                            <table>
+                                <tr>
+                                    <td class="pd-b-10 tx-bold pd-r-20">Requested by</td>
+                                    <td class="pd-b-10 style_titik_2">:</td>
+                                    <td class="pd-b-10">{modalData.requested_by}</td>
+                                </tr>
+                                <tr>
+                                    <td class="pd-b-10 tx-bold">Actions</td>
+                                    <td class="pd-b-10 style_titik_2">:</td>
+                                    <td class="pd-b-10">{modalData.actions}</td>
+                                </tr>
+                                <tr>
+                                    <td class="pd-b-10 tx-bold">Note</td>
+                                    <td class="pd-b-10 style_titik_2">:</td>
+                                    <td class="pd-b-10">
+                                        {modalData.note || '-'}
+                                    </td>
+                                </tr>
+                            </table>
+                            <hr/>
+                        </div>
+                    </div>
+                    <div class="row row-sm">
+                        <div class="col-6 pd-t-20">
+                            <div class="row">
+                                <div class="col-12 tx-bold text-center">
+                                    BEFORE
+                                    <hr/>
+                                </div>
+                            </div>
+                            <div class="row pd-10">
+                                <div class="col-12">
+                                    <table>
+                                        <tbody if="{modalData.before}">
+                                            <tr if="{modalData.before.fullname}">
+                                                <td class="pd-b-10 tx-bold pd-r-20">Full Name</td>
+                                                <td class="pd-b-10 style_titik_2">:</td>
+                                                <td class="pd-b-10">{modalData.before.fullname}</td>
+                                            </tr>
+                                            <tr if="{modalData.before.role_status}">
+                                                <td class="pd-b-10 tx-bold">Role</td>
+                                                <td class="pd-b-10 style_titik_2">:</td>
+                                                <td class="pd-b-10">{modalData.before.role_status}</td>
+                                            </tr>
+                                            <tr if="{modalData.before.trx_desc}">
+                                                <td class="pd-b-10 tx-bold">Transaction Desc</td>
+                                                <td class="pd-b-10 style_titik_2">:</td>
+                                                <td class="pd-b-10">{modalData.before.trx_desc}</td>
+                                            </tr>
+                                            <tr if="{modalData.before.amount}">
+                                                <td class="pd-b-10 tx-bold">Amount</td>
+                                                <td class="pd-b-10 style_titik_2">:</td>
+                                                <td class="pd-b-10">IDR {fN(parseInt(modalData.before.amount))}</td>
+                                            </tr>
+                                            <tr if="{modalData.before.status}">
+                                                <td class="pd-b-10 tx-bold">Status</td>
+                                                <td class="pd-b-10 style_titik_2">:</td>
+                                                <td class="pd-b-10">{modalData.before.status}</td>
+                                            </tr>
+                                            <tr if="{modalData.before.access}">
+                                                <td class="pd-b-10 tx-bold" style="vertical-align: top;">Access</td>
+                                                <td class="pd-b-10 style_titik_2" style="vertical-align: top;">:</td>
+                                                <td class="pd-b-10">
+                                                    <ul style="padding: 0px 0px 0px 20px;">
+                                                        <li each="{(v,i) in modalData.before.access}">{v}</li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                            <tr if="{modalData.before.cbm_threshold}">
+                                                <td class="pd-b-10 tx-bold">CBM Threshold</td>
+                                                <td class="pd-b-10 style_titik_2">:</td>
+                                                <td class="pd-b-10">{modalData.before.cbm_threshold}</td>
+                                            </tr>
+                                            <tr if="{modalData.before.vc_threshold}">
+                                                <td class="pd-b-10 tx-bold">VC Threshold</td>
+                                                <td class="pd-b-10 style_titik_2">:</td>
+                                                <td class="pd-b-10">{modalData.before.vc_threshold}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div><!-- col-6 -->
+                        <div class="col-6 mg-t-0 pd-t-20">
+                            <div class="row">
+                                <div class="col-12" style="text-align: center;">
+                                    <b>AFTER</b>
+                                    <hr />
+                                </div>
+                            </div>
+                            <div class="row pd-10">
+                                <div class="col-12">
+                                    <table>
+                                        <tbody if="{modalData.after}">
+                                            <tr if="{modalData.after.fullname}">
+                                                <td class="pd-b-10 tx-bold pd-r-20">Full Name</td>
+                                                <td class="pd-b-10 style_titik_2">:</td>
+                                                <td class="pd-b-10"> {modalData.after.fullname}</td>
+                                            </tr>
+                                            <tr if="{modalData.after.role_status}">
+                                                <td class="pd-b-10 tx-bold">Role</td>
+                                                <td class="pd-b-10 style_titik_2">:</td>
+                                                <td class="pd-b-10"> {modalData.after.role_status}</td>
+                                            </tr>
+                                            <tr if="{modalData.before.trx_desc}">
+                                                <td class="pd-b-10 tx-bold">Transaction Desc</td>
+                                                <td class="pd-b-10 style_titik_2">:</td>
+                                                <td class="pd-b-10"> {modalData.before.trx_desc}</td>
+                                            </tr>
+                                            <tr if="{modalData.after.amount}">
+                                                <td class="pd-b-10 tx-bold">Amount</td>
+                                                <td class="pd-b-10 style_titik_2">:</td>
+                                                <td class="pd-b-10"> IDR {fN(parseInt(modalData.after.amount))}</td>
+                                            </tr>
+                                            <tr if="{modalData.after.status}">
+                                                <td class="pd-b-10 tx-bold">Status</td>
+                                                <td class="pd-b-10 style_titik_2">:</td>
+                                                <td class="pd-b-10"> {modalData.after.status}</td>
+                                            </tr>
+                                            <tr if="{modalData.after.access}">
+                                                <td class="pd-b-10 tx-bold" style="vertical-align: top;">Access</td>
+                                                <td class="pd-b-10 style_titik_2" style="vertical-align: top;">:</td>
+                                                <td class="pd-b-10">
+                                                    <ul style="padding: 0px 0px 0px 20px;">
+                                                        <li each="{(v,i) in modalData.after.access}"> {v}</li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                            <tr if="{modalData.after.cbm_threshold}">
+                                                <td class="pd-b-10 tx-bold">CBM Threshold</td>
+                                                <td class="pd-b-10 style_titik_2">:</td>
+                                                <td class="pd-b-10"> {modalData.after.cbm_threshold}</td>
+                                            </tr>
+                                            <tr if="{modalData.after.vc_threshold}">
+                                                <td class="pd-b-10 tx-bold">VC Threshold</td>
+                                                <td class="pd-b-10 style_titik_2">:</td>
+                                                <td class="pd-b-10"> {modalData.after.vc_threshold}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Note Input-->
+                    <div class="row row-sm" if="{['paylater'].indexOf(modalData.type) > -1}" data-type="{modalData.type}">
+                        <div class="col-10 offset-1">
+                            <div class="row bd rounded">
+                                <div class="col-3 mg-t-0 pd-t-30 pd-b-20 tx-right">
+                                    Note/Reason:
+                                </div>
+                                <div class="col-9 mg-t-0 pd-t-20 pd-b-10">
+                                    <input type="text" class="form-control form-control-md" id="reason" placeholder="Enter Your Note Here">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- modal-body -->
+                <div class="modal-footer wrap">
+                    <div class="row">
+                        <div class="col-12">
+                            <button class="btn btn-secondary mg-r-20 tx-11 pendingModal" data-dismiss="modal">Cancel</button>
+                            <button
+                                onclick="{confirmApproval}"
+                                disabled="{(modalComponents.submitButton.isLoading || isLoading) ? 'true' : ''}"
+                                class="btn {modalComponents.submitButton.class} tx-11">
+                                    <span if="{!modalComponents.submitButton.isLoading}">{ modalComponents.submitButton.title }</span>
+                                    <span if="{modalComponents.submitButton.isLoading}" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    <span if="{modalComponents.submitButton.isLoading}">Loading...</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- modal-dialog -->
+    </div>
+    <script>
+        import {
+            cancelAllRequest,
+        } from 'services/SDK/main'
+        import {
+            createAgentActivity,
+        } from 'appModule/agents/agent-activity.sdk'
+        import {
+            ApproveRequestTask,
+            RejectRequesTask,
+        }  from 'appModule/pending-tasks/pending-tasks.sdk'
+        import { result } from 'lodash'
+        import { showAlertError, showAlertSuccess } from 'helpers/utilities'
+        export default {
+            modalData: {},
+            modalComponents: {},
+            onBeforeMount() {
+                this.modalType = null
+                this.modalData = {}
+                this.modalComponents = {
+                    title: '',
+                    submitButton: {
+                        title: '',
+                        disabled: '',
+                        isLoading: false
+                    }
+                }
+            },
+            onBeforeUnmount() {
+                cancelAllRequest()
+            },
+            onMounted() {
+                this.update()
+            },
+            onUpdated(props) {
+                if ((this.modalData !== this.props.datajson) || this.modalType !== this.props.scenario) {
+                    this.modalType = this.props.scenario
+                    this.modalData = this.props.datajson
+                    this.callback = this.props.result
+                    this.showModal()
+                }
+            },
+            logAgentActivity(action, detail) {
+                createAgentActivity({
+                    module: 'My Pending Tasks - Business Parameter',
+                    action,
+                    detail
+                })
+            },
+            fN(n) {
+                return formatNumber(n)
+            },
+            showModal() {
+                const type = this.modalType
+                if (type === 'approve') {
+                    this.modalComponents.title = 'MESSAGE PREVIEW APPROVE'
+                    this.modalComponents.submitButton.title = 'Approve'
+                    this.modalComponents.submitButton.class = 'btn-primary'
+                } else if (type === 'reject') {
+                    this.modalComponents.title = 'MESSAGE PREVIEW REJECT'
+                    this.modalComponents.submitButton.title = 'Reject'
+                    this.modalComponents.submitButton.class = 'btn-danger'
+                }
+                this.update()
+                if (this.$('#reason')) this.$('#reason').value = ''
+                $('#modal-approval').modal('show')
+            },
+            confirmApproval() {
+                this.doConfirmation()
+                    .catch(console.error)
+            },
+            async doConfirmation() {
+                try {
+                    this.modalComponents.submitButton.isLoading = true
+                    this.update()
+                    const type = this.modalData.type, taskid = this.modalData.task_id
+                    let note = null, apiPath = null
+                    if (this.$('#reason')) note = this.$('#reason').value
+                    if (
+                        ['paylater'].indexOf(type) > -1
+                        && (!note || (note && note.length === 0))
+                    ) throw new Error('Note Is Required')
+                    const beforeData = this.modalData.before
+                    const afterData = this.modalData.after
+                    if (this.modalType === 'approve') {
+                        apiPath = result(this.modalData, 'approve_link')
+                        await ApproveRequestTask(apiPath, {action_note: note})
+                        showAlertSuccess('Request Approved')
+                        if (type === 'business-parameter') {
+                            let detail = []
+                            detail.push(`THRESHOLD_FACE_COMPARISON: ${beforeData.cbm_threshold} to ${afterData.cbm_threshold}`)
+                            detail.push(`THRESHOLD_VIDEO_CALL: ${beforeData.vc_threshold} to ${afterData.vc_threshold}`)
+                            this.logAgentActivity('Approve Business Parameter Changes', detail.join(', '))
+                        }
+                    } else {
+                        apiPath = result(this.modalData, 'reject_link')
+                        await RejectRequesTask(apiPath, {action_note: note})
+                        showAlertSuccess('Request Rejected')
+                        if (type === 'business-parameter') {
+                            let detail = []
+                            detail.push(`THRESHOLD_FACE_COMPARISON: ${beforeData.cbm_threshold}`)
+                            detail.push(`THRESHOLD_VIDEO_CALL: ${beforeData.vc_threshold}`)
+                            this.logAgentActivity('Reject Business Parameter Changes', detail.join(', '))
+                        }
+                    }
+                    $('#modal-approval').modal('hide')
+                    this.callback(true)
+                } catch (err) {
+                    showAlertError(err)
+                }
+                this.modalComponents.submitButton.isLoading = false
+                this.update()
+            },
+        }
+    </script>
+</ekyc-parameterization-task-approval>

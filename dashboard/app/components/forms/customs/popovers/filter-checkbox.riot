@@ -1,0 +1,64 @@
+<popover-filter-checkbox>
+    <div class="popover fade bs-popover-bottom {props.show ? 'show' : 'overflow-hidden'}" style="top: unset; left: unset; margin-left: -74px;">
+        <div class="arrow" style="left: 65px;"></div>
+        <h3 class="popover-header"></h3>
+        <div class="popover-body">
+            <ul class="list-group" style="max-height: 200px;">
+                <li class="list-group-item pd-0 bd-0">
+                    <ul class="list-group bd-0" style="max-height: 150px; overflow: auto;">
+                        <li class="list-group-item pd-5" each="{item in (props.dataItems || [])}">
+                            <input class="float-left { currentClass }" checked="{ (itemSelected || []).indexOf(item) > -1 }" value="{item}" style="padding: 10px;"
+                                type="checkbox">
+                            <span class="float-left pd-t-0 pd-l-10 tx-10">{ item }</span>
+                        </li>
+                    </ul>
+                </li>
+                <li class="list-group-item pd-t-5 bd-0">
+                    <button class="btn btn-primary wd-50 float-left tx-10 pd-5"
+                        onclick="{ doFilter }">Filter</button>
+                    <button class="btn btn-warning wd-50 float-left tx-10 pd-5 mg-l-3"
+                        onclick="{ doFilterReset }">Reset</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <style>
+        .h-0 {
+            height: 0px !important;
+        }
+    </style>
+    <script>
+        import { randomString, showAlertError, debugLog } from 'helpers/utilities'
+        import { cloneDeep } from 'lodash'
+
+        export default {
+            itemSelected: [],
+            onBeforeMount() {
+                this.currentClass = randomString(10, {onlyChars: true})
+            },
+            onMounted(props) {
+                debugLog(`[${this.name}] [MOUNTED]`)
+                if (typeof props.callback !== 'function') showAlertError(new Error('[Filter] Callback Is Required'))
+                if (props.dataSelected) this.itemSelected = props.dataSelected
+            },
+            onBeforeUpdate(props) {
+                if (props.dataSelected) this.itemSelected = props.dataSelected
+            },
+            doFilter(e) {
+                const selectedItems = []
+                const sel = $('.' + this.currentClass).each(function () {
+                    const isChecked = $(this).is(':checked')
+                    if(isChecked) {
+                        selectedItems.push($(this).val())
+                    }
+                })
+                this.props.callback(this.props.type, selectedItems)
+            },
+            doFilterReset(e) {
+                this.props.callback(this.props.type, this.props.dataItems)
+                this.itemSelected = cloneDeep(this.props.dataItems)
+                this.update()
+            },
+        }
+    </script>
+</popover-filter-checkbox>

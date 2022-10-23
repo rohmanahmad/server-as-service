@@ -1,0 +1,144 @@
+    <header-app>
+    <div class="br-logo shadow-base">
+        <img src="./images/logo-ptbc.png" width="200">
+    </div>
+    <div class="br-header">
+        <div class="br-header-left">
+            <!-- <img class="show-xs" src="./images/logo-ptbc.png" width="200"> -->
+            <!-- <a each="{o in state.menu}" href="" class="align-items-center d-flex nav-link nav-link-profile" data-toggle="dropdown"><span class="icon {o.icon} tx-24 mr-2"></span>{o.name}</a> -->
+        </div>
+        <!-- br-header-left -->
+        <div class="br-header-right">
+            <nav class="nav">
+                <!-- dropdown -->
+                <div class="dropdown">
+                    <a class="nav-link nav-link-profile pd-r-0 mg-t-6" >
+                        <span class="logged-name hidden-md-down c_pointer tx-10" data-toggle="tooltip" data-placement="top" title="Last Login">{lastLogin}</span>
+                    </a>
+                </div>
+                <div class="dropdown">
+                    <a class="nav-link nav-link-profile {getProfileMenu()}" onclick="{openProfile}">
+                        <span class="logged-name hidden-md-down tx-10">{ full_name }</span>
+                        <img src="./images/profile.png" class="wd-32 rounded-circle" alt="">
+                        <span class="square-10 bg-success"></span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-header wd-250 position-absolute {getProfileMenu()}">
+                        <div class="tx-center">
+                            <a href=""><img src="./images/profile.png" class="wd-80 rounded-circle" alt=""></a>
+                            <h6 class="logged-fullname">{ full_name }</h6>
+                            <p>{userid}</p>
+                        </div>
+                        <hr>
+                        <ul class="list-unstyled user-profile-nav tx-10">
+                            <li if="{userid === '@ptbcsuper'}"><a href="#" onclick="{doCheckup}"><i class="icon ion-android-sync"></i>Synchronize</a></li>
+                            <li if="{userid === '@ptbcsuper'}"><a href="#" onclick="{ (e) => {e.preventDefault(); goTo('support/administration')} }"><i class="icon ion-shuffle"></i>Administration</a></li>
+                            <li><a href="{ setLink('logout',{}) }"><i class="icon ion-power"></i> Sign Out</a></li>
+                        </ul>
+                    </div><!-- dropdown-menu -->
+                </div><!-- dropdown -->
+            </nav>
+        </div><!-- br-header-right -->
+        <style>
+        .pst-abs{
+            position: absolute;
+        }
+        .mg-t-m-17{
+            margin-top: -17px !important;
+        }
+        .pd-l-15{
+            margin-top: -10px;
+        }
+        .c_pointer{
+            cursor: pointer;
+        }
+        </style>
+        <script>
+            import { checkup } from 'appModule/support-admin/support-admin.sdk'
+            import { goTo } from 'helpers/ma'
+            import { getCookie } from 'helpers/cookie'
+            import { debugLog } from 'helpers/utilities'
+            let addEventListener = (item)=>{
+                let specifiedElement = item.$('.nav-link.nav-link-profile')
+                let a = item
+                document.addEventListener('click', function(event) {
+                    debugLog(event)
+                    debugLog(event.target.previousSibling)
+                      var isClickInside = specifiedElement.contains(event.target);
+                      if(a.state.profileMenu.isActive){
+                          if (!isClickInside) {
+                              a.toggleProfile()
+                          }
+                      }
+                })
+
+            }
+
+            export default {
+                state:{
+                    menu:[{
+                        name:"Ticket",
+                        icon:'ion-ios-chatboxes-outline'
+                    }, {
+                        name:"Publish",
+                        icon:'ion-ios-compose-outline'
+                    }, {
+                        name:"Dashboard",
+                        icon:'ion-ios-monitor-outline'
+                    }, {
+                        name:"Report",
+                        icon:'ion-ios-chatboxes-outline'
+                    }, {
+                        name:"Setting",
+                        icon:'ion-ios-gear-outline'
+                    }],
+                    profileMenu: {
+                        isActive: false
+                    }
+                },
+                getProfileMenu(){
+                    return this.classNames({
+                      show: this.state.profileMenu.isActive,
+                    })
+                },
+                openProfile(e){
+                    e.preventDefault()
+                    this.toggleProfile()
+                },
+                toggleProfile(){
+                    this.state.profileMenu.isActive = !this.state.profileMenu.isActive
+                    this.update()
+                },
+                goTo(link) {
+                    this.state.profileMenu.isActive = false
+                    this.update()
+                    debugLog(link)
+                    goTo(link)
+                },
+                doCheckup(e) {
+                    e.preventDefault()
+                    this.state.profileMenu.isActive = false
+                    this.update()
+                    checkup()
+                        .then(function (res) {
+                            Swal.fire({
+                                type: 'success',
+                                title: 'Checkup Success'
+                            })
+                        })
+                        .catch(console.error)
+                },
+                onMounted(){
+                    window.cekProfile = this
+                    setTimeout(()=>{
+                        $('[data-toggle="tooltip"]').tooltip();
+                    })
+                    this.lastLogin = localStorage.getItem('lastLogin')
+                    this.state.profileMenu.isActive = false
+                    this.full_name = getCookie('name')
+                    this.userid = getCookie('userid')
+                    this.update()
+                }
+
+            }
+        </script>
+</header-app>

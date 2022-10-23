@@ -1,0 +1,17 @@
+<!-- 
+    props:
+    - callback [function]
+    - elItems Object[{name, title}]
+    - elClass String
+ -->
+
+ <sort-data>
+    <div class="form-inline">
+        <form-dropdown items="{ props.items }" el-title="" el-class="form-control tx-11 pd-l-2" callback="{ (res) => changeData('sort_key', res.data) }"></form-dropdown>
+        <form-dropdown items="{ datadir }" el-title="" el-class="form-control tx-11 mg-l-2 pd-l-2" callback="{ (res) => changeData('sort_dir', res.data) }"></form-dropdown>
+    </div>
+    <script>
+        import controller from './sortdata'
+        export default controller
+    </script>
+ </sort-data>

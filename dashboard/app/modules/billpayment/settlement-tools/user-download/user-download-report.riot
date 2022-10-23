@@ -1,0 +1,120 @@
+<settlement-tools-user-download-report>
+    <div class="br-mainpanel">
+        <div class="br-pageheader">
+            <nav class="breadcrumb pd-0 mg-0 tx-12">
+                <span class="breadcrumb-item">Settlement Tools</span>
+                <span class="breadcrumb-item">User Download Report</span>
+                <span class="breadcrumb-item active">List</span>
+            </nav>
+        </div>
+        <div class="br-pagebody pd-r-5 pd-l-5 mg-t-10">
+            <div class="br-section-wrapper pd-x-10 pd-sm-x-30 pd-t-40">
+                <div class="row">
+                    <div class="col-2 tx-11 pd-t-0 pd-x-0">
+                        Start Date
+                        <form-date-picker-single name="bilpayment.userdownload.startdate.filter" el-class="tx-11" callback="{ (r) => updateSearchPayload('start', r) }" show-icon="{ true }" show-time="{ false }" custom-styles="" custom-class=""></form-date-picker-single>
+                        <!-- <form-date-picker-range
+                            el-format="YYYY/MM/DD"
+                            el-class="tx-12"
+                            name="start"
+                            initial-date="{ search.start }"
+                            show-time="{ false }"
+                            show-icon="{ true }"
+                            shortcut="{ false }"
+                            date-type="{ 'single' }"
+                            callback="{ (r) => updateSearchPayload('start', r) }"
+                            custom-styles="">
+                        </form-date-picker-range> -->
+                    </div>
+                    <div class="col-2 tx-11">
+                        End Date
+                        <form-date-picker-single name="bilpayment.userdownload.enddate.filter" el-class="tx-11" callback="{ (r) => updateSearchPayload('end', r) }" show-icon="{ true }" show-time="{ false }" custom-styles="" custom-class=""></form-date-picker-single>
+                        <!-- <form-date-picker-range
+                            el-format="YYYY/MM/DD"
+                            el-class="tx-12"
+                            name="end"
+                            initial-date="{ search.end }"
+                            show-time="{ false }"
+                            show-icon="{ true }"
+                            shortcut="{ false }"
+                            date-type="{ 'single' }"
+                            callback="{ (r) => updateSearchPayload('end', r) }"
+                            custom-styles="">
+                        </form-date-picker-range> -->
+                    </div>
+                    <div class="col-3 tx-11 pd-x-0">
+                        Biller Provider Name
+                        <select-biller-providers
+                            dropdown="{ false }"
+                            accept-all-value="{true}"
+                            billers="{ null }"
+                            selected="{ search.billers }"
+                            callback="{ (r) => updateSearchPayload('billers', r) }"
+                            el-class="form-control"
+                            custom-styles="width: 100%">
+                        </select-biller-providers>
+                    </div>
+                    <div class="col-5">
+                        <!-- <form-button-loading el-name="search" el-class="btn btn-primary mg-l-5 tx-12  mg-t-15" el-onloading-title="Searching..." el-title="Search" callback="{ searchData }" el-isloading="{ table.loadingdata }"></form-button-loading> -->
+                        <form-button-loading
+                            el-name="generate"
+                            el-class="btn btn-warning tx-12 mg-t-15"
+                            el-onloading-title="Generating..."
+                            el-title="Generate"
+                            callback="{ cbBtnGenerate }"
+                            el-isloading="{ false }">
+                        </form-button-loading>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 pd-t-20 pd-x-0">
+                        <table class="table table-bordered table-hover table-striped bd">
+                            <thead>
+                                <tr class="tx-12">
+                                    <td class="tx-11 text-center">#</td>
+                                    <td class="tx-11 text-center tx-bold">Settlement Name</td>
+                                    <td class="tx-11 text-center tx-bold">Settlement Date Time</td>
+                                    <td class="tx-11 text-center tx-bold">User Login</td>
+                                    <td class="tx-11 text-center tx-bold">Status</td>
+                                </tr>
+                            </thead>
+                            <tbody class="tx-12">
+                                <tr if="{ table.loadingdata }">
+                                    <td colspan="7" class="tx-11 text-center">Loading Data...</td>
+                                </tr>
+                                <tr each="{ item in table.items }">
+                                    <td class="tx-11 text-center">{ item.n }</td>
+                                    <td class="tx-11 text-center">{ item.billerProviderName }</td> <!-- Biller Provider Name -->
+                                    <td class="tx-11 text-center">{ item.settlementProcessedOn }</td> <!-- Settlement Date Time -->
+                                    <td class="tx-11 text-center">{ item.downloadedBy }</td> <!-- Attempt -->
+                                    <td class="tx-11 text-center">{ item.status }</td> <!-- Status -->
+                                </tr>
+                                <tr if="{ !table.loadingData && table.empty }">
+                                    <td colspan="7" class="text-center tx-11">No Data Found</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" if="{ !true }"> <!-- masih disembunyikan -->
+                    <div class="col-12 pd-r-0">
+                        <form-button-loading
+                            el-name="download"
+                            el-class="btn btn-primary btn-md mg-x-0 tx-12 mg-t-0 float-right"
+                            el-onloading-title="Downloading..."
+                            el-title="Download"
+                            callback="{ console.log }"
+                            el-isloading="{ false }"></form-button-loading>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <modal-settlement-user-download-generate show="{ modals.generate.show }" callback="{ cbModal }"></modal-settlement-report-validation-status-generate> -->
+    <!-- <modal-settlement-user-download-edit show="{ modals.edit.show }" item="{ table.currentData }" callback="{ cbModal }"></modal-settlement-report-validation-status-edit> -->
+    <script>
+        import controller from './user-download-report'
+
+        export default controller
+    </script>
+</settlement-tools-user-download-report>

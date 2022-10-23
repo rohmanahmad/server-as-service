@@ -1,0 +1,169 @@
+<notification-create>
+    <div class="br-mainpanel">
+        <div class="br-pageheader">
+            <nav class="breadcrumb pd-0 mg-0 tx-12">
+                <a class="breadcrumb-item">Notification</a>
+                <span class="breadcrumb-item active">Details</span>
+            </nav>
+        </div>
+
+        <div class="br-pagebody pd-r-5 pd-l-5 mg-t-10">
+            <div class="br-section-wrapper pd-x-10 pd-t-10 tx-11">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col-12 pd-0">
+                                <div class="form-layout form-layout-4 bd-0 pd-0 mg-b-0">
+                                    <h5 class="br-section-label mg-b-40 pd-t-20 pd-l-20">Notification Details</h5>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 form-control-label fz-m text-right">Notification ID <span class="text-danger">*</span></label>
+                                        <div class="col-sm-3 mg-t-10 mg-sm-t-0">
+                                            { preview.notificationId }
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 form-control-label fz-m text-right">Notification Title <span class="text-danger">*</span></label>
+                                        <div class="col-sm-9 mg-t-10 mg-sm-t-0">
+                                            { preview.notificationTitle }
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 form-control-label fz-m text-right">Notification Short Description <span class="text-danger">*</span></label>
+                                        <div class="col-sm-9 mg-t-10 mg-sm-t-0">
+                                            { preview.shortDesc }
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 form-control-label fz-m text-right">Notification Body <span class="text-danger">*</span></label>
+                                        <div class="col-sm-9 mg-t-10 mg-sm-t-0">
+                                            <raw html="{ preview.body }" id="{contentId}"></raw>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 form-control-label fz-m text-right">Uploaded Image</label>
+                                        <div class="col-sm-9 mg-t-10 mg-sm-t-0">
+                                            <!-- { preview.imageUrl } -->
+                                            <a if="{ preview.imageUrl && preview.imageUrl !== 'NOT_SET' }" href="{ preview.imageUrl }" class="btn btn-xs tx-10 btn-secondary pd-t-2 pd-b-2 mg-l-0" target="_blank">View/Download Image</a>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 form-control-label fz-m text-right">WebView Text </label>
+                                        <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                            { preview.urlText }
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 form-control-label fz-m text-right">WebView Url </label>
+                                        <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                                            { preview.url }
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 form-control-label fz-m text-right">Destination Page
+                                        </label>
+                                        <div class="col-sm-9 mg-t-10 mg-sm-t-0">
+                                            { preview.destinationPage }
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 form-control-label fz-m text-right">Targeted Users <span class="text-danger">*</span></label>
+                                        <div class="col-sm-9 mg-t-10 mg-sm-t-0">
+                                            <!-- { preview.targetedUsersURL } -->
+                                            <button if="{preview.downloadTargetUserURL}" class="btn btn-secondary tx-10 pd-t-2 pd-b-2 mg-l-0" onclick="{ downloadTargetUsers }">show/download</button>
+                                        </div>
+                                    </div> 
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 form-control-label fz-m text-right">Selected Schedule <span class="text-danger">*</span></label>
+                                        <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                            { preview.schedule.type }
+                                        </div>
+                                        <div class="col-sm-4 mg-t-10 mg-sm-t-0"></div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-3 text-right">Schedule Detail</div>
+                                        <div class="col-sm-9 mg-t-10 mg-sm-t-0">
+                                            <table if="{ preview.schedule }">
+                                                <!-- <tr if="{ preview.schedule.id }">
+                                                    <td class="pd-t-5 pd-b-5 pd-r-5" width="100">Schedule Id</td>
+                                                    <td>: { preview.schedule.id }</td>
+                                                </tr> -->
+                                                <!-- <tr if="{ preview.schedule.id }">
+                                                    <td class="pd-t-5 pd-b-5 pd-r-5" width="100">Cron Format</td>
+                                                    <td>: { preview.schedule.cron }</td>
+                                                </tr> -->
+                                                <tr if="{ preview.schedule.startDate }">
+                                                    <td class="pd-t-5 pd-b-5 pd-r-5">Start Date</td>
+                                                    <td>: { preview.schedule.startDate }</td>
+                                                </tr>
+                                                <tr if="{ preview.schedule.endDate }">
+                                                    <td class="pd-t-5 pd-b-5 pd-r-5">End Date</td>
+                                                    <td>: { preview.schedule.endDate }</td>
+                                                </tr>
+                                                <tr if="{ preview.schedule.date }">
+                                                    <td class="pd-t-5 pd-b-5 pd-r-5">Date</td>
+                                                    <td>: { preview.schedule.date }</td>
+                                                </tr>
+                                                <tr if="{ preview.schedule.day }">
+                                                    <td class="pd-t-5 pd-b-5 pd-r-5">Days</td>
+                                                    <td>: { preview.schedule.day }</td>
+                                                </tr>
+                                                <tr if="{ preview.schedule.timeNonUTC || preview.schedule.time }">
+                                                    <td class="pd-t-5 pd-b-5 pd-r-5">Time</td>
+                                                    <td>: { preview.schedule.timeNonUTC || preview.schedule.time }</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label class="col-sm-3 form-control-label fz-m text-right">Status<span class="text-danger">*</span></label>
+                                        <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                            { preview.status }
+                                        </div>
+                                        <div class="col-sm-4 mg-t-10 mg-sm-t-0"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-right mg-t-5">
+                                <button class="btn btn-warning btn-xs mr-2 tx-11" if="{ actions && actions.edit && preview.status === 'DRAFT' }" onclick="{ doEdit }">Edit</button>
+                                <button class="btn btn-primary btn-xs tx-11" onclick="{ backToList }">Back To List</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row h-100">
+                            <div class="col-12 h-100">
+                                <div class="bd-0 bg-light border form-layout form-layout-4 mg-b-0 p-3 pd-0" style="height: 100%">
+                                    <div class="row">
+                                        <div class="col-12 mg-b-20">
+                                            <h5 class="br-section-label mg-b-20">Device Preview</h5>
+                                            <p>
+                                                This preview provides a general idea of how your
+                                                message will aspear on a moble device. Actual
+                                                message rendering will vary depending on the device.
+                                                est with a real device for actual results.
+                                            </p>
+                                        </div>
+                                        <div class="col-12 mg-b-20">
+                                            <preview-android el-image="{ preview.imageUrl || preview.thumbnail }" el-title="{ preview.notificationTitle }" el-body="{ preview.shortDesc }"></preview-android>
+                                        </div>
+                                        <div class="col-12">
+                                            <preview-ios el-image="{ preview.imageUrl || preview.thumbnail }" el-title="{ preview.notificationTitle }" el-body="{ preview.shortDesc }"></preview-ios>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <modal-target-users temp-id="{ modalTargetUsers.tempId }" show-modal="{ modalTargetUsers.show }" callback="{ hideModalTargetUsers }"></modal-target-users> -->
+
+    <script>
+        import controller from './my-notification-details'
+        export default controller
+    </script>
+</notification-create>

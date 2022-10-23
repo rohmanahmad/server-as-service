@@ -1,0 +1,122 @@
+<!-- 
+    props:
+        - column-name [String] required
+        - data-title [String]
+        - title-class [String]
+        - sort-class [String]
+        - search-class [String]
+        - use-sort [Boolean] default False
+        - sort-key [String]
+        - sort-value [String]
+        - use-filter [Boolean] default False
+        - filter-key [String]
+        - filter-values [Array{name, title}]
+        - filter-selected-keys
+        - use-search [Boolean] default False
+        - search-key [String]
+        - search-value [String]
+        - callback Function
+ -->
+
+<form-table-column-title>
+    <div class="form-control-sm column-body tx-11 { props.elClass } pd-0">
+        <div class="wrap-column-sort w-15 { props.sortClass }" onclick="{ doSortCallback }" if="{ props.useSort }">
+            <form-button-sort sort-key="{ props.columnName }" sort-value="{ props.sortValue }" callback="{ console.log }"></form-button-sort>
+        </div>
+        <div class="wrap-column-title w-{ wdContent } { props.titleClass }">
+            { props.dataTitle }
+        </div>
+        <div if="{ props.useSearch }" class="wrap-column-search pointer { props.searchValue ? 'text-warning' : '' } w-15 { props.searchClass }" onclick="{ doSearch }">
+            <i class="fa fa-search"></i>
+        </div>
+        <div if="{ props.useFilter }" class="wrap-column-filter pointer { props.filterValue ? 'text-warning' : '' } w-15 { props.searchClass }" onclick="{ doFilter }">
+            <i class="fa fa-filter"></i>
+        </div>
+    </div>
+    <style>
+        .column-body{
+            max-width: 100%;
+        }
+        .wrap-column-sort{
+            /* width: 10%; */
+            min-width: 11px;
+            float: left;
+        }
+        .wrap-column-title{
+            /* width: 60%; */
+            /* max-width: 60%; */
+            float: left;
+        }
+        .wrap-column-search,.wrap-column-filter{
+            /* width: 10%; */
+            min-width: 15px;
+            float: right;
+        }
+        .w-85{
+            width: 85%;
+        }
+        .w-60{
+            width: 60%;
+        }
+        .w-15{
+            max-width: 15%;
+            min-width: 15px;;
+        }
+    </style>
+    <script>
+        import { randomString, showAlertError, debugLog } from 'helpers/utilities'
+        export default {
+            onBeforeMount(props) {
+                if (!props.columnName) return showAlertError(new Error('[Form Table Column Title] Required Column Name'))
+                if (typeof props.callback !== 'function') return showAlertError(new Error('[Form Table Column Title] Required Callback'))
+                this.inputId = randomString(10, { onlyChars: true })
+                this.initialWidth(props)
+                this.setCallbackData(props)
+            },
+            initialWidth(props) {
+                const {useSort, useFilter, useSearch} = props || {}
+                this.wdContent = 90
+                if (useSort) this.wdContent -= 15
+                if (useSearch || useFilter) this.wdContent -= 15
+            },
+            onMounted() {
+                debugLog(`[${this.name}] [MOUNTED]`)
+            },
+            onBeforeUnmount() {},
+            onBeforeUpdate(props) {
+                this.setCallbackData(props)
+            },
+            // callback
+            callback() {
+                this.props.callback(this.callbackData)
+            },
+            updateContent(e) {
+                this.callback()
+            },
+            doSearch() {
+                console.log('doSearch')
+            },
+            doFilter() {
+                console.log('doFilter')
+            },
+            setCallbackData(props) {
+                this.callbackData = {
+                    id: this.inputId
+                }
+                if (props.useSort) {
+                    this.callbackData['sort_key'] = props.sortKey
+                    this.callbackData['sort_value'] = props.sortValue
+                }
+                if (props.useSearch) {
+                    this.callbackData['search_key'] = props.searchKey
+                    this.callbackData['search_value'] = props.searchValue
+                }
+                if (props.useFilter) {
+                    this.callbackData['filter_key'] = props.filterKey
+                    this.callbackData['filter_selected_keys'] = props.filterSelectedKeys
+                    this.filterSelectedKeys = props.filterSelectedKeys
+                }
+            },
+        }
+    </script>
+</form-table-column-title>

@@ -1,0 +1,50 @@
+<popover-search-box>
+    <div class="popover fade bs-popover-bottom {props.show ? 'show' : 'overflow-hidden'}" style="top: unset; left: unset; margin-left: -74px;">
+        <div class="arrow" style="left: 65px;"></div>
+        <h3 class="popover-header"></h3>
+        <div class="popover-body">
+            <ul class="list-group" style="max-height: 200px;">
+                <li class="list-group-item pd-0 bd-0">
+                    <input type="text" class="form-control pd-5 tx-10 float-left h-auto" placeholder="search" id="{ inputId }" value="{ props.defaultValue }">
+                </li>
+                <li class="list-group-item pd-t-5 bd-0">
+                    <button class="btn btn-primary wd-50 float-left tx-10 pd-5"
+                        onclick="{ callback }">Filter</button>
+                    <button class="btn btn-warning wd-50 float-left tx-10 pd-5 mg-l-3"
+                        onclick="{ reset }">Reset</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <style>
+        .h-0 {
+            height: 0px !important;
+        }
+    </style>
+    <script>
+        import { randomString, showAlertError, debugLog } from 'helpers/utilities'
+        export default {
+            onBeforeMount(props) {
+                if (!props.name) return showAlertError(new Error('[Popover Search] Name Required'))
+                if (typeof props.callback !== 'function') return showAlertError(new Error('[Popover Search] Callback Required on ' + props.name))
+                this.inputId = randomString(10, { onlyChars: true })
+            },
+            onMounted() {
+                debugLog(`[${this.name}] [MOUNTED]`)
+            },
+            onBeforeUnmount() {},
+            callback() {
+                const value = this.$('#' + this.inputId).value
+                this.props.callback({
+                    id: this.inputId,
+                    name: this.props.name,
+                    value
+                })
+            },
+            reset() {
+                this.$('#' + this.inputId).value = ''
+                return this.callback()
+            },
+        }
+    </script>
+</popover-search-box>

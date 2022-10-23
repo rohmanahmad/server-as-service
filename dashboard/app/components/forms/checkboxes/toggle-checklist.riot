@@ -1,0 +1,32 @@
+<!-- 
+    props:
+        - callback Function
+        - elClass
+        - selected-all Boolean
+        - key String
+ -->
+<toggle-checklist>
+    <input type="checkbox" name="{ 'checkbox-' + key }" checked="{ props.isChecked }" class="{ props.elClass }" id="{ inputId }" onclick="{ (e) => toggleCheck(key, e.target) }">
+    <script>
+        import { randomString, showAlertError, debugLog } from 'helpers/utilities'
+        export default {
+            onBeforeMount(props) {
+                this.inputId = randomString(10, {onlyChars: true})
+                if (props.selectedAll) this.isChecked = true
+                if (typeof props.callback !== 'function') {
+                    showAlertError(new Error('[Toggle Check List] Callback Should Be a Function'))
+                }
+            },
+            onMounted() {
+                debugLog(`[${this.name}] [MOUNTED]`)
+            },
+            onBeforeUpdate(props) {
+                if (props.key || props.elKey) this.key = props.key || props.elKey
+            },
+            toggleCheck(key, target) {
+                const isChecked = $(target).is(':checked')
+                this.props.callback(key, isChecked, this.props.elItem)
+            }
+        }
+    </script>
+</toggle-checklist>

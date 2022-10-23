@@ -1,0 +1,501 @@
+<report>
+    <div class="br-mainpanel">
+        <div class="br-pageheader">
+            <nav class="breadcrumb pd-0 mg-0 tx-12">
+                <a class="breadcrumb-item">Report</a>
+                <span class="breadcrumb-item active">Report List</span>
+            </nav>
+        </div>
+        <div class="br-pagebody pd-r-5 pd-l-5 mg-t-10 mg-b-10">
+            <div class="br-section-wrapper pd-b-80 pd-t-30">
+                <div class="row tx-11 pd-b-10">
+                    <div class="col-2 pd-x-0">
+                        <!-- <date-range cb="{UpdateDate}" id="Reports"> </date-range>  -->
+                        Start Date
+                        <form-date-picker-single name="startdate" el-format="YYYY/MM/DD" callback="{ (res) => callbackDate('since', res) }" initial-date="{ since }" show-time="{ false }" el-class="tx-10"></form-date-picker-single>
+                    </div>
+                    <div class="col-2">
+                        End Date
+                        <form-date-picker-single name="enddate" el-format="YYYY/MM/DD" callback="{ (res) => callbackDate('until', res) }" show-time="{ false }" el-class="tx-10"></form-date-picker-single>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8 pd-0">
+                        <table class="table table-borderless table-hover bd">
+                            <tr if="{state.permission && state.permission.myActivities}">
+                                <td>
+                                    <span class="tx-11">
+                                        {state.permission.myActivities.title}
+                                    </span>
+                                </td>
+                                <td class="text-right">
+                                    <button class="btn btn-sm tx-11 btn-primary"
+                                        onclick="{downloadXLS}"
+                                        data-params="{JSON.stringify(state.permission.myActivities.data || {})}"
+                                        data-endpoint="{state.permission.myActivities.link}"
+                                        data-type="myActivities"
+                                        id="report-myActivities">
+                                        Download XLS
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr if="{state.permission && state.permission.roleActivities}">
+                                <td>
+                                    <span class="tx-11">
+                                        {state.permission.roleActivities.title}
+                                    </span>
+                                </td>
+                                <td class="text-right">
+                                    <button class="btn btn-sm tx-11 btn-primary"
+                                        onclick="{downloadXLS}"
+                                        data-params="{JSON.stringify(state.permission.roleActivities.data || {})}"
+                                        data-endpoint="{state.permission.roleActivities.link}"
+                                        data-type="roleActivities"
+                                        id="report-roleActivities">
+                                        Download XLS
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr if="{state.permission && state.permission.agentActivities}">
+                                <td>
+                                    <span class="tx-11">
+                                        {state.permission.agentActivities.title}
+                                    </span>
+                                </td>
+                                <td class="text-right">
+                                    <button class="btn btn-sm tx-11 btn-primary"
+                                        onclick="{downloadXLS}"
+                                        data-params="{JSON.stringify(state.permission.agentActivities.data || {})}"
+                                        data-endpoint="{state.permission.agentActivities.link}"
+                                        data-type="agentActivities"
+                                        id="report-agentActivities">
+                                        Download XLS
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr if="{state.permission && state.permission.businessParameterActivities}">
+                                <td>
+                                    <span class="tx-11">
+                                        {state.permission.businessParameterActivities.title}
+                                    </span>
+                                </td>
+                                <td class="text-right">
+                                    <button class="btn btn-sm tx-11 btn-primary"
+                                        onclick="{downloadXLS}"
+                                        data-params="{JSON.stringify(state.permission.businessParameterActivities.data || {})}"
+                                        data-endpoint="{state.permission.businessParameterActivities.link}"
+                                        data-type="businessParameterActivities"
+                                        id="report-businessParameterActivities">
+                                        Download XLS
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr if="{state.permission && state.permission.faceComparisonActivities}">
+                                <td>
+                                    <span class="tx-11">
+                                        {state.permission.faceComparisonActivities.title}
+                                    </span>
+                                </td>
+                                <td class="text-right">
+                                    <button class="btn btn-sm tx-11 btn-primary"
+                                        onclick="{downloadXLS}"
+                                        data-params="{JSON.stringify(state.permission.faceComparisonActivities.data || {})}"
+                                        data-endpoint="{state.permission.faceComparisonActivities.link}"
+                                        data-type="faceComparisonActivities"
+                                        id="report-faceComparisonActivities">
+                                        Download XLS
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr if="{state.permission && state.permission.allAgentsActivitiesData}">
+                                <td>
+                                    <span class="tx-11">
+                                        {state.permission.allAgentsActivitiesData.title}
+                                    </span>
+                                </td>
+                                <td class="text-right">
+                                    <button class="btn btn-sm tx-11 btn-primary"
+                                        onclick="{downloadXLS}"
+                                        data-params="{JSON.stringify(state.permission.allAgentsActivitiesData.data || {})}"
+                                        data-endpoint="{state.permission.allAgentsActivitiesData.link}"
+                                        data-type="allAgentsActivitiesData"
+                                        id="report-allAgentsActivitiesData">
+                                        Download XLS
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .curtom-width-height{
+            width: 40px;
+            height: 23px;
+        }
+        .c_pointer{
+            cursor: pointer;
+        }
+        .b-b-1{
+            border-bottom: 1px solid #ced4da;
+        }
+        .tx-left{
+            text-align: left;
+        }
+        tr td{
+            font-size: 0.875rem;
+        }
+        button:hover{
+            color:#fff;
+        }
+        .table th {
+            padding: 1rem 1rem 1rem 0.7rem !important;
+        }
+        .width-30{
+            width: 30px;
+        }
+        .d-in-tab{
+            display: inline-table;
+        }
+        .width-min{
+            width: min-content;
+        } 
+        .pull-right{
+                float: right;
+        }
+        .pd-60{
+                padding: 60px;
+        }
+    </style>
+    
+    <script>
+        import {
+            cancelAllRequest,
+        } from 'services/SDK/main'
+        import {
+            ReportDownload,
+            DownloadAgentActivitiesData,
+        } from 'appModule/ekyc/ekyc.sdk'
+        import {
+            sendRequest,
+            ReportList,
+            GetReportPermission,
+        } from 'appModule/ekyc/customers.sdk'
+        import {
+            ChangeRoleAgent,
+            getListRole,
+        } from 'appModule/agents/agents.sdk'
+        import { showAlertError } from 'helpers/utilities'
+        import {result} from 'lodash'
+        import downloadFile from 'js-file-download'
+        import {getCookie} from 'helpers/cookie'
+        let limit = 10
+        const component = [
+                "user.create",
+            ]
+        export default {
+            onBeforeMount(props, state) {
+                state.permission = {}
+                cancelAllRequest()
+                GetReportPermission()
+                    .then((response) => {
+                        this.update({
+                            permission: response.data
+                        });
+                    });
+            },
+            onMounted() {
+                console.log('mounting pending list')
+                this.since = moment().subtract(1, 'month').format('YYYY-MM-DD');
+                this.until = moment().format('YYYY-MM-DD');
+                this.render()
+                this.update()
+            },
+            render(){
+                const data = {
+                    userid : 'me',
+                    since : this.since,
+                    until : this.until ,
+                    activity_type : 'login'
+                }
+            },
+            /* UpdateDate(since ,until) {
+                this.since = since;
+                this.until = until;
+                this.update()
+            }, */
+            callbackDate(type, res) {
+                let f = 'YYYY-MM-DD'
+                if (type && res.date) {
+                    this[type] = res.date.format(f)
+                    this.update()
+                }
+            },
+            downloadXLS(e){
+                const {endpoint, type, params} = $(e.target).data()
+                if (window.run_debug) debugger
+                switch (type) {
+                    case 'agentActivities':
+                        this.generateAgentActivities({endpoint, params})
+                        break
+                    case 'roleActivities':
+                        this.generateRoleActivities({endpoint, params})
+                        break
+                    case 'businessParameterActivities':
+                        this.downloadActivityFromServer({endpoint, params: {...params, since: this.since, until: this.until}})
+                        break
+                    case 'allAgentsActivitiesData':
+                        this.downloadAgentsActivitiesData({endpoint, params: {...params, since: this.since, until: this.until}})
+                        break
+                    default:
+                        this.generateActivities({endpoint, params})
+                        break
+                }
+                if (window.run_debug) debugger
+            },
+            downloadActivityFromServer({endpoint, params}) {
+                ReportDownload({...params, filename: true})
+                    .catch(err => {
+                        showAlertError(err)
+                        return null
+                    })
+                    .then((res) => {
+                        if (res) {
+                            const filename = res.filename
+                            ReportDownload(params)
+                                .catch(err => {
+                                    showAlertError(err)
+                                    return null
+                                })
+                                .then(blob => {
+                                    if (blob) downloadFile(blob, filename)
+                                })
+                        }
+                    })
+            },
+            downloadAgentsActivitiesData({endpoint, params}) {
+                DownloadAgentActivitiesData({...params, filename: true})
+                    .catch(err => {
+                        showAlertError(err)
+                        return null
+                    })
+                    .then((res) => {
+                        if (res) {
+                            const filename = res.filename
+                            DownloadAgentActivitiesData(params)
+                                .catch(err => {
+                                    showAlertError(err)
+                                    return null
+                                })
+                                .then(blob => {
+                                    if (blob) downloadFile(blob, filename)
+                                })
+                        }
+                    })
+            },
+            generateActivities({endpoint, params}) {
+                try {
+                    const formatsince = moment(this.since).format('YMMD')
+                    const formatuntil = moment(this.until).format('YMMD')
+                    if (window.run_debug) debugger
+                    let nametittle = `activity-${formatsince}-${formatuntil}`;
+                    const xlsHeader = [
+                        "No",
+                        "User ID / CIF",
+                        "Name",
+                        "Requested By",
+                        "Requested Date",
+                        "Approved By",
+                        "Approved Date",
+                        "Rejected By",
+                        "Rejected Date",
+                        'Type',
+                        'Status'
+                    ];
+                    if (typeof params === 'string') {
+                        try {
+                            params = JSON.parse(params);
+                        } catch (err) {
+                            console.error(err.message);
+                        }
+                    }
+                    const data = {
+                        since : this.since,
+                        until : this.until,
+                        ...params
+                    }
+                    if (window.run_debug) debugger
+                    sendRequest('get', endpoint, data)
+                        .then((response) => {
+                            const data = result(response, 'data.items', [])
+                                .map(function (doc, index) {
+                                    return {
+                                        no: parseInt(index) + 1,
+                                        userid: result(doc, 'userID'),
+                                        name: result(doc, 'name'),
+                                        reqBy: result(doc, 'requestedBy'),
+                                        reqDate: result(doc, 'requestedDate'),
+                                        appBy: result(doc, 'approvedBy'),
+                                        appDate: result(doc, 'approvedDate'),
+                                        rejectBy: result(doc, 'rejectedBy'),
+                                        rejectDate: result(doc, 'rejectedDate'),
+                                        type: result(doc, 'type'),
+                                        status: result(doc, 'status')
+                                    }
+                                })
+                            this.doDownload(data, xlsHeader, nametittle)
+                        })
+                } catch (err) {
+                    console.error(err)
+                }
+            },
+            generateRoleActivities({endpoint, params}) {
+                try {
+                    const formatsince = moment(this.since).format('YMMD')
+                    const formatuntil = moment(this.until).format('YMMD')
+                    let nametittle = `role-${formatsince}-${formatuntil}`;
+                    const xlsHeader = [
+                        "No",
+                        "Role Name",
+                        "Requested By",
+                        "Requested Date",
+                        "Approved By",
+                        "Approved Date",
+                        "Rejected By",
+                        "Rejected Date",
+                        'Access Before',
+                        'Access After',
+                        'Status'
+                    ];
+                    if (typeof params === 'string') {
+                        try {
+                            params = JSON.parse(params);
+                        } catch (err) {
+                            console.error(err.message);
+                        }
+                    }
+                    const data = {
+                        since : this.since,
+                        until : this.until,
+                        ...params
+                    }
+                    sendRequest('get', endpoint, data)
+                        .then((response) => {
+                            if (window.run_debug) debugger;
+                            const data = result(response, 'data.items', [])
+                                .map(function (doc, index) {
+                                    return {
+                                        no: parseInt(index) + 1,
+                                        rolename: result(doc, 'roleName'),
+                                        reqBy: result(doc, 'requestedBy'),
+                                        reqDate: result(doc, 'requestedDate'),
+                                        appBy: result(doc, 'approvedBy'),
+                                        appDate: result(doc, 'approvedDate'),
+                                        rejectBy: result(doc, 'rejectedBy'),
+                                        rejectDate: result(doc, 'rejectedDate'),
+                                        accBefore: result(doc, 'accessBefore'),
+                                        accAfter: result(doc, 'accessAfter'),
+                                        status: result(doc, 'status')
+                                    }
+                                })
+                            this.doDownload(data, xlsHeader, nametittle)
+                        })
+                } catch (err) {
+                    console.error(err)
+                }
+            },
+            generateAgentActivities({endpoint, params}) {
+                try {
+                    const formatsince = moment(this.since).format('YMMD')
+                    const formatuntil = moment(this.until).format('YMMD')
+                    if (window.run_debug) debugger
+                    let nametittle = `agents-${formatsince}-${formatuntil}`;
+                    const xlsHeader = [
+                        "No",
+                        "User ID",
+                        "Name",
+                        "Requested By",
+                        "Requested Date",
+                        "Approved By",
+                        "Approved Date",
+                        "Rejected By",
+                        "Rejected Date",
+                        'Type',
+                        'Status'
+                    ];
+                    if (typeof params === 'string') {
+                        try {
+                            params = JSON.parse(params);
+                        } catch (err) {
+                            console.error(err.message);
+                        }
+                    }
+                    const data = {
+                        since : this.since,
+                        until : this.until,
+                        ...params
+                    }
+                    if (window.run_debug) debugger
+                    sendRequest('get', endpoint, data)
+                        .then((response) => {
+                            if (window.run_debug) debugger;
+                            const data = result(response, 'data.items', [])
+                                .map(function (doc, index) {
+                                    return {
+                                        no: parseInt(index) + 1,
+                                        userid: result(doc, 'userID'),
+                                        name: result(doc, 'name'),
+                                        reqBy: result(doc, 'requestedBy'),
+                                        reqDate: result(doc, 'requestedDate'),
+                                        appBy: result(doc, 'approvedBy'),
+                                        appDate: result(doc, 'approvedDate'),
+                                        rejectBy: result(doc, 'rejectedBy'),
+                                        rejectDate: result(doc, 'rejectedDate'),
+                                        type: result(doc, 'type'),
+                                        status: result(doc, 'status')
+                                    }
+                                })
+                            this.doDownload(data, xlsHeader, nametittle)
+                        })
+                } catch (err) {
+                    console.error(err)
+                }
+            },
+            doDownload(xlsRows, xlsHeader, nametittle){
+                nametittle = nametittle.substring(0, 31)
+               // <!--  return false  -->
+                var createXLSLFormatObj = [];
+                /* XLS Rows Data */
+                createXLSLFormatObj.push(xlsHeader);
+                $.each(xlsRows, function(index, value) {
+                    var innerRowData = [];
+                    $.each(value, function(ind, val) {
+
+                        innerRowData.push(val);
+                    });
+                    createXLSLFormatObj.push(innerRowData);
+                });
+                /* File Name */
+                var filename = nametittle + ".xlsx";
+
+                /* Sheet Name */
+                var ws_name = nametittle;
+
+                if (typeof console !== 'undefined') console.log(new Date());
+                var wb = XLSX.utils.book_new(),
+                    ws = XLSX.utils.aoa_to_sheet(createXLSLFormatObj);
+
+                /* Add worksheet to workbook */
+                XLSX.utils.book_append_sheet(wb, ws, ws_name);
+
+                /* Write workbook and Download */
+                if (typeof console !== 'undefined') console.log(new Date());
+                XLSX.writeFile(wb, filename);
+                if (typeof console !== 'undefined') console.log(new Date());
+            }
+        }
+    </script>
+</report>

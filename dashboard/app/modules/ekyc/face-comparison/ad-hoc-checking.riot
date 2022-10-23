@@ -1,0 +1,276 @@
+<face-comparison-adhoc-checking>
+    <div class="br-mainpanel">
+        <div class="br-pageheader">
+            <nav class="breadcrumb pd-0 mg-0 tx-12">
+                <span class="breadcrumb-item">Face Comparison</span>
+                <span class="breadcrumb-item active">Ad-Hoc Checking</span>
+            </nav>
+        </div>
+        <div class="br-pagebody pd-r-5 pd-l-5 mg-t-10">
+            <div class="br-section-wrapper pd-x-20 pd-sm-x-30 pd-t-20">
+                <div class="row mg-b-20 bd-b">
+                    <div class="col-12">
+                        <label class="float-left pd-5 tx-10">
+                            Remaining Quota: <b>{sync.remaining}</b>
+                            <!-- <span class="pd-l-2">(Used {sync.used_quota} out of {sync.limit_total})</span> -->
+                        </label>
+                        <button class="tx-10 btn btn-primary pd-t-5 pd-b-5 pd-r-20 pd-l-20 float-right mg-l-5" onclick="{doSync}">Sync</button>
+                        <label class="float-right pd-5 tx-10">Last Sync: <span>{sync.last_sync}</span></label>
+                    </div>
+                </div>
+                <div class="row tx-11">
+                    <div class="col-sm-6">
+                        <div class="text-center mg-b-10">eKTP Photo</div>
+                        <div class="adhoc-image text-center" style="min-height: 200px;border-radius: 5px;background-color: #C0C0C0;overflow:hidden;">
+                            <img src="{images.ektp.base64 || images.ektp.noimage}" style="height: 250px;">
+                        </div>
+                        <div class="wrapper">
+                            <span class="tx-10 pd-2 mg-b-2 d-block">Type: {images.ektp.fileType}</span>
+                            <span class="tx-10 pd-2 mg-b-2 d-block">File Name: {images.ektp.fileName}</span>
+                        </div>
+                        <input type="file" class="form-control tx-11" id="ektp-photo" accept="image/jpeg" onchange="{ektpPhotoHandler}">
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-center mg-b-10">Selfie Photo</div>
+                        <div class="adhoc-image text-center" style="min-height: 200px;border-radius: 5px;background-color: #C0C0C0;overflow:hidden;">
+                            <img src="{images.selfie.base64 || images.selfie.noimage}" style="height: 250px;">
+                        </div>
+                        <div class="wrapper">
+                            <span class="tx-10 pd-2 mg-b-2 d-block">Type: {images.selfie.fileType}</span>
+                            <span class="tx-10 pd-2 mg-b-2 d-block">File Name: {images.selfie.fileName}</span>
+                        </div>
+                        <input type="file" class="form-control tx-11" id="selfie-photo" accept="image/jpeg" onchange="{selfiePhotoHandler}">
+                    </div>
+                </div>
+                <div class="row mg-t-40">
+                    <div class="col-8 offset-2">
+                        <div class="wrap text-center">
+                            <div class="form-inline">
+                                <input type="text" class="form-control mb-2 mr-sm-2 tx-11" id="nik" placeholder="NIK">
+                                <input type="number" class="form-control mb-2 mr-sm-2 tx-11" id="threshold" placeholder="Threshold">
+                                <button class="btn btn-primary mb-2 tx-11" onclick="{doValidate}" if="{!images.request.progress}">Submit</button>
+                                <div class="spinner-border text-primary" if="{images.request.progress}" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .adhoc-image {
+            /* min-height: 160px; */
+            /* width: 100%; */
+            height: 250px;
+            border-radius: 5px;
+            background-color: #C0C0C0;
+            overflow: hidden;
+        }
+    </style>
+    
+    <script>
+        import {
+            cancelAllRequest,
+        } from 'services/SDK/main'
+        import {
+            FaceComparisonAdHocValidate,
+            FaceComparisonAdHocCheckQuota,
+        } from 'appModule/ekyc/ekyc.sdk'
+        import { createAgentActivity } from 'appModule/agents/agent-activity.sdk'
+        import { showAlertError, showAlertSuccess } from 'helpers/utilities'
+        import { changeStorage } from 'helpers/storage'
+        import { goTo } from 'helpers/ma'
+        const maximumSizeLimitImage = 500 * 1000 // 500KB
+        const minimumSizeLimitImage = 30 * 1000 // 30KB
+        export default {
+            sync: {
+                last_sync: '----/--/-- --:--:--',
+                remaining: '--',
+                // limit_total: '2.000.000',
+                // used_quota: '907.878'
+            },
+            images: {},
+            onBeforeMount() {
+                this.images = {
+                    request: {
+                        progress: false,
+                        pass: false,
+                        fail: false,
+                    },
+                    ektp: {
+                        base64: '',
+                        noimage: 'images/no-image.jpg',
+                        fileType: '-',
+                        fileName: '-'
+                    },
+                    selfie: {
+                        base64: '',
+                        noimage: 'images/no-image.jpg',
+                        fileType: '-',
+                        fileName: '-'
+                    }
+                }
+            },
+            onBeforeUnmount() {
+                cancelAllRequest()
+            },
+            onMounted() {
+                console.log('mounting face-comparison.adhoc-checking')
+                this.doSync()
+                this.initFormChangeKTP()
+                this.logAgentActivity('Open Face Comparison Ad-Hoc Checking', '')
+            },
+            logAgentActivity(action, detail) {
+                createAgentActivity({
+                    module: 'Face Comparison Dukcapil - Ad-Hoc Checking',
+                    action,
+                    detail
+                })
+            },
+            initFormChangeKTP() {
+                $('#nik').on('keyup', function () {
+                    const NIKValue = this.value.replace(/[^0-9]/gi, '')
+                    if (NIKValue.length >= 16) {
+                        // showAlertError(new Error('NIK Maximum 16 Digits'))
+                        this.value = NIKValue.substr(0, 16)
+                    } else {
+                        this.value = NIKValue
+                    }
+                })
+                $('#threshold').on('keyup', function () {
+                    this.value = this.value.replace(/[^0-9]/gi, '')
+                    if (this.value > 100) {
+                        showAlertError(new Error('Threshold Maximum is 100'))
+                        this.value = 100
+                    }
+                })
+            },
+            doSync() {
+                FaceComparisonAdHocCheckQuota()
+                    .then(({ data }) => {
+                        this.sync.last_sync = data.last_sync
+                        this.sync.remaining = data.remainingAccess
+                        this.update()
+                    })
+                    .catch(showAlertError)
+            },
+            ektpPhotoHandler(e) {
+                const file = e.target.files[0]
+                if (file) {
+                    this.getInformation(file)
+                        .then((r) => {
+                            this.images.ektp = r
+                            this.update()
+                        })
+                        .catch((e) => {
+                            showAlertError(e)
+                        })
+                }
+            },
+            selfiePhotoHandler(e) {
+                const file = e.target.files[0]
+                if (file) {
+                    this.getInformation(file)
+                        .then((r) => {
+                            this.images.selfie = r
+                            this.update()
+                        })
+                        .catch((e) => {
+                            showAlertError(e)
+                        })
+                }
+            },
+            getInformation(file) {
+                return new Promise((resolve, reject) => {
+                    const fileType = file.type
+                    const fileSize = file.size
+                    if (fileType !== 'image/jpeg') throw new Error('Invalid Image Type. Only JPEG/JPG format')
+                    if (fileSize > maximumSizeLimitImage) {//max is 500KB
+                        throw new Error('Image Too Large. Maximum Size is 500KB')
+                    }
+                    if (fileSize < minimumSizeLimitImage) {//max is 500KB
+                        throw new Error('Image Too Small. Minimum Size is 30KB')
+                    }
+                    const fileName = file.name
+                    const reader = new FileReader()
+                    reader.readAsBinaryString(file)
+                    reader.onload = function (e) {
+                        const base64 = btoa(e.target.result)
+                        resolve({
+                            fileType,
+                            fileSize,
+                            fileName,
+                            base64: `data:${fileType};base64,${base64}`
+                        })
+                    }
+                    reader.onerror = function (e) {
+                        reject(e)
+                    }
+                })
+            },
+            doValidate() {
+                // if (this.images.ektp.base64.length < 100) {
+                //     showAlertError(new Error('Ektp Image Required'))
+                //     return false 
+                // }
+                if (this.images.selfie.base64.length < 100) {
+                    showAlertError(new Error('Selfie Image Required'))
+                    return false
+                }
+                const nik = this.$('#nik').value
+                if (!nik) {
+                    showAlertError(new Error('NIK Required'))
+                    return false
+                }
+                if (nik.length > 16 || nik.length < 16) {
+                    showAlertError(new Error('NIK Should Be 16 Digits'))
+                    return false
+                }
+                let threshold = this.$('#threshold').value
+                if (threshold.length === 0) {
+                    showAlertError(new Error('Threshold Required'))
+                    return false
+                }
+                threshold = parseInt(threshold)
+                if (threshold > 100) {
+                    showAlertError(new Error('Threshold Maximum is 100'))
+                    return false
+                }
+                if (threshold < 0) {
+                    showAlertError(new Error('Threshold Minimum is 0'))
+                    return false
+                }
+                this.images.request.progress = true
+                this.update()
+                const data = {
+                    ektpImage: this.images.ektp.base64,
+                    selfieImage: this.images.selfie.base64,
+                    nik,
+                    threshold
+                }
+                FaceComparisonAdHocValidate(data)
+                    .then(({data: res}) => {
+                        this.images.request.progress = false
+                        this.images.request.pass = false
+                        this.images.request.fail = false
+                        if (res.result === 'PASSED') this.images.request.pass = true
+                        else this.images.request.fail = true
+                        changeStorage({'TMP': JSON.stringify(res)}, 'FC_DETAIL')
+                        this.logAgentActivity('Submit Face Comparison Ad-Hoc Checking', 'NIK=' + nik)
+                        goTo('face-comparison/inquiry-detail?pass=true')
+                        this.update()
+                    })
+                    .catch((err) => {
+                        this.images.request.progress = false
+                        this.images.request.pass = false
+                        this.images.request.fail = true
+                        this.update()
+                        showAlertError(err)
+                    })
+            },
+        }
+    </script>
+</face-comparison-adhoc-checking>

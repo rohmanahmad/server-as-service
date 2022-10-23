@@ -1,0 +1,14 @@
+<!-- 
+    props:
+        - name [String]
+        - callback [Function]
+        - selected [Int/String]
+ -->
+
+<destination-page-dropdown>
+    <form-dropdown title="Choose Destination Page" name="{ props.name || dropdownId }" id="{ dropdownId }" callback="{ callback }" items="{ destinationPages }" el-class="form-control tx-10" selected="{ selected }"></form-dropdown>
+    <script>
+        import controller from './destination-page-dropdown'
+        export default controller
+    </script>
+</destination-page-dropdown>

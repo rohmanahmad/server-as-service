@@ -1,0 +1,91 @@
+<!-- 
+    props:
+     - availableLimits
+     - hasPrev
+     - currentPage
+     - hasNext
+     - availablePages
+     - callback
+ -->
+
+<form-custom-pagination>
+    <ul class="pagination pagination-basic pagination-rounded mg-b-0 {props.elClass}">
+        <li class="page-item">
+            <form-limit-per-page values="{ props.availableLimits }" callback="{changeLimit}" custom-class="tx-11"></form-limit-per-page>
+        </li>
+        <li class="page-item {!props.hasPrev ? 'disabled' : ''}  hidden-xs-down">
+            <a class="page-link pointer" onclick="{doPrev}" aria-label="Prev Page">
+                <i class="icon ion-ios-arrow-back"></i>
+            </a>
+        </li>
+        <li class="page-item active">
+            <div class="page-link tx-12" aria-label="current">
+            { info.currentPage }
+            </div>
+        </li>
+        <li class="page-item {!props.hasNext? 'disabled' : ''}">
+            <a class="page-link pointer" onclick="{doNext}" aria-label="Next Page">
+                <i class="icon ion-ios-arrow-forward"></i>
+            </a>
+        </li>
+        <li class="page-item">
+            <form-go-to-page total-pages="{ props.availablePages }" callback="{ goToPage }" custom-class="tx-11" selected-value="{ info.currentPage }"></form-go-to-page>
+        </li>
+    </ul>
+    <script>
+        import { debugLog } from 'helpers/utilities'
+        export default {
+            info: {
+                currentPage: 1
+            },
+            callbackData: {
+                page: 1,
+                limit: 10,
+                refresh: false
+            },
+            onBeforeMount(props) {
+                if(props.currentPage) this.info.currentPage = parseInt(props.currentPage)
+            },
+            onMounted() {
+                debugLog(`[${this.name}] [MOUNTED]`)
+            },
+            onBeforeUpdate(props) {
+                if(props.currentPage) this.info.currentPage = parseInt(props.currentPage)
+            },
+            onBeforeUnmount() {},
+            // callback
+            callback() {
+                this.props.callback(this.callbackData)
+            },
+            goToPage(newPage) {
+                this.callbackData.refresh = true
+                this.callbackData.page = newPage
+                this.info.currentPage = newPage
+                this.callback()
+                this.update()
+            },
+            changeLimit(newLimit) {
+                this.callbackData.refresh = true
+                this.callbackData.limit = newLimit
+                this.callbackData.page = 1
+                this.info.currentPage = 1
+                this.callback()
+                this.update()
+            },
+            doPrev() {
+                this.callbackData.refresh = true
+                this.info.currentPage -= 1
+                this.callbackData.page = this.info.currentPage
+                this.callback()
+                this.update()
+            },
+            doNext() {
+                this.callbackData.refresh = true
+                this.info.currentPage += 1
+                this.callbackData.page = this.info.currentPage
+                this.callback()
+                this.update()
+            },
+        }
+    </script>
+</form-custom-pagination>

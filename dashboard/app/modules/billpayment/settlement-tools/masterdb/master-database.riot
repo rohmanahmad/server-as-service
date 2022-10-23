@@ -1,0 +1,132 @@
+<bill-payment-masterdb>
+    <div class="br-mainpanel">
+        <div class="br-pageheader">
+            <nav class="breadcrumb pd-0 mg-0 tx-12">
+                <span class="breadcrumb-item">Settlement Tools</span>
+                <span class="breadcrumb-item">Master Database</span>
+                <span class="breadcrumb-item active">List</span>
+            </nav>
+        </div>
+        <div class="br-pagebody pd-r-5 pd-l-5 mg-t-10">
+            <div class="br-section-wrapper pd-x-10 pd-sm-x-30 pd-t-20">
+                <div class="row">
+                    <div class="col-12 pd-r-0">
+                        <button if="{ access.history }" onclick="{ () => goTo('settlement-tools/masterdb-history') }" class="btn btn-info tx-11 float-right" style="width: 150px;">
+                            <span if="{!isediting}">Show History</span>
+                            <span if="{isediting}" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span if="{isediting}">Loading...</span>
+                        </button>
+                        <!-- <button if="{ true }" onclick="{ openModalAddNewData }" class="btn btn-warning tx-11 float-right mg-r-5" style="width: 80px;"> -->
+                        <button if="{ access.create }" onclick="{ openModalAddNewData }" class="btn btn-warning tx-11 float-right mg-r-5" style="width: 80px;">
+                            <span if="{!isediting}">Add New</span>
+                            <span if="{isediting}" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span if="{isediting}">Loading...</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row pd-t-20">
+                    <div class="col-12 pd-t-20 overflow-x-scroll pd-0-force bd">
+                        <table class="table table-bordered table-hover table-striped">
+                            <thead>
+                                <tr class="tx-12">
+                                    <td class="">No</td>
+                                    <td class="text-center tx-bold">Partner Code</td>
+                                    <td class="text-center tx-bold">Counterparty's Name</td>
+                                    <td class="text-center tx-bold">Biller Provider Name</td>
+                                    <td class="text-center tx-bold">Product Code (WAY4)</td>
+                                    <!-- <td class="text-center tx-bold">Product Code (FCUBS)</td> -->
+                                    <td class="text-center tx-bold">Counterparty's Bank Destination Name</td>
+                                    <td class="text-center tx-bold">Counterparty's Bank Code</td>
+                                    <td class="text-center tx-bold">Counterparty's Bank Account Number</td>
+                                    <td class="text-center tx-bold">Settlement Amount</td>
+                                    <td class="text-center tx-bold">Settlement Payment Method(network)</td>
+                                    <td class="text-center tx-bold">Product Category</td>
+                                    <td class="text-center tx-bold">Product Code(Payment)</td>
+                                    <td class="text-center tx-bold">TTC</td>
+                                    <td class="text-center tx-bold">PTBC Customer Account No (escrow)</td>
+                                    <td class="text-center tx-bold">Status Matrix</td>
+                                    <td class="text-center tx-bold">Action</td>
+                                    <td class="text-center tx-bold">Old Data</td>
+                                    <td class="text-center tx-bold">New Data</td>
+                                    <td class="text-center tx-bold">Remarks</td>
+                                    <td class="text-center tx-bold">Status</td>
+                                    <td class="text-center tx-bold">Submitted By</td>
+                                    <td class="text-center tx-bold">Authorized By</td>
+                                </tr>
+                            </thead>
+                            <tbody class="tx-12">
+                                <tr if="{ table.loadingData }">
+                                    <td colspan="21" class="text-center">Loading Data...</td>
+                                </tr>
+                                <tr each="{ item in table.items }">
+                                    <td class="text-center">{ item.n }</td>
+                                    <td class="text-center">{ item.partnerCode }</td> <!-- Partner Code -->
+                                    <td class="text-center">{ item.partnerName }</td> <!-- Partner Name -->
+                                    <td class="text-center">{ item.billerProviderName }</td> <!-- Biller Provider Name -->
+                                    <td class="text-center">{ item.productCodeWay4 }</td> <!-- Product Code (WAY4) -->
+                                    <!-- <td>{ item.productCodeFcubs }</td> Product Code (FCUBS) -->
+                                    <td class="text-center">{ item.partnerBankDestinationName }</td> <!-- Partner's Bank Destination Name -->
+                                    <td class="text-center">{ item.partnerBankDestinationCode }</td> <!-- Partner's Bank Account Number -->
+                                    <td class="text-center">{ item.partnerBankAccountNumber }</td> <!-- Partner's Bank Account Number -->
+                                    <td class="text-center">{ item.settlementAmountText }</td> <!-- Settlement Amount -->
+                                    <td class="text-center">{ item.settlementPaymentMethod }</td> <!-- Settlement Payment Method -->
+                                    <td class="text-center">{ item.productCategory }</td> <!-- PTBC Escrow Account Number -->
+                                    <td class="text-center">{ item.productCodeFcubs }</td> <!-- PTBC Escrow Account Number -->
+                                    <td class="text-center">{ item.ttc }</td> <!-- PTBC Escrow Account Number -->
+                                    <td class="text-center">{ item.ptbcEscrowAccountNumber }</td> <!-- PTBC Escrow Account Number -->
+                                    <td class="text-center">{ item.statusMatrix }</td> <!-- Status Matrix -->
+                                    <td class="pd-x-0-force">
+                                        <!-- <form-button-dropdown callback="{ console.log }" data-item="{ item.actions }" data-dropdown-title="{ 'Actions' }"></form-button-dropdown> -->
+                                        <div class="form-inline">
+                                            <form-button-icon if="{ item.actions.authorize }" callback="{ doAuthorize }" el-data="{ item }" el-class="float-left btn btn-success btn-sm pd-y-0 pd-x-5 mg-2" el-left-icon="fa fa-check" el-popover-title="Authorize"></form-button-icon>
+                                            <form-button-icon if="{ item.actions.reject }" callback="{ doReject }" el-data="{ item }" el-class="float-left btn btn-danger btn-sm pd-y-0 pd-x-5 mg-2" el-left-icon="fa fa-remove" el-popover-title="Reject"></form-button-icon>
+                                        </div>
+                                        <div class="form-inline">
+                                            <form-button-icon if="{ item.actions.edit }" callback="{ doEdit }" el-data="{ item }" el-class="float-left btn btn-warning btn-sm pd-y-0 pd-x-5 mg-2" el-left-icon="fa fa-pencil" el-popover-title="Edit"></form-button-icon>
+                                            <form-button-icon if="{ item.actions.cancel }" callback="{ doCancel }" el-data="{ item }" el-class="float-left btn btn-secondary btn-sm pd-y-0 pd-x-5 mg-2" el-left-icon="fa fa-ban" el-popover-title="Cancel"></form-button-icon>
+                                        </div>
+                                    </td> <!-- Action -->
+                                    <td class="text-center">
+                                        <ul if="{ item.changeRows }" class="list-group bd-0">
+                                            <li class="list-group-item bg-transparent bd-0 tx-10 pd-2 text-left" each="{ i in item.changeRows }">
+                                                { i.field } : { i.oldValue }
+                                            </li>
+                                        </ul>
+                                    </td> <!-- Old Data -->
+                                    <td class="text-center">
+                                        <ul if="{ item.changeRows }" class="list-group bd-0">
+                                            <li class="list-group-item bg-transparent bd-0 tx-10 pd-2 text-left" each="{ i in item.changeRows }">
+                                                { i.field } : { i.newValue }
+                                            </li>
+                                        </ul>
+                                    </td> <!-- New Data -->
+                                    <td class="text-center">{ item.remarks }</td> <!-- Remark -->
+                                    <td class="text-center">{ item.statusText }</td> <!-- Status -->
+                                    <td class="text-center">{ item.submittedBy }</td> <!-- Submitted By -->
+                                    <td class="text-center">{ item.authorizedBy }</td> <!-- Authorized By -->
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="22" style="border: 0px; border-left: 1px solid #e9ecef; border-top: 1px solid #e9ecef;">
+                                        
+                                    </td>
+                                </tr>
+                                <tr if="{isNoData}">
+                                    <td colspan="22" class="text-center font-weight-bold">No Data Found</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <modal-masterdb-add-edit callback="{ callbackModalAddEdit }" show-modal="{ modals.addedit.enabled }" edit-mode="{ modals.addedit.editMode }" data="{ modals.addedit.data }"></modal-masterdb-add-edit>
+    <!-- <modal-masterdb-edit callback="{ callbackModalEdit }" show-modal="{ modals.edit.enabled }" el-data="{ modals.edit.data }"></modal-masterdb-edit> -->
+    <modal-masterdb-log-download callback="{ callbackModalDownload }" show-modal="{ modals.download.enabled }"></modal-masterdb-log-download>
+    <script>
+        import controller from './master-database'
+        export default controller
+    </script>
+</bill-payment-masterdb>

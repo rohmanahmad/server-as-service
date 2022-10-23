@@ -1,0 +1,45 @@
+<!-- 
+    props:
+    - callback Function
+    - intial-value String
+    - upload-url String
+ -->
+
+<upload-target-users>
+    <div class="form-inline">
+        <div class="form-group">
+            <input type="file" onchange="{ doChange }" class="form-control pd-t-10 pd-b-10 tx-10" id="{ inputId }" accept=".csv">
+            <form-button-loading
+                el-class="btn btn-{ upload.processDone ? 'success' : 'primary' } mg-l-5 tx-10"
+                el-isloading="{ upload.loading }"
+                el-title="{ upload.title }"
+                el-onloading-title="{ upload.loadingTitle }"
+                callback="{ doUpload }"/>
+            <!-- <button if="{ upload.need_upload }" type="button" class="btn btn-primary mg-l-5 tx-10" onclick="{ doUpload }">Upload</button> -->
+            <button if="{ !upload.need_upload && (upload.upload_success || props.initialValue) }" class="btn btn-default mg-l-5 tx-10 text-left pd-y-5 pd-x-2" disabled>
+                <span if="{upload.upload_success || props.initialValue}" title="{ tempId }">
+                    <i class="tx-20 fa fa-check"></i> Upload (done)
+                </span>
+                <br>
+                <span>
+                    <span class="tx-11 {upload.processDone ? 'fa fa-check' : 'spinner-border spinner-border-sm'} mg-r-2"></span> 
+                    Processing ({ upload.processDone ? "done" : "progress" })
+                </span>
+            </button>
+            <button if="{ !upload.need_upload && upload.upload_fail }" class="btn btn-danger mg-l-5 tx-10" disabled>
+                <i class="tx-20 fa fa-cros"></i> Failed
+            </button>
+        </div>
+    </div>
+    <style>
+        .spinner-border-xs {
+            width: 5px;
+            height: 5px;
+            border-width: 1px;
+        }
+    </style>
+    <script>
+        import controller from './upload-target-users'
+        export default controller
+    </script>
+</upload-target-users>

@@ -1,0 +1,36 @@
+<!-- 
+    props:
+    - callback [Function]
+    - refresh [Boolean]
+ -->
+<fcm-token-list>
+    <ul class="list-group list-group-flush mg-t-10" style="width: 100%;" id="{ elId }">
+        <li class="list-group-item pd-t-10" each="{ fcm in fcmTokens }">
+            <div class="row">
+                <div class="col-1 pd-t-10 pd-l-0">
+                    <form-toggle-checklist el-class="float-left" callback="{ toggleChecked }" el-key="{ fcm.username }" el-item="{ fcm }"></form-toggle-checklist>
+                </div>
+                <div class="col-8 content pd-0 tx-10">
+                    { fcm.username }<br>
+                    { fcm.email }
+                </div>
+                <div class="col-3 pd-t-10 pd-l-0 pd-r-0">
+                    <form-button-icon el-class="btn btn-danger tx-10 float-right mg-l-2 pd-x-5 pd-t-2 pd-b-2" el-left-icon="ion-trash-b" el-popover-title="Delete" el-data="{ fcm }" callback="{ doDeleteFCMToken }"></form-button-icon>
+                    <form-button-icon el-class="btn btn-warning tx-10 float-right mg-l-2 pd-x-5 pd-t-2 pd-b-2" el-left-icon="ion-loop" el-popover-title="Refresh" el-data="{ fcm }" callback="{ doRefreshFCMToken }"></form-button-icon>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <style>
+        .content {
+            height: 35px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+    <script>
+        import controller from './fcm-token-list'
+        export default controller
+    </script>
+</fcm-token-list>

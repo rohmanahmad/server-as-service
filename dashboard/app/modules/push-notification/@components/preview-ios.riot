@@ -1,0 +1,62 @@
+<!-- 
+    props:
+    - el-title String
+    - el-body String[html]
+    - el-image String[base64]
+ -->
+
+<preview-ios>
+    <div
+        style="background-image: url('./notification-assets/iphone.png');padding: 15% 4.6632124352% 0;background-repeat: no-repeat;background-size: 100%;display: flex;margin: 4px;">
+        <div class="ios-preview bg-white d-flex justify-content-between mb-2 rounded-0 mg-x-8 pd-8" style="width: 95%;">
+            <div class="ios-content-text tx-12 overflow-hidden float-left w-100" style="height: 35px;" id="ios-preview">
+                <div class="wrap-head overflow-hidden w-100 tx-10">
+                    { props.elTitle }
+                </div>
+                <div class="wrap-body overflow-hidden float-left w-100">
+                    <raw class="wrap-html tx-8" html="{ props.elBody }"></raw>
+                </div>
+            </div>
+            <div class="ios-content-image wd-30 float-right">
+                <img src="{ props.elImage }" class="wrap-thumb float-right" alt="">
+            </div>
+        </div>
+    </div>
+    <p class="text-center"> IOS</p>
+    <style>
+        .wrap-html {
+            height: 15px;
+            max-width: 100%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding: 0px;
+        }
+        .wrap-html p {
+            padding: 0px;
+        }
+        .wrap-head {
+            height: 15px;
+            max-width: 95%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .wrap-body {
+            height: 16px;
+            max-width: 94%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .wrap-thumb {
+            width: 30px;
+            max-height: 35px;
+            overflow: hidden;
+        }
+    </style>
+    <script>
+        export default {
+            onBeforeMount(props) {
+                // this.isContentOverflow = false
+            }
+        }
+    </script>
+</preview-ios>

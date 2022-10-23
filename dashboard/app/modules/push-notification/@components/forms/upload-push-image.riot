@@ -1,0 +1,35 @@
+<!-- 
+    props:
+    - callback Function
+    - previewCallback Function
+    - removeCallback Function
+    - initialValue String Optional
+ -->
+
+<upload-push-image>
+    <div class="form-inline">
+        <div class="form-group tx-10">
+            <form-upload disabled="{ false }" callback="{ previewCallback }" accepted-mimes=".jpeg,.png" el-class="form-control tx-10" reset-data="{ upload.isReset }"></form-upload>
+            <form-button-loading
+                if="{ upload.need_upload }"
+                el-isloading="{ upload.loading }"
+                el-title="Upload"
+                el-onloading-title="{ upload.loadingTitle }"
+                el-class="btn btn-primary mg-l-5 tx-10 pd-t-10 pd-b-10"
+                callback="{ doUpload }" ></form-button-loading>
+            <button if="{ !upload.need_upload && (upload.upload_success || props.initialValue) }" class="btn btn-success mg-l-5 tx-10" disabled>
+                <i class="tx-20 fa fa-check"></i> Uploaded
+            </button>
+            <!-- <button if="{ !upload.need_upload && (upload.upload_success || props.initialValue) }" class="btn btn-danger mg-l-5 tx-10" onclick="{ removeUploadedImage }">
+                <i class="tx-20 fa fa-trash"></i>
+            </button> -->
+            <button if="{ !upload.need_upload && upload.upload_fail }" class="btn btn-danger mg-l-5 tx-10" disabled>
+                <i class="tx-20 fa fa-cros"></i> Failed
+            </button>
+        </div>
+    </div>
+    <script>
+        import controller from './upload-push-image'
+        export default controller
+    </script>
+</upload-push-image>
